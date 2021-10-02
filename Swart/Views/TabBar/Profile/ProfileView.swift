@@ -21,7 +21,7 @@ struct ProfileView: View {
     @State private var url = ""
     
     init() {
-        UINavigationBar.appearance().tintColor = .black
+       
     }
     
     var body: some View {
@@ -71,7 +71,7 @@ struct ProfileView: View {
                         }
                         
                     }.sheet(isPresented: $pickerIsPresented) {
-                        ImagePickerViewModel(selectedImage: $imageSelected, sourceType: .photoLibrary)
+                        ImagePicker(selectedImage: $imageSelected, sourceType: .photoLibrary)
                         
                     }
                     

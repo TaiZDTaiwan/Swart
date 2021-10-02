@@ -1,5 +1,5 @@
 //
-//  ImagePickerViewModel.swift
+//  ImagePicker.swift
 //  Swart
 //
 //  Created by Raphaël Huang-Dubois on 09/09/2021.
@@ -8,13 +8,13 @@
 import SwiftUI
 import UIKit
 
-struct ImagePickerViewModel: UIViewControllerRepresentable {
+struct ImagePicker: UIViewControllerRepresentable {
     
     @Binding var selectedImage: UIImage
     @Environment(\.presentationMode) private var presentationMode
     var sourceType: UIImagePickerController.SourceType = .photoLibrary
     
-    func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePickerViewModel>) -> UIImagePickerController {
+    func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
         let imagePicker = UIImagePickerController()
         imagePicker.allowsEditing = false
         imagePicker.sourceType = sourceType
@@ -28,9 +28,9 @@ struct ImagePickerViewModel: UIViewControllerRepresentable {
     }
     
     final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-        var parent: ImagePickerViewModel
+        var parent: ImagePicker
         
-        init(_ parent: ImagePickerViewModel) {
+        init(_ parent: ImagePicker) {
             self.parent = parent
         }
         

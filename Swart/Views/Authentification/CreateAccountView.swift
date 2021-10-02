@@ -30,8 +30,8 @@ struct CreateAccountView: View {
     @State private var rePassword = ""
     
     @State private var user: User?
-    @State private var showMain = false
     
+    @State private var showMain = false
     @State private var isLoading = false
     
     @State private var isAlertPresented = false
@@ -173,10 +173,23 @@ struct CreateAccountView: View {
             .alert(isPresented: $isAlertPresented) {
                 Alert(title: Text(alertMessage), message: .none, dismissButton: .default(Text("OK"), action: {
                     if isLoading {
-                        presentationMode.wrappedValue.dismiss()
+                        Auth.auth().signIn(withEmail: email, password: password) { (authDataResult, error) in
+                            if error != nil {
+                                alertMessage = error!.localizedDescription
+                                isAlertPresented = true
+                            } else {
+                                if let user = authDataResult?.user {
+                                    authentificationViewModel.userInAuthentification.id = user.uid
+                                    self.showMain = true
+                                }
+                            }
+                        }
                     }
                 })
             )}
+            .fullScreenCover(isPresented: $showMain, content: {
+                MainTabView.init(userRepositoryViewModel: UserRepositoryViewModel())
+            })
         }
     }
     
@@ -219,7 +232,7 @@ struct CreateAccountView: View {
                                 
                                 let newUser = UserSwart(id: authentificationViewModel.userInAuthentification.id, firstName: firstName, lastName: lastName, birthdate: birthdate, email: email)
                                                 
-                                userRepositoryViewModel.addUserToDatabase(id: authentificationViewModel.userInAuthentification.id ?? "", user: newUser)
+                                userRepositoryViewModel.saveUserInfoToDatabase(id: authentificationViewModel.userInAuthentification.id ?? "", user: newUser)
                             }
                         })
                     }

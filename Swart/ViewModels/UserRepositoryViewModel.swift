@@ -19,7 +19,7 @@ final class UserRepositoryViewModel: ObservableObject {
     private let store = Firestore.firestore()
     private let storage = Storage.storage().reference()
     
-    func addUserToDatabase(id: String, user: UserSwart) {
+    func saveUserInfoToDatabase(id: String, user: UserSwart) {
     
         do {
             let _ = try store.collection("user").document(id).setData(from: user)
@@ -41,7 +41,6 @@ final class UserRepositoryViewModel: ObservableObject {
             case .success(let user):
                 if let user = user {
                     self.userSwart = user
-                    print(self.userSwart.firstName)
                 } else {
                     print("Document does not exist")
                 }

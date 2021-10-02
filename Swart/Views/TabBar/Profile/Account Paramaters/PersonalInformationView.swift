@@ -21,9 +21,14 @@ struct PersonalInformationView: View {
     
     @State private var firstName = ""
     @State private var lastName = ""
-    @State private var genderIndex = ""
+    @State private var birthdate = ""
+    @State private var email = ""
+    @State private var phoneNumber = ""
+    @State private var genderIsShown = false
     
-    let gender = ["Not specified", "Male", "Female", "Other"]
+    @State private var lastSelectedIndex: Int?
+    
+    let genderArray = ["Not specified", "Male", "Female", "Other"]
     
     var btnBack : some View { Button(action: {
             self.presentationMode.wrappedValue.dismiss()
@@ -40,69 +45,91 @@ struct PersonalInformationView: View {
         
         ScrollView {
             
-            Spacer(minLength: 25)
-        
             VStack(alignment: .leading) {
                 Text("First name")
                     .bold()
-                    .font(.system(size: 10))
-                
-                TextEditor(text: $firstName)
-                    .font(.system(.body))
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .textContentType(.name)
-                    .autocapitalization(.words)
-                    .disableAutocorrection(true)
-                    .font(Font.headline.weight(.black))
+                    .font(.system(size: 12))
+                        
+                TextField("", text: $firstName)
+                    .placeholder(when: firstName.isEmpty) {
+                        Text(userRepositoryViewModel.userSwart.firstName).foregroundColor(.black)
+                            .textContentType(.givenName)
+                            .autocapitalization(.words)
+                            .disableAutocorrection(true)
+                    }
             }.padding()
-        
+                
             Divider()
-            
+                    
             VStack(alignment: .leading) {
                 Text("Last name")
                     .bold()
                     .font(.system(size: 12))
-                    
+                            
                 TextField("", text: $lastName)
                     .placeholder(when: lastName.isEmpty) {
-                        Text(userRepositoryViewModel.userSwart.firstName).foregroundColor(.black)
+                        Text(userRepositoryViewModel.userSwart.lastName).foregroundColor(.black)
+                            .textContentType(.givenName)
+                            .autocapitalization(.words)
+                            .disableAutocorrection(true)
                     }
                 }.padding()
-            
+                            
             Divider()
-            
+                    
             VStack(alignment: .leading) {
-                Text("Gender")
+                Text("Birth date (MM/DD/YYYY)")
                     .bold()
-                
-                NavigationView {
-                    Form {
-                        Section {
-                            Picker(selection: $genderIndex, label: Text("Gender")) {
-                                ForEach(0 ..< gender.count) {
-                                    Text(self.gender[$0]).tag($0)
-                                }
-                            }
-                        }
+                    .font(.system(size: 12))
+                            
+                TextField("", text: $birthdate)
+                    .placeholder(when: birthdate.isEmpty) {
+                        Text(userRepositoryViewModel.userSwart.birthdate).foregroundColor(.black)
                     }
-                }
-            }.padding()
-            Spacer()
-            .navigationBarBackButtonHidden(true)
-            .navigationBarItems(leading: btnBack)
+                }.padding()
+                    
+            Divider()
+                    
+            VStack(alignment: .leading) {
+                Text("Email")
+                    .bold()
+                    .font(.system(size: 12))
+                
+                        
+                TextField("", text: $email)
+                    .placeholder(when: email.isEmpty) {
+                        Text(userRepositoryViewModel.userSwart.email).foregroundColor(.black)
+                            .textContentType(.emailAddress)
+                            .keyboardType(.emailAddress)
+                            .disableAutocorrection(true)
+                            .autocapitalization(.none)
+                    }
+                }.padding()
+                    
+            Divider()
+                    
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: btnBack)
         }.toolbar {
             Button(action: {
-                userRepositoryViewModel.fetchDataToDb(id: authentificationViewModel.userInAuthentification.id, firstName: firstName, lastName: lastName)
+                
+                let user = UserSwart(id: authentificationViewModel.userInAuthentification.id, firstName: getRightPersoInfo(firstName, userRepositoryViewModel.userSwart.firstName), lastName: getRightPersoInfo(lastName, userRepositoryViewModel.userSwart.lastName), birthdate: getRightPersoInfo(birthdate, userRepositoryViewModel.userSwart.birthdate), email: getRightPersoInfo(email, userRepositoryViewModel.userSwart.email))
+                
+                userRepositoryViewModel.saveUserInfoToDatabase(id: authentificationViewModel.userInAuthentification.id ?? "", user: user)
             }, label: {
                 Text("Save")
             })
         }.onAppear(perform: {
-            
             userRepositoryViewModel.get(documentPath: authentificationViewModel.userInAuthentification.id ?? "")
-            print(userRepositoryViewModel.userSwart.firstName)
-            firstName = userRepositoryViewModel.userSwart.firstName
-            
         })
+    }
+    
+    private func getRightPersoInfo(_ info: String, _ placeholder: String) -> String {
+        if info == "" {
+            return placeholder
+        } else {
+            return info
+        }
     }
 }
 
