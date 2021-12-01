@@ -9,19 +9,19 @@ import SwiftUI
 
 struct MainTabView: View {
     
-    @ObservedObject var userRepositoryViewModel: UserRepositoryViewModel
+    @ObservedObject var userCollectionViewModel: UserCollectionViewModel
     
     @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
     
-    init(userRepositoryViewModel: UserRepositoryViewModel) {
+    init(userRepositoryViewModel: UserCollectionViewModel) {
         UITabBar.appearance().barTintColor = .white
         UITabBar.appearance().unselectedItemTintColor = .gray
-        _userRepositoryViewModel = .init(initialValue: userRepositoryViewModel)
+        _userCollectionViewModel = .init(initialValue: userRepositoryViewModel)
     }
     
     func test() {
-        userRepositoryViewModel.get(documentPath: authentificationViewModel.userInAuthentification.id ?? "")
-        print(userRepositoryViewModel.userSwart.email)
+        userCollectionViewModel.get(documentPath: authentificationViewModel.userInAuthentification.id ?? "")
+        print(userCollectionViewModel.userSwart.email)
     }
     
     var body: some View {
@@ -66,6 +66,6 @@ struct MainTabView: View {
 
 struct TabBarView_Previews: PreviewProvider {
     static var previews: some View {
-        MainTabView(userRepositoryViewModel: UserRepositoryViewModel())
+        MainTabView(userRepositoryViewModel: UserCollectionViewModel())
     }
 }

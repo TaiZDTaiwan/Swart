@@ -25,7 +25,7 @@ struct LogInView: View {
     var body: some View {
         
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.9607843137, green: 0.1764705882, blue: 0.2901960784, alpha: 1)), Color(#colorLiteral(red: 0.8551853299, green: 0.8111677766, blue: 0.07408294827, alpha: 1))]), startPoint: .topLeading, endPoint: .bottomTrailing)
+            LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 1, green: 0.7142756581, blue: 0.59502846, alpha: 1)), Color(#colorLiteral(red: 0.7496727109, green: 0.1164080873, blue: 0.1838892698, alpha: 1))]), startPoint: .topLeading, endPoint: .bottomTrailing)
                 .ignoresSafeArea()
                 
             VStack(spacing: 20) {
@@ -36,7 +36,7 @@ struct LogInView: View {
                     .font(.custom("AmericanTypewriter", size: 60))
                     .fontWeight(.regular)
                     .font(.largeTitle)
-                    .foregroundColor(Color(#colorLiteral(red: 0.9529411765, green: 0.9490196078, blue: 0.9607843137, alpha: 1)))
+                    .foregroundColor(.swartWhite)
                     
                 VStack(alignment: .trailing) {
                         
@@ -59,8 +59,7 @@ struct LogInView: View {
                     }
                          
                         NavigationLink(
-                            destination: EmailForgotPasswordView()
-                                .navigationBarTitle("Forgot password?", displayMode: .large)) {
+                            destination: EmailForgotPasswordView()) {
                             
                             Text("Forgot password?").bold()
                                 .font(.system(size: 15))
@@ -71,31 +70,21 @@ struct LogInView: View {
                     }
                     
                 Button(action: {
-                    Auth.auth().signIn(withEmail: email, password: password) { (authDataResult, error) in
-                        if error != nil {
-                            alertMessage = error!.localizedDescription
+                    authentificationViewModel.signInUser(email: email, password: password) { result in
+                        switch result {
+                        case .success(let message):
+                            print(message)
+                            self.showMain = true
+                        case .failure(let error):
+                            alertMessage = error.localizedDescription
                             isAlertPresented = true
-                        } else {
-                            if let user = authDataResult?.user {
-                                authentificationViewModel.userInAuthentification.id = user.uid
-                                self.showMain = true
-                            }
                         }
                     }
                 }, label: {
-                    Text("Log In")
-                        .frame(width: UIScreen.main.bounds.size.width/4, height: 20, alignment: .center)
-                        .font(.system(size: 20))
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 6)
-                                .foregroundColor(Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)))
-                                .opacity(0.7)
-                        )
+                    CustomTextForSmallButton(text: "Log In")
                 })
                 .fullScreenCover(isPresented: $showMain, content: {
-                    MainTabView.init(userRepositoryViewModel: UserRepositoryViewModel())
+                    MainTabView.init(userRepositoryViewModel: UserCollectionViewModel())
                 })
                 
                 Spacer()
@@ -109,5 +98,20 @@ struct LogInView: View {
 struct Test_Previews: PreviewProvider {
     static var previews: some View {
         LogInView()
+    }
+}
+
+struct CustomTextForSmallButton: View {
+    var text: String
+    
+    var body: some View {
+        Text(text)
+            .frame(width: UIScreen.main.bounds.size.width/4, height: 20, alignment: .center)
+            .font(.system(size: 20))
+            .foregroundColor(.white)
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 6)
+                    .foregroundColor(.lightBlack))
     }
 }

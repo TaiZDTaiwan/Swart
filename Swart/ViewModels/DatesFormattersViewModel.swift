@@ -67,4 +67,3 @@ class DatesFormattersViewModel {
         return String(date[day])
     }
 }
-

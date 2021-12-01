@@ -11,42 +11,44 @@ import SDWebImageSwiftUI
 
 struct ProfileView: View {
     
-    @StateObject var userRepositoryViewModel = UserRepositoryViewModel()
+    init() {
+        UITextField.appearance().clearButtonMode = .whileEditing
+    }
+    
+    @StateObject var userCollectionViewModel = UserCollectionViewModel()
     
     @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
     
-    @State private var changeProfileImage = false
-    @State private var pickerIsPresented = false
+    @State private var showImagePicker = false
+    @State private var showActionSheet = false
     @State private var imageSelected = UIImage()
+    @State var sourceType: UIImagePickerController.SourceType = .camera
     @State private var url = ""
-    
-    init() {
-       
-    }
+    @State private var isShownPersonalInformationView = false
+    @State private var isShownBecomeAnArtistHomePageView = false
+    @State private var firstName = ""
+    @State private var updatedFirstName = ""
     
     var body: some View {
         NavigationView {
             
             VStack(spacing: -5) {
                 HStack {
-                    ZStack() {
+                    ZStack {
                         Button(action: {
-                            changeProfileImage = true
-                            pickerIsPresented = true
+                            showActionSheet = true
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 30) {
                                 if imageSelected.size.width != 0 {
-                                    userRepositoryViewModel.uploadProfileImage(image: imageSelected)
+                                    userCollectionViewModel.uploadProfilePhoto(photo: imageSelected, fileName: User.profilePhotoFileName, pathName: authentificationViewModel.userInAuthentification.id ?? "")
                                 }
                             }
-
                         }, label: {
-                            if changeProfileImage && imageSelected.size.width != 0 {
+                            if imageSelected.size.width != 0 {
                                 Image(uiImage: imageSelected)
                                     .resizable()
                                     .frame(width: 60, height: 60)
                                     .clipShape(Circle())
-                                
                             } else {
                                 if url != "" {
                                     AnimatedImage(url: URL(string: url))
@@ -61,37 +63,56 @@ struct ProfileView: View {
                                 }
                             }
                         }).padding()
-                            
-                            
+                        
                         if imageSelected.size.width == 0 && url == "" {
                             Image(systemName: "plus")
                                 .frame(width: 15, height: 15)
                                 .foregroundColor(.black)
                                 .clipShape(Circle())
                         }
-                        
-                    }.sheet(isPresented: $pickerIsPresented) {
-                        ImagePicker(selectedImage: $imageSelected, sourceType: .photoLibrary)
-                        
+                    }.actionSheet(isPresented: $showActionSheet) {
+                        ActionSheet(title: Text("Add a photo to your profile."), message: nil, buttons: [
+                            .default(Text("Camera"), action: {
+                                self.showImagePicker = true
+                                self.sourceType = .camera
+                            }),
+                            .default(Text("Photo Library"), action: {
+                                self.showImagePicker = true
+                                self.sourceType = .photoLibrary
+                            }),
+                            .cancel()
+                        ])
+                    }.sheet(isPresented: $showImagePicker) {
+                        ImagePicker(selectedImage: $imageSelected, sourceType: $sourceType)
                     }
                     
-                    
-                    Text("YOOOO")
-                    
+                    Text(displayFirstName())
+                        .bold()
+                        .font(.system(size: 18))
+                        
                     Spacer()
                 }
                 
                 Form {
                     Section(header: Text("Account parameters")) {
-                        NavigationLink(destination: PersonalInformationView()
-                                        .navigationBarTitle("Edit personal info", displayMode: .large)) {
-                       
+                        Button(action: {
+                            isShownPersonalInformationView.toggle()
+                        }, label: {
                             HStack {
                                 Text("Personal information")
+                                    .foregroundColor(.black)
+                                
                                 Spacer()
+                                
                                 Image(systemName: "person.circle")
+                                    .foregroundColor(.black)
+                                
+                                Image(systemName: "chevron.right")
+                                    .foregroundColor(.secondary)
                             }
-                        }
+                        }).fullScreenCover(isPresented: $isShownPersonalInformationView, content: {
+                            PersonalInformationView.init(updatedFirstName: $updatedFirstName)
+                        })
                         
                         NavigationLink(destination: PaymentView()) {
                             HStack {
@@ -110,13 +131,23 @@ struct ProfileView: View {
                         }
                     }
                     Section(header: Text("Becoming a swart artist")) {
-                        NavigationLink(destination: PersonalInformationView()) {
+                        Button(action: {
+                            isShownBecomeAnArtistHomePageView.toggle()
+                        }, label: {
                             HStack {
                                 Text("Switch to artist mode")
+                                    .foregroundColor(.black)
                                 Spacer()
+                                
                                 Image(systemName: "arrow.triangle.swap")
+                                    .foregroundColor(.black)
+                                
+                                Image(systemName: "chevron.right")
+                                    .foregroundColor(.secondary)
                             }
-                        }
+                        }).fullScreenCover(isPresented: $isShownBecomeAnArtistHomePageView, content: {
+                            BecomeAnArtistHomePageView.init()
+                        })
                         
                         NavigationLink(destination: PaymentView()) {
                             HStack {
@@ -135,7 +166,7 @@ struct ProfileView: View {
                         }
                     }
                     Section(header: Text("Referral credit & coupons")) {
-                        NavigationLink(destination: PersonalInformationView()) {
+                        NavigationLink(destination: PersonalInformationView(updatedFirstName: $updatedFirstName)) {
                             HStack {
                                 Text("Refer an artist")
                                 Spacer()
@@ -144,7 +175,7 @@ struct ProfileView: View {
                         }
                     }
                     Section(header: Text("Support")) {
-                        NavigationLink(destination: PersonalInformationView()) {
+                        NavigationLink(destination: PersonalInformationView(updatedFirstName: $updatedFirstName)) {
                             HStack {
                                 Text("How Swart works")
                                 Spacer()
@@ -169,7 +200,7 @@ struct ProfileView: View {
                         }
                     }
                     Section(header: Text("Legal")) {
-                        NavigationLink(destination: PersonalInformationView()) {
+                        NavigationLink(destination: PersonalInformationView(updatedFirstName: $updatedFirstName)) {
                             HStack {
                                 Text("Service condition")
                                 Spacer()
@@ -194,26 +225,37 @@ struct ProfileView: View {
                         }
                     }
                 }
-            }
-            .navigationBarHidden(true)
+            }.navigationBarHidden(true)
         }.onAppear(perform: {
-            userRepositoryViewModel.get(documentPath: authentificationViewModel.userInAuthentification.id ?? "")
-
-            Storage.storage().reference().child("\(String(describing: authentificationViewModel.userInAuthentification.id))_profile_photo").downloadURL { (url, err) in
-                if err != nil {
-                    print((err?.localizedDescription)!)
-                    return
-                }
-                if let url = url {
-                    self.url = "\(url)"
+            userCollectionViewModel.get(documentPath: authentificationViewModel.userInAuthentification.id ?? "")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                firstName = userCollectionViewModel.userSwart.firstName
+                
+                userCollectionViewModel.downloadProfilePhoto { result in
+                    switch result {
+                    case .success(let url):
+                        self.url = url
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                    }
                 }
             }
+            
         })
+    }
+    
+    private func displayFirstName() -> String {
+        if updatedFirstName == "" {
+            return firstName
+        } else {
+            return updatedFirstName
+        }
     }
 }
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileView()
+            .environmentObject(AuthentificationViewModel())
     }
 }

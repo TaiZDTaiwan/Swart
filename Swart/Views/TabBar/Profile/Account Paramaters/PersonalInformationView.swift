@@ -9,11 +9,7 @@ import SwiftUI
 
 struct PersonalInformationView: View {
     
-    init() {
-        UITextField.appearance().clearButtonMode = .whileEditing
-    }
-    
-    @StateObject var userRepositoryViewModel = UserRepositoryViewModel()
+    @StateObject var userCollectionViewModel = UserCollectionViewModel()
     
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
@@ -25,103 +21,82 @@ struct PersonalInformationView: View {
     @State private var email = ""
     @State private var phoneNumber = ""
     @State private var genderIsShown = false
+    @Binding var updatedFirstName: String
     
     @State private var lastSelectedIndex: Int?
     
     let genderArray = ["Not specified", "Male", "Female", "Other"]
     
-    var btnBack : some View { Button(action: {
+    var btnBack : some View {
+        Button {
             self.presentationMode.wrappedValue.dismiss()
-            }) {
-                HStack {
-                    Image(systemName: "chevron.backward")
-                        .foregroundColor(Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)))
-                        .opacity(0.7)
-                }
-            }
+        } label: {
+            BackwardChevron()
         }
+    }
     
     var body: some View {
         
-        ScrollView {
-            
-            VStack(alignment: .leading) {
-                Text("First name")
-                    .bold()
-                    .font(.system(size: 12))
-                        
-                TextField("", text: $firstName)
-                    .placeholder(when: firstName.isEmpty) {
-                        Text(userRepositoryViewModel.userSwart.firstName).foregroundColor(.black)
-                            .textContentType(.givenName)
-                            .autocapitalization(.words)
-                            .disableAutocorrection(true)
-                    }
-            }.padding()
+        NavigationView {
+        
+            ScrollView {
                 
-            Divider()
-                    
-            VStack(alignment: .leading) {
-                Text("Last name")
-                    .bold()
-                    .font(.system(size: 12))
+                VStack(alignment: .leading) {
+                    CustomTextForProfile(text: "First name")
                             
-                TextField("", text: $lastName)
-                    .placeholder(when: lastName.isEmpty) {
-                        Text(userRepositoryViewModel.userSwart.lastName).foregroundColor(.black)
-                            .textContentType(.givenName)
-                            .autocapitalization(.words)
-                            .disableAutocorrection(true)
-                    }
-                }.padding()
-                            
-            Divider()
-                    
-            VStack(alignment: .leading) {
-                Text("Birth date (MM/DD/YYYY)")
-                    .bold()
-                    .font(.system(size: 12))
-                            
-                TextField("", text: $birthdate)
-                    .placeholder(when: birthdate.isEmpty) {
-                        Text(userRepositoryViewModel.userSwart.birthdate).foregroundColor(.black)
-                    }
+                    CustomTextfieldForProfile(bindingText: $firstName, text: firstName, textFromDb: userCollectionViewModel.userSwart.firstName)
+                        .textContentType(.givenName)
+                        .autocapitalization(.words)
                 }.padding()
                     
-            Divider()
-                    
-            VStack(alignment: .leading) {
-                Text("Email")
-                    .bold()
-                    .font(.system(size: 12))
-                
+                Divider()
                         
-                TextField("", text: $email)
-                    .placeholder(when: email.isEmpty) {
-                        Text(userRepositoryViewModel.userSwart.email).foregroundColor(.black)
+                VStack(alignment: .leading) {
+                    CustomTextForProfile(text: "Last name")
+                                
+                    CustomTextfieldForProfile(bindingText: $lastName, text: lastName, textFromDb: userCollectionViewModel.userSwart.lastName)
+                        .textContentType(.givenName)
+                        .autocapitalization(.words)
+                    }.padding()
+                                
+                Divider()
+                        
+                VStack(alignment: .leading) {
+                    CustomTextForProfile(text: "Birth date (MM/DD/YYYY)")
+                                
+                    CustomTextfieldForProfile(bindingText: $birthdate, text: birthdate, textFromDb: userCollectionViewModel.userSwart.birthdate)
+                    }.padding()
+                        
+                Divider()
+                        
+                VStack(alignment: .leading) {
+                    CustomTextForProfile(text: "Email")
+                    
+                    CustomTextfieldForProfile(bindingText: $email, text: email, textFromDb: userCollectionViewModel.userSwart.email)
                             .textContentType(.emailAddress)
                             .keyboardType(.emailAddress)
-                            .disableAutocorrection(true)
                             .autocapitalization(.none)
-                    }
-                }.padding()
-                    
-            Divider()
-                    
-        .navigationBarBackButtonHidden(true)
-        .navigationBarItems(leading: btnBack)
-        }.toolbar {
-            Button(action: {
+                    }.padding()
+                        
+                Divider()
                 
-                let user = UserSwart(id: authentificationViewModel.userInAuthentification.id, firstName: getRightPersoInfo(firstName, userRepositoryViewModel.userSwart.firstName), lastName: getRightPersoInfo(lastName, userRepositoryViewModel.userSwart.lastName), birthdate: getRightPersoInfo(birthdate, userRepositoryViewModel.userSwart.birthdate), email: getRightPersoInfo(email, userRepositoryViewModel.userSwart.email))
-                
-                userRepositoryViewModel.saveUserInfoToDatabase(id: authentificationViewModel.userInAuthentification.id ?? "", user: user)
-            }, label: {
-                Text("Save")
+            .navigationBarTitle("Edit personal info")
+            .navigationBarBackButtonHidden(true)
+            .navigationBarItems(leading: btnBack)
+            }.toolbar {
+                Button(action: {
+                    
+                    let user = User(id: authentificationViewModel.userInAuthentification.id, firstName: getRightPersoInfo(firstName, userCollectionViewModel.userSwart.firstName), lastName: getRightPersoInfo(lastName, userCollectionViewModel.userSwart.lastName), birthdate: getRightPersoInfo(birthdate, userCollectionViewModel.userSwart.birthdate), email: getRightPersoInfo(email, userCollectionViewModel.userSwart.email))
+                    
+                    userCollectionViewModel.addToUserCollection(id: authentificationViewModel.userInAuthentification.id ?? "", user: user)
+                    updatedFirstName = firstName
+                }, label: {
+                    Text("Save")
+                })
+            }.onAppear(perform: {
+                userCollectionViewModel.get(documentPath: authentificationViewModel.userInAuthentification.id ?? "")
             })
-        }.onAppear(perform: {
-            userRepositoryViewModel.get(documentPath: authentificationViewModel.userInAuthentification.id ?? "")
-        })
+        }
     }
     
     private func getRightPersoInfo(_ info: String, _ placeholder: String) -> String {
@@ -135,6 +110,6 @@ struct PersonalInformationView: View {
 
 struct PersonalInformationView_Previews: PreviewProvider {
     static var previews: some View {
-        PersonalInformationView()
+        PersonalInformationView(updatedFirstName: .constant(""))
     }
 }

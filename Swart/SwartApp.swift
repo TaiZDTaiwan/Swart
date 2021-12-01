@@ -16,12 +16,15 @@ struct SwartApp: App {
         FirebaseApp.configure()
     }
     @StateObject var authentificationViewModel = AuthentificationViewModel()
+    @StateObject var storeArtistContentViewModel = StoreArtistContentViewModel()
+    
     var body: some Scene {
                 
         WindowGroup {
             HomeView()
                 .onAppear(perform: UIApplication.shared.addTapGestureRecognizer)
                 .environmentObject(authentificationViewModel)
+                .environmentObject(storeArtistContentViewModel)
         }
     }
 }
@@ -30,9 +33,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     var window: UIWindow?
 
-      func application(_ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions:
-            [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+      func application(_ application: UIApplication, didFinishLaunchingWithOptionslaunchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         return true
       }

@@ -11,6 +11,8 @@ import ActivityIndicatorView
 
 struct EmailForgotPasswordView: View {
     
+    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    
     @Environment(\.presentationMode) private var presentationMode
     
     @State private var email = ""
@@ -24,14 +26,7 @@ struct EmailForgotPasswordView: View {
         ZStack {
             Color(.white)
             
-            GeometryReader { geometry in
-                ActivityIndicatorView(isVisible: $isLoading, type: .flickeringDots)
-                    .foregroundColor(Color(#colorLiteral(red: 0.5565254092, green: 0.5570400953, blue: 0.5776087046, alpha: 1)))
-                    .frame(width: 80, height: 80, alignment: .center)
-                    .opacity(0.8)
-                    .isHidden(isLoading ? false : true)
-                            .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
-            }
+            ActivityIndicator(isLoadingBinding: $isLoading, isLoading: isLoading)
             
             VStack(spacing: 25) {
                 
@@ -44,46 +39,29 @@ struct EmailForgotPasswordView: View {
                     .isHidden(isLoading ? true : false)
                 
                 Button(action: {
-                    forgotPassword(for: email)
+                    authentificationViewModel.forgotPassword(email: email) { result in
+                        switch result {
+                        case .success(let message):
+                            alertMessage = message
+                        case .failure(let error):
+                            alertMessage = error.localizedDescription
+                        }
+                        isAlertPresented = true
+                    }
                 }, label: {
-                    Text("Send")
-                        .frame(width: UIScreen.main.bounds.size.width/4, height: 20, alignment: .center)
-                        .font(.system(size: 20))
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 6)
-                                .foregroundColor(Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)))
-                                .opacity(0.7))
+                    CustomTextForSmallButton(text: "Send")
                         .isHidden(isLoading ? true : false)
                 })
                 Spacer()
             }.padding()
-        }
+        }.navigationBarTitle("Forgot password?", displayMode: .large)
         .alert(isPresented: $isAlertPresented) {
             Alert(title: Text(alertMessage), message: .none, dismissButton: .default(Text("OK"), action: {
-                if isLoading {
+                if alertMessage == "A link to restaure your password has been sent to your mailbox." {
                     presentationMode.wrappedValue.dismiss()
                 }
             })
         )}
-    }
-    
-    private func forgotPassword(for email: String)  {
-        
-        Auth.auth().sendPasswordReset(withEmail: email) { (error) in
-            
-            if error != nil {
-                alertMessage = error!.localizedDescription
-                isAlertPresented = true
-            } else {
-                isLoading = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    alertMessage = "Mot de passe envoyé"
-                    isAlertPresented = true
-                }
-            }
-        }
     }
 }
 
