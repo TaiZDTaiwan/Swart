@@ -1,5 +1,5 @@
 //
-//  MainTabView.swift
+//  UserTabView.swift
 //  Swart
 //
 //  Created by Raphaël Huang-Dubois on 05/09/2021.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MainTabView: View {
+struct UserTabView: View {
     
     @ObservedObject var userCollectionViewModel: UserCollectionViewModel
     
@@ -26,11 +26,8 @@ struct MainTabView: View {
     
     var body: some View {
         TabView {
-            Button(action: {
-                test()
-            }, label: {
-                /*@START_MENU_TOKEN@*/Text("Button")/*@END_MENU_TOKEN@*/
-            })
+        
+            Text("Search")
                 .tabItem {
                     Image(systemName: "magnifyingglass")
                     Text("Search")
@@ -40,7 +37,6 @@ struct MainTabView: View {
                 .tabItem {
                     Image(systemName: "heart")
                     Text("Favorite")
-                        .foregroundColor(.red)
             }
             
             Text("Experiences")
@@ -55,7 +51,7 @@ struct MainTabView: View {
                     Text("Messages")
             }
             
-            ProfileView()
+            ProfileUserView()
                 .tabItem {
                     Image(systemName: "person.circle")
                     Text("Profile")
@@ -66,6 +62,6 @@ struct MainTabView: View {
 
 struct TabBarView_Previews: PreviewProvider {
     static var previews: some View {
-        MainTabView(userRepositoryViewModel: UserCollectionViewModel())
+        UserTabView(userRepositoryViewModel: UserCollectionViewModel())
     }
 }

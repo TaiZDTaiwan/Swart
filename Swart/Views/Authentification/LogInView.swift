@@ -84,7 +84,7 @@ struct LogInView: View {
                     CustomTextForSmallButton(text: "Log In")
                 })
                 .fullScreenCover(isPresented: $showMain, content: {
-                    MainTabView.init(userRepositoryViewModel: UserCollectionViewModel())
+                    UserTabView.init(userRepositoryViewModel: UserCollectionViewModel())
                 })
                 
                 Spacer()

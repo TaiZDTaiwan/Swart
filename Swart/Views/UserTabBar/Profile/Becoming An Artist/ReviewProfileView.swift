@@ -34,6 +34,7 @@ struct ReviewProfileView: View {
     @State private var urlProfileImage = ""
     @State private var urlVideoPresentation = ""
     @State private var displayAllMedia = false
+    @State private var showArtistTabBar = false
     
     var body: some View {
         
@@ -227,13 +228,11 @@ struct ReviewProfileView: View {
                     
                         Spacer()
                         
-                        NavigationLink(destination: AddressView(resetToRootView: $resetToRootView), isActive: $isLinkActive) {
-                            Button(action: {
-                                self.isLinkActive = true
-                                }, label: {
-                                    ReviewAndSaveButtonForArtistForm(text: "Save profile")
-                                })
-                        }.isDetailLink(false)
+                        Button(action: {
+                            self.showArtistTabBar = true
+                        }, label: {
+                            ReviewAndSaveButtonForArtistForm(text: "Save profile")
+                        })
                     }.padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 19))
                 }
             }.sheet(isPresented: $showSheet, content: {
@@ -265,6 +264,9 @@ struct ReviewProfileView: View {
             if storeArtistContentViewModel.numberOfPhotos == 0 && storeArtistContentViewModel.numberOfVideos > 0 {
                 isPhotoTapped = false
             }
+        })
+        .fullScreenCover(isPresented: $showArtistTabBar, content: {
+            ArtistTabView.init()
         })
         .navigationBarTitle("", displayMode: .inline)
         .navigationBarHidden(true)

@@ -125,7 +125,7 @@ struct CreateAccountView: View {
                 }))
             }
             .fullScreenCover(isPresented: $showMain, content: {
-                MainTabView.init(userRepositoryViewModel: UserCollectionViewModel())
+                UserTabView.init(userRepositoryViewModel: UserCollectionViewModel())
             })
         }
     }

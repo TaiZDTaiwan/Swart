@@ -25,10 +25,11 @@
 		C22F660A26C6B54E00326227 /* SwartUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22F660926C6B54E00326227 /* SwartUITests.swift */; };
 		C22F661D26C6CBCD00326227 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C22F661C26C6CBCD00326227 /* GoogleService-Info.plist */; };
 		C23B4AE426E524A000BA65BA /* ViewIsHidden+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23B4AE326E524A000BA65BA /* ViewIsHidden+Extensions.swift */; };
-		C23B4AEA26E5584100BA65BA /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23B4AE926E5584100BA65BA /* MainTabView.swift */; };
 		C240BBE7271B225B00FA805F /* ReviewProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C240BBE6271B225B00FA805F /* ReviewProfileView.swift */; };
 		C242E98B27284A81007139AF /* UseCurrentLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C242E98A27284A81007139AF /* UseCurrentLocation.swift */; };
 		C243057D2757C5650094926B /* UserViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C243057C2757C5650094926B /* UserViews.swift */; };
+		C2430580275809CA0094926B /* ArtistTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C243057F275809CA0094926B /* ArtistTabView.swift */; };
+		C2430582275809F70094926B /* UserTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2430581275809F70094926B /* UserTabView.swift */; };
 		C24FE76727149D8C00B6E1BC /* TextPresentationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24FE76627149D8C00B6E1BC /* TextPresentationView.swift */; };
 		C25605A6270A567600275B52 /* WhichArtView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25605A5270A567600275B52 /* WhichArtView.swift */; };
 		C25738F1273EEEBB00D823F5 /* KeyboardHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25738F0273EEEBB00D823F5 /* KeyboardHandler.swift */; };
@@ -76,11 +77,13 @@
 		C2DADA8626E7C39C0065667C /* UserInAuthentification.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DADA8526E7C39C0065667C /* UserInAuthentification.swift */; };
 		C2DF8983273F08B2007C1F8F /* MultiTextFieldForHeadline.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DF8982273F08B2007C1F8F /* MultiTextFieldForHeadline.swift */; };
 		C2E247A926F901450064C41B /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = C2E247A826F901450064C41B /* SDWebImageSwiftUI */; };
-		C2F81E6A26E8FAD600E26147 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F81E6926E8FAD600E26147 /* ProfileView.swift */; };
+		C2F81E6A26E8FAD600E26147 /* ProfileUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F81E6926E8FAD600E26147 /* ProfileUserView.swift */; };
 		C2F81E6C26E9062E00E26147 /* PersonalInformationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F81E6B26E9062E00E26147 /* PersonalInformationView.swift */; };
 		C2F81E6E26E90A2500E26147 /* PaymentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F81E6D26E90A2500E26147 /* PaymentView.swift */; };
 		C2F81E7026E90AC100E26147 /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F81E6F26E90AC100E26147 /* NotificationsView.swift */; };
 		C2FB406026C95F4400C23362 /* EmailForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FB405F26C95F4400C23362 /* EmailForgotPasswordView.swift */; };
+		C2FD567827590A1E00E888B0 /* MyArtsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FD567727590A1E00E888B0 /* MyArtsView.swift */; };
+		C2FEFE752758168000A7B7C6 /* ProfileArtistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FEFE742758168000A7B7C6 /* ProfileArtistView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -117,10 +120,11 @@
 		C22F660B26C6B54E00326227 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C22F661C26C6CBCD00326227 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C23B4AE326E524A000BA65BA /* ViewIsHidden+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewIsHidden+Extensions.swift"; sourceTree = "<group>"; };
-		C23B4AE926E5584100BA65BA /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		C240BBE6271B225B00FA805F /* ReviewProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewProfileView.swift; sourceTree = "<group>"; };
 		C242E98A27284A81007139AF /* UseCurrentLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UseCurrentLocation.swift; sourceTree = "<group>"; };
 		C243057C2757C5650094926B /* UserViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViews.swift; sourceTree = "<group>"; };
+		C243057F275809CA0094926B /* ArtistTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistTabView.swift; sourceTree = "<group>"; };
+		C2430581275809F70094926B /* UserTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTabView.swift; sourceTree = "<group>"; };
 		C24FE76627149D8C00B6E1BC /* TextPresentationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextPresentationView.swift; sourceTree = "<group>"; };
 		C25605A5270A567600275B52 /* WhichArtView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhichArtView.swift; sourceTree = "<group>"; };
 		C25738F0273EEEBB00D823F5 /* KeyboardHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardHandler.swift; sourceTree = "<group>"; };
@@ -148,11 +152,13 @@
 		C2DADA8326E7B52C0065667C /* UserCollectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCollectionViewModel.swift; sourceTree = "<group>"; };
 		C2DADA8526E7C39C0065667C /* UserInAuthentification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInAuthentification.swift; sourceTree = "<group>"; };
 		C2DF8982273F08B2007C1F8F /* MultiTextFieldForHeadline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiTextFieldForHeadline.swift; sourceTree = "<group>"; };
-		C2F81E6926E8FAD600E26147 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		C2F81E6926E8FAD600E26147 /* ProfileUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileUserView.swift; sourceTree = "<group>"; };
 		C2F81E6B26E9062E00E26147 /* PersonalInformationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalInformationView.swift; sourceTree = "<group>"; };
 		C2F81E6D26E90A2500E26147 /* PaymentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentView.swift; sourceTree = "<group>"; };
 		C2F81E6F26E90AC100E26147 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		C2FB405F26C95F4400C23362 /* EmailForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailForgotPasswordView.swift; sourceTree = "<group>"; };
+		C2FD567727590A1E00E888B0 /* MyArtsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyArtsView.swift; sourceTree = "<group>"; };
+		C2FEFE742758168000A7B7C6 /* ProfileArtistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileArtistView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,7 +205,8 @@
 			children = (
 				C2CBABD927231F5400AF7DE9 /* Refactoring Views */,
 				C23B4AEB26E558AA00BA65BA /* Authentification */,
-				C23B4AEC26E558BB00BA65BA /* TabBar */,
+				C23B4AEC26E558BB00BA65BA /* UserTabBar */,
+				C243057E275809410094926B /* ArtistTabBar */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -306,13 +313,13 @@
 			path = Authentification;
 			sourceTree = "<group>";
 		};
-		C23B4AEC26E558BB00BA65BA /* TabBar */ = {
+		C23B4AEC26E558BB00BA65BA /* UserTabBar */ = {
 			isa = PBXGroup;
 			children = (
-				C23B4AE926E5584100BA65BA /* MainTabView.swift */,
+				C2430581275809F70094926B /* UserTabView.swift */,
 				C2F81E7126E90BB800E26147 /* Profile */,
 			);
-			path = TabBar;
+			path = UserTabBar;
 			sourceTree = "<group>";
 		};
 		C242E98C272852B1007139AF /* Address */ = {
@@ -324,6 +331,15 @@
 				C21D854C2729A813005476C9 /* ConfirmAddressManually.swift */,
 			);
 			path = Address;
+			sourceTree = "<group>";
+		};
+		C243057E275809410094926B /* ArtistTabBar */ = {
+			isa = PBXGroup;
+			children = (
+				C243057F275809CA0094926B /* ArtistTabView.swift */,
+				C2FEFE732758166B00A7B7C6 /* Profile */,
+			);
+			path = ArtistTabBar;
 			sourceTree = "<group>";
 		};
 		C25738EF273EEE9800D823F5 /* Combine */ = {
@@ -369,7 +385,7 @@
 		C2F81E7126E90BB800E26147 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				C2F81E6926E8FAD600E26147 /* ProfileView.swift */,
+				C2F81E6926E8FAD600E26147 /* ProfileUserView.swift */,
 				C2F81E7226E90E7B00E26147 /* Account Paramaters */,
 				C2F81E7526E90EA200E26147 /* Becoming An Artist */,
 				C2F81E7426E90E9B00E26147 /* Referral Credit & Coupons */,
@@ -426,6 +442,23 @@
 			);
 			name = Support;
 			path = "New Group/Support";
+			sourceTree = "<group>";
+		};
+		C2FD567627590A0900E888B0 /* My Arts */ = {
+			isa = PBXGroup;
+			children = (
+				C2FD567727590A1E00E888B0 /* MyArtsView.swift */,
+			);
+			path = "My Arts";
+			sourceTree = "<group>";
+		};
+		C2FEFE732758166B00A7B7C6 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				C2FEFE742758168000A7B7C6 /* ProfileArtistView.swift */,
+				C2FD567627590A0900E888B0 /* My Arts */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -589,20 +622,22 @@
 				C212DAF4273495AF00EA4C40 /* Artist.swift in Sources */,
 				C2D5425F271C7A82002809A5 /* LivePhotoView.swift in Sources */,
 				C2051EA426EA862E0050C197 /* ImagePicker.swift in Sources */,
+				C2430582275809F70094926B /* UserTabView.swift in Sources */,
 				C26F4E942741924600A7F3A6 /* StoreArtistContentViewModel.swift in Sources */,
 				C2A1A28F2715F5F400167CE7 /* VideoPresentationView.swift in Sources */,
+				C2430580275809CA0094926B /* ArtistTabView.swift in Sources */,
 				C23B4AE426E524A000BA65BA /* ViewIsHidden+Extensions.swift in Sources */,
 				C240BBE7271B225B00FA805F /* ReviewProfileView.swift in Sources */,
 				C24FE76727149D8C00B6E1BC /* TextPresentationView.swift in Sources */,
 				C21C2F3D270CC10D0086579E /* Arts.swift in Sources */,
 				C22BE1D426FCCE8F00439384 /* LogInView.swift in Sources */,
+				C2FD567827590A1E00E888B0 /* MyArtsView.swift in Sources */,
 				C25605A6270A567600275B52 /* WhichArtView.swift in Sources */,
 				C2CE62702727131F00253C6E /* Address.swift in Sources */,
 				C2F81E6E26E90A2500E26147 /* PaymentView.swift in Sources */,
 				C2DADA8426E7B52C0065667C /* UserCollectionViewModel.swift in Sources */,
-				C2F81E6A26E8FAD600E26147 /* ProfileView.swift in Sources */,
+				C2F81E6A26E8FAD600E26147 /* ProfileUserView.swift in Sources */,
 				C25DABFF2708C3AB00E53FFB /* BecomeAnArtistHomePageView.swift in Sources */,
-				C23B4AEA26E5584100BA65BA /* MainTabView.swift in Sources */,
 				C212DAF62734998200EA4C40 /* ArtistCollectionViewModel.swift in Sources */,
 				C29B35C627061D5000C32829 /* PickerTextField.swift in Sources */,
 				C2DF8983273F08B2007C1F8F /* MultiTextFieldForHeadline.swift in Sources */,
@@ -611,6 +646,7 @@
 				C29B36F82730505A000E7746 /* ArtistContentView.swift in Sources */,
 				C22BE1D226FCB38400439384 /* HomeView.swift in Sources */,
 				C21D854D2729A813005476C9 /* ConfirmAddressManually.swift in Sources */,
+				C2FEFE752758168000A7B7C6 /* ProfileArtistView.swift in Sources */,
 				C25738F1273EEEBB00D823F5 /* KeyboardHandler.swift in Sources */,
 				C2F81E6C26E9062E00E26147 /* PersonalInformationView.swift in Sources */,
 				C2C8EA66273C0EC800C404E8 /* MultiTextFieldForPresentation.swift in Sources */,

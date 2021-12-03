@@ -9,7 +9,7 @@ import SwiftUI
 import FirebaseStorage
 import SDWebImageSwiftUI
 
-struct ProfileView: View {
+struct ProfileUserView: View {
     
     init() {
         UITextField.appearance().clearButtonMode = .whileEditing
@@ -255,7 +255,7 @@ struct ProfileView: View {
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView()
+        ProfileUserView()
             .environmentObject(AuthentificationViewModel())
     }
 }
