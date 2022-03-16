@@ -6,15 +6,11 @@
 //
 
 import SwiftUI
-import Firebase
-import AuthenticationServices
 import ActivityIndicatorView
 
 struct CreateAccountView: View {
     
     @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
-    
-    let datesFormattersViewModel = DatesFormattersViewModel()
     
     @Binding var showLogInSheetView: Bool
     
@@ -24,22 +20,21 @@ struct CreateAccountView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var rePassword = ""
-    
     @State private var user: User?
-    
     @State private var showMain = false
     @State private var accessToTabView = false
     @State private var isLoading = false
-    
     @State private var isAlertPresented = false
     @State private var alertMessage = ""
     
+    let datesFormattersViewModel = DatesFormattersViewModel()
+    
     var body: some View {
         
-        let personalInformation = [firstName, lastName, email, password, rePassword]
-        
         NavigationView {
+            
             ZStack {
+                
                 LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 1, green: 0.7142756581, blue: 0.59502846, alpha: 1)), Color(#colorLiteral(red: 0.7496727109, green: 0.1164080873, blue: 0.1838892698, alpha: 1))]), startPoint: .topLeading, endPoint: .bottomTrailing)
                     .ignoresSafeArea()
                     .opacity(0.3)
@@ -47,6 +42,7 @@ struct CreateAccountView: View {
                 ActivityIndicator(isLoadingBinding: $isLoading, isLoading: isLoading)
                 
                 ScrollView {
+                    
                     VStack(spacing: 20) {
                         
                         VStack(alignment: .leading, spacing: 10) {
@@ -97,17 +93,16 @@ struct CreateAccountView: View {
                                     + Text(".")
                             }.font(.system(.caption))
                             .foregroundColor(Color(.gray))
-                            .fixedSize(horizontal: false, vertical: true)
                             
                             Button(action: {
-                                createUserInDatabase(array: personalInformation)
+                                createUserInDatabase()
                             }, label: {
                                 CustomTextForButton(text: "Agree and continue")
+                                    .padding(.top, 10)
                             })
-                            
                         }
                     }.padding()
-                    .padding([.leading, .trailing], 10)
+                    .padding(.horizontal, 8)
                 }.isHidden(isLoading ? true : false)
             }.navigationBarTitle(Text("Finish signing up"), displayMode: .inline)
             .navigationBarItems(leading: Button(action: {
@@ -125,21 +120,26 @@ struct CreateAccountView: View {
                 }))
             }
             .fullScreenCover(isPresented: $showMain, content: {
-                UserTabView.init(userRepositoryViewModel: UserCollectionViewModel())
+                UserTabView()
             })
         }
     }
     
-    private func createUserInDatabase(array: [String]) {
-
+    private func createUserInDatabase() {
+        
+        let personalInformation = [firstName, lastName, email, password, rePassword]
         let userIsAdult = datesFormattersViewModel.userIs18(birthdate: birthday)
     
-        if array.contains("") {
+        if personalInformation.contains("") {
             alertMessage = "Please fill all required information."
             isAlertPresented = true
             
         } else if userIsAdult == false {
             alertMessage = "You cannot create an account if you are under 18."
+            isAlertPresented = true
+            
+        } else if password != rePassword {
+            alertMessage = "Please insert same passwords."
             isAlertPresented = true
             
         } else {
@@ -149,18 +149,9 @@ struct CreateAccountView: View {
             formatter.dateFormat = "MM/dd/yyyy"
             let birthdate = formatter.string(from: birthday)
             
-            let newUser = User(id: authentificationViewModel.userInAuthentification.id, firstName: firstName, lastName: lastName, birthdate: birthdate, email: email)
+            let newUser = User(firstName: firstName, lastName: lastName, birthdate: birthdate, address: "", department: "", email: email, profilePhoto: "", wishlist: [], pendingRequest: [], comingRequest: [], previousRequest: [])
             
-            authentificationViewModel.createUserInDatabase(email: email, password: password, rePassword: rePassword, newUser: newUser, progress: { result in
-                switch result {
-                case .success(let message):
-                    alertMessage = message
-                case .failure(let error):
-                    alertMessage = error.localizedDescription
-                    isLoading = false
-                }
-                isAlertPresented = true
-            }, progressEmail: { result in
+            authentificationViewModel.createUserInDatabase(email: email, password: password, rePassword: rePassword, newUser: newUser, progressEmail: { result in
                 switch result {
                 case .success(let message):
                     alertMessage = message
@@ -177,9 +168,7 @@ struct CreateAccountView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            CreateAccountView(showLogInSheetView: .constant(false))
-        }
+        CreateAccountView(showLogInSheetView: .constant(false))
     }
 }
 
@@ -204,7 +193,6 @@ struct CaptionText: View {
         Text(text)
             .font(.system(.caption))
             .foregroundColor(Color(.gray))
-            .fixedSize(horizontal: false, vertical: true)
     }
 }
 

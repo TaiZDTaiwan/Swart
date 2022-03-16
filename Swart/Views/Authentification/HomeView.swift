@@ -6,13 +6,13 @@
 //
 
 import SwiftUI
-import Firebase
-import AuthenticationServices
 
 struct HomeView: View {
     
     init() {
         UINavigationBar.appearance().tintColor = UIColor(.black)
+        UITextField.appearance().clearButtonMode = .whileEditing
+        UITableView.appearance().backgroundColor = UIColor(.white)
     }
     
     @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
@@ -22,7 +22,9 @@ struct HomeView: View {
     var body: some View {
         
         NavigationView {
+            
             ZStack {
+                
                 LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 1, green: 0.7142756581, blue: 0.59502846, alpha: 1)), Color(#colorLiteral(red: 0.7496727109, green: 0.1164080873, blue: 0.1838892698, alpha: 1))]), startPoint: .topLeading, endPoint: .bottomTrailing)
                     .ignoresSafeArea()
                     
@@ -41,6 +43,7 @@ struct HomeView: View {
                             showLogInSheetView.toggle()
                         }, label: {
                             CustomTextForButton(text: "Create a new account")
+                                .padding(.horizontal, 40)
                             
                         }).sheet(isPresented: $showLogInSheetView, content: {
                             CreateAccountView(showLogInSheetView: $showLogInSheetView)
@@ -65,20 +68,5 @@ struct HomeView: View {
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
-    }
-}
-
-struct CustomTextForButton: View {
-    var text: String
-    
-    var body: some View {
-        Text(text)
-            .frame(width: UIScreen.main.bounds.size.width * 3/4, height: 10, alignment: .center)
-            .font(.system(size: 17))
-            .foregroundColor(.white)
-            .padding()
-            .background(
-                RoundedRectangle(cornerRadius: 6)
-                    .foregroundColor(.lightBlack))
     }
 }

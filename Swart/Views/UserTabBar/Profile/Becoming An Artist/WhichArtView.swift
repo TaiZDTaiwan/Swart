@@ -10,6 +10,7 @@ import SwiftUI
 struct WhichArtView: View {
     
     @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
@@ -31,7 +32,28 @@ struct WhichArtView: View {
             BackgroundForArtistForm()
                     
             VStack(alignment: .leading) {
-                ButtonsForArtistForm(presentationMode: _presentationMode, isAlertDismissPresented: $isAlertDismissPresented, resetToRootView: $resetToRootView)
+                
+                HStack {
+                    Button {
+                        artistCollectionViewModel.removeUnfinishedArtistFromDatabase(documentId: authentificationViewModel.userId.id ?? "")
+                        presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        HStack(spacing: -12) {
+                            Image(systemName: "chevron.backward")
+                                .foregroundColor(.white)
+                                .opacity(0.7)
+                                .padding()
+                            
+                            Text("Back")
+                                .font(.system(size: 18))
+                                .foregroundColor(.white)
+                        }
+                    }
+                    Spacer()
+                    
+                    DismissButtonForArtistForm(isAlertDismissPresented: $isAlertDismissPresented, resetToRootView: $resetToRootView)
+                    
+                }.padding(.horizontal, 10)
                     
                 TitleForArtistForm(text: "What type of art do you want to perform?")
                                             
@@ -59,8 +81,7 @@ struct WhichArtView: View {
                                         .frame(width: 80, height: 60)
                                         .cornerRadius(4)
                                     }
-                                }
-                            .listRowBackground(selectedArt == art ? Color.selectedOrange : Color.white)
+                                }.listRowBackground(selectedArt == art ? Color.selectedOrange : Color.lightGrayForBackground.opacity(0.6))
                         }
                 
                         HStack {
@@ -68,26 +89,30 @@ struct WhichArtView: View {
                             Spacer()
                             
                             NavigationLink(destination: WhereToPerformView(resetToRootView: $resetToRootView), isActive: $isLinkActive) {
-                                Button(action: {
+                                Button {
                                     if selectedArtName == "" {
                                         alertMessage = "Please select an art before going to the next step."
                                         isAlertPresented = true
                                     } else {
-                                        artistCollectionViewModel.setArtistCollection(id: authentificationViewModel.userInAuthentification.id ?? "", nameDocument: "art", document: selectedArtName)
-                                        self.isLinkActive = true
+                                        artistCollectionViewModel.setArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameDocument: "id", document: authentificationViewModel.userId.id ?? "") {
+                                            artistCollectionViewModel.addSingleDocumentToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameDocument: "art", document: selectedArtName) {
+                                                artistCollectionViewModel.addEmptyDataToArtistCollection(documentId: authentificationViewModel.userId.id ?? "")
+                                                self.isLinkActive = true
+                                            }
+                                        }
                                     }
                                     
-                                }, label: {
+                                } label: {
                                     NextButtonForArtistForm()
-                                }).alert(isPresented: $isAlertPresented) {
+                                }.alert(isPresented: $isAlertPresented) {
                                     Alert(title: Text(alertMessage))
                                 }
                             }.isDetailLink(false)
-                        }.padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 19))
+                        }.padding(.horizontal, 20)
+                        .padding(.vertical, 10)
                     }
                 }
             }
-            
         }.navigationBarTitle("", displayMode: .inline)
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)

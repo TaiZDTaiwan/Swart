@@ -15,8 +15,8 @@ struct SwartApp: App {
     init() {
         FirebaseApp.configure()
     }
+    
     @StateObject var authentificationViewModel = AuthentificationViewModel()
-    @StateObject var storeArtistContentViewModel = StoreArtistContentViewModel()
     
     var body: some Scene {
                 
@@ -24,7 +24,6 @@ struct SwartApp: App {
             HomeView()
                 .onAppear(perform: UIApplication.shared.addTapGestureRecognizer)
                 .environmentObject(authentificationViewModel)
-                .environmentObject(storeArtistContentViewModel)
         }
     }
 }
@@ -37,11 +36,22 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         FirebaseApp.configure()
         return true
       }
+    
+    static func change(to view: AnyView) {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+          let sceneDelegate = windowScene.delegate as? AppDelegate else {
+          return
+        }
+        let contentView = view
+        sceneDelegate.window?.rootViewController = UIHostingController(rootView: contentView)
+    }
 }
 
 extension UIApplication {
     func addTapGestureRecognizer() {
-        guard let window = windows.first else { return }
+        let scenes = UIApplication.shared.connectedScenes
+        let windowScene = scenes.first as? UIWindowScene
+        guard let window = windowScene?.windows.first else { return }
         let tapGesture = UITapGestureRecognizer(target: window, action: #selector(UIView.endEditing))
         tapGesture.requiresExclusiveTouchType = false
         tapGesture.cancelsTouchesInView = false

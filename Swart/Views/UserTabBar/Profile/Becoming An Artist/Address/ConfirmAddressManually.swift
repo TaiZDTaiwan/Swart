@@ -15,12 +15,9 @@ struct ConfirmAddressManually: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
-    @StateObject var addressViewModel = AddressViewModel()
     
-    @Binding var isParentViewLinkActive: Bool
-    @Binding var hasRegionChanged: Bool
-    @Binding var convertedRegion: MKCoordinateRegion
-    @Binding var convertedCoordinatesAddress: CLLocationCoordinate2D?
+    @ObservedObject var addressViewModel: AddressViewModel
+
     @Binding var resetToRootView: Bool
     
     @State private var country = ""
@@ -33,6 +30,7 @@ struct ConfirmAddressManually: View {
     @State private var isLoading = false
     @State private var isLinkActive = false
     @State private var fullAddress = ""
+    @State private var isShowLinkAlert = false
     
     var body: some View {
         
@@ -102,12 +100,7 @@ struct ConfirmAddressManually: View {
                             Divider()
                         }
                                     
-                        Text("We'll only share your address with guests who are booked as outlined in our privacy policy.")
-                            .fontWeight(.semibold)
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                                    
-                        Spacer()
+                        TextForAddressPolicy()
                     }
                 }.alert(isPresented: $isAlertPresented) {
                     Alert(title: Text("Please fill all required information."))
@@ -124,39 +117,45 @@ struct ConfirmAddressManually: View {
                             fullAddress = "\(subThoroughfare)" + " \(thoroughfare)" + ", \(postalCode)" + " \(locality)" + ", \(country)"
                         
                             if !isAddressIncomplete() {
-                                addressViewModel.convertAddress(address: fullAddress)
+                                addressViewModel.convertAddress(address: fullAddress) {
                                 isLoading = true
-                                
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
                                     if addressViewModel.convertedCoordinatesAddress != nil {
-                                        artistCollectionViewModel.addSingleDocumentToArtistCollection(id: authentificationViewModel.userInAuthentification.id ?? "", nameDocument: "address", document: fullAddress)
-                                        hasRegionChanged = true
-                                        self.convertedCoordinatesAddress = addressViewModel.convertedCoordinatesAddress
-                                        self.convertedRegion = MKCoordinateRegion(center: self.convertedCoordinatesAddress!, span: AddressViewModel.span)
-                                        self.isParentViewLinkActive = false
+                                        artistCollectionViewModel.addAddressInformationToDatabase(documentId: authentificationViewModel.userId.id ?? "", documentAddress: fullAddress, documentDepartment: addressViewModel.determineDepartmentToSaveInDatabase(postalCode: postalCode)) {
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                                isShowLinkAlert = true
+                                                isLoading = false
+                                            }
+                                        }
                                     } else {
-                                        isLoading = false
-                                        isAlertConfirmAddressPresented = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                            isAlertConfirmAddressPresented = true
+                                            isLoading = false
+                                        }
                                     }
                                 }
                             }
                         } label: {
                             CustomTextForButton(text: "Looks good")
+                                .padding()
+                        }.alert("Address successfully added!", isPresented: $isShowLinkAlert) {
+                            Button("OK", role: .cancel) {
+                                isLinkActive = true
+                            }
                         }
                     }
                     .alert(isPresented: $isAlertConfirmAddressPresented) {
                         Alert(title: Text("Those information don't seem to match a proper location, are you sure to confirm?"),
                         message: .none,
                         primaryButton: .destructive(Text("Confirm")) {
-                            artistCollectionViewModel.addSingleDocumentToArtistCollection(id: authentificationViewModel.userInAuthentification.id ?? "", nameDocument: "address", document: fullAddress)
-                            isLinkActive = true
+                            artistCollectionViewModel.addAddressInformationToDatabase(documentId: authentificationViewModel.userId.id ?? "", documentAddress: fullAddress, documentDepartment: addressViewModel.determineDepartmentToSaveInDatabase(postalCode: postalCode)) {
+                                isShowLinkAlert = true
+                            }
                         },
                         secondaryButton: .cancel())
                     }
-                }
+                }.padding(.vertical, 3)
             }.isHidden(isLoading ? true : false)
-            .padding(.vertical, 30)
-        }.frame(width: UIScreen.main.bounds.width - 10)
+        }.padding(.horizontal, 5)
         .navigationBarTitle(Text("Enter your address"), displayMode: .inline)
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading:
@@ -175,5 +174,11 @@ struct ConfirmAddressManually: View {
             return true
         }
         return false
+    }
+}
+
+struct ConfirmAddressManually_Previews: PreviewProvider {
+    static var previews: some View {
+        ConfirmAddressManually(addressViewModel: AddressViewModel(), resetToRootView: .constant(false))
     }
 }

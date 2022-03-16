@@ -15,4 +15,6 @@ extension Color {
     static let swartWhite = Color(red: 0.9529411765, green: 0.9490196078, blue: 0.9607843137)
     static let lightGray = Color(red: 0.756479919, green: 0.6241776347, blue: 0.6169845462)
     static let selectedOrange = Color(red: 1, green: 0.7142756581, blue: 0.59502846).opacity(0.3)
+    static let checkGreen = Color(red: 2 / 255, green: 110 / 255, blue: 90 / 255)
+    static let pendingOrange = Color(red: 255 / 255, green: 94 / 255, blue: 0 / 255)
 }

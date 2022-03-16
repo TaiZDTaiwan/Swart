@@ -17,8 +17,8 @@ final class AddressViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
     
     @Published var convertedCoordinatesAddress: CLLocationCoordinate2D?
     @Published var permissionDenied = false
-    
-    var address = Address(country: "", locality: "", thoroughfare: "", postalCode: "", subThoroughfare: "")
+    @Published var searchLocation = ""
+    @Published var address = Address(country: "", locality: "", thoroughfare: "", postalCode: "", subThoroughfare: "")
     
     var locationManager: CLLocationManager?
     
@@ -26,12 +26,35 @@ final class AddressViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
         if CLLocationManager.locationServicesEnabled() {
             locationManager = CLLocationManager()
             locationManager?.delegate = self
-        } else {
-            print("Show alert")
         }
     }
     
-    func getAddressFromLatLon() {
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        checkLocationAuthorization()
+    }
+    
+    private func checkLocationAuthorization() {
+        guard let locationManager = locationManager else { return }
+
+        switch locationManager.authorizationStatus {
+            
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
+        case .restricted:
+            print("Your location is restricted likely due to parental controls.")
+        case .denied:
+            permissionDenied = true
+            print("You have denied this app location permission. Go into settings to change it.")
+        case .authorizedAlways, .authorizedWhenInUse:
+            region = MKCoordinateRegion(center: locationManager.location!.coordinate,
+                                        span: AddressViewModel.span)
+            getAddressFromLatLon()
+        @unknown default:
+            break
+        }
+    }
+    
+    private func getAddressFromLatLon() {
        
         let geocoder: CLGeocoder = CLGeocoder()
         let location: CLLocation = CLLocation(latitude: region.center.latitude, longitude: region.center.longitude)
@@ -54,14 +77,16 @@ final class AddressViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
         })
     }
     
-    func convertAddress(address: String) {
+    func convertAddress(address: String, completion: @escaping (() -> Void)) {
         getCoordinate(addressString: address) { (location, error) in
             if error != nil {
                 print("reverse geodcode fail: \(error!.localizedDescription)")
+                completion()
                 return
             }
             DispatchQueue.main.async {
                 self.convertedCoordinatesAddress = location
+                completion()
             }
         }
     }
@@ -82,27 +107,80 @@ final class AddressViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
         }
     }
     
-    private func checkLocationAuthorization() {
-        guard let locationManager = locationManager else { return }
-
-        switch locationManager.authorizationStatus {
-            
-        case .notDetermined:
-            locationManager.requestWhenInUseAuthorization()
-        case .restricted:
-            print("Your location is restricted likely due to parental controls.")
-        case .denied:
-            permissionDenied = true
-            print("You have denied this app location permission. Go into settings to change it.")
-        case .authorizedAlways, .authorizedWhenInUse:
-            region = MKCoordinateRegion(center: locationManager.location!.coordinate,
-                                        span: AddressViewModel.span)
-        @unknown default:
-            break
+    func selectAddressElement(modifyElement: String, currentElement: String) -> String {
+        if modifyElement == "" {
+            return currentElement
         }
+        return modifyElement
     }
     
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        checkLocationAuthorization()
+    func determineDepartmentToSaveInDatabase(postalCode: String) -> String {
+        let artistDepartment = postalCode.prefix(2)
+        if let index = Department.names.firstIndex(where: { $0.hasPrefix(artistDepartment) }) {
+            let department = Department.names[index]
+            return String(department)
+        }
+        return ""
+    }
+    
+    func determineCity(address: String) -> String {
+        let first = address.components(separatedBy: (","))
+        let second = first[1].components(separatedBy: CharacterSet.decimalDigits).joined()
+        let third = second.dropFirst(2)
+        return String(third)
+    }
+    
+    func rewriteDepartment(department: String) -> String {
+        let first = department.dropFirst(5)
+        return String(first)
+    }
+    
+    func determineLocation(selectedPlaceName: String, artistPlace: String) -> String {
+        
+        if selectedPlaceName == "Anywhere suits you" {
+            if artistPlace == "Your place" || artistPlace == "Anywhere suits you" {
+                return "Artist's place"
+            } else if artistPlace == "Audience's place" {
+                return "Your place"
+            }
+        } else {
+            return selectedPlaceName
+        }
+        return ""
+    }
+    
+    func retrieveAllAddressElements(address: String, subThoroughfare: @escaping ((String) -> Void), thoroughfare: @escaping ((String) -> Void), locality: @escaping ((String) -> Void), postalCode: @escaping ((String) -> Void), country: @escaping ((String) -> Void)) {
+        if address != "" {
+    
+            let subThoroughfareFromDb: String
+            let thoroughfareFromDb: String
+            let localityFromDb: String
+            let postalCodeFromDb: String
+            let countryFromDb: String
+        
+            subThoroughfareFromDb = address.components(separatedBy: " ").first ?? ""
+            subThoroughfare(subThoroughfareFromDb)
+            
+            let thoroughFirst = address.components(separatedBy: ",").first ?? ""
+            let thoroughSecond = thoroughFirst.components(separatedBy: CharacterSet.decimalDigits).joined(separator: "")
+            thoroughfareFromDb = String(thoroughSecond.dropFirst())
+            thoroughfare(thoroughfareFromDb)
+            
+            if let localityFirst = (address.range(of: ",")?.upperBound) {
+                let localitySecond = String(address.suffix(from: localityFirst))
+                let localityThird = String(localitySecond.dropFirst())
+                let localityFourth = localityThird.components(separatedBy: ",").first ?? ""
+                let localityFifth = localityFourth.components(separatedBy: CharacterSet.decimalDigits).joined(separator: "")
+                
+                localityFromDb = String(localityFifth.dropFirst())
+                locality(localityFromDb)
+                postalCodeFromDb = localityFourth.components(separatedBy: " ").first ?? ""
+                postalCode(postalCodeFromDb)
+            }
+            
+            let countryFirst = address.components(separatedBy: ",").last ?? ""
+            countryFromDb = String(countryFirst.dropFirst())
+            country(countryFromDb)
+        }
     }
 }

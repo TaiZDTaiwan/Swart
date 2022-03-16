@@ -10,14 +10,11 @@ import MapKit
 
 struct EnterAddressView: View {
     
-    @StateObject private var addressViewModel = AddressViewModel()
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
-    @Binding var address: Address
-    @Binding var isParentViewLinkActive: Bool
+    @ObservedObject var addressViewModel: AddressViewModel
+
     @Binding var resetToRootView: Bool
-    @Binding var hasRegionChanged: Bool
-    @Binding var convertedRegion: MKCoordinateRegion
-    @Binding var convertedCoordinatesAddress: CLLocationCoordinate2D?
     
     @State private var isLinkActive = false
     @State private var isLinkActiveManually = false
@@ -29,7 +26,7 @@ struct EnterAddressView: View {
                 
             VStack(spacing: 30) {
               
-                NavigationLink(destination: UseCurrentLocation(address: $address, resetToRootView: $resetToRootView), isActive: $isLinkActive) {
+                NavigationLink(destination: UseCurrentLocation(addressViewModel: addressViewModel, resetToRootView: $resetToRootView), isActive: $isLinkActive) {
                     Button {
                         isLinkActive = true
                     } label: {
@@ -37,7 +34,7 @@ struct EnterAddressView: View {
                     }
                 }
                     
-                NavigationLink(destination: ConfirmAddressManually(isParentViewLinkActive: $isParentViewLinkActive, hasRegionChanged: $hasRegionChanged, convertedRegion: $convertedRegion, convertedCoordinatesAddress: $convertedCoordinatesAddress, resetToRootView: $resetToRootView), isActive: $isLinkActiveManually) {
+                NavigationLink(destination: ConfirmAddressManually(addressViewModel: addressViewModel, resetToRootView: $resetToRootView), isActive: $isLinkActiveManually) {
                     Button {
                         self.isLinkActiveManually = true
                     } label: {
@@ -48,30 +45,10 @@ struct EnterAddressView: View {
         .navigationBarTitle(Text("Enter your address"), displayMode: .inline)
         .navigationBarItems(leading:
             Button(action: {
-                isParentViewLinkActive = false
+                presentationMode.wrappedValue.dismiss()
             }, label: {
                 BackwardChevron()
             }))
         }
-    }
-}
-
-struct LabelAddressView: View {
-    
-    var image: String
-    var text: String
-    
-    var body: some View {
-        HStack(spacing: 15) {
-            Image(systemName: image)
-                .foregroundColor(.black)
-            
-            Text(text)
-                .foregroundColor(.black)
-                .font(.system(size: 19))
-        }.padding(.vertical, 15)
-            .overlay(RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.gray, lineWidth: 0.5)
-                .frame(width: UIScreen.main.bounds.width - 50))
     }
 }

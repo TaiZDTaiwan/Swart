@@ -14,13 +14,14 @@ struct MultiTextFieldForHeadline: UIViewRepresentable {
         return MultiTextFieldForHeadline.Coordinator(parent1: self)
     }
     
+    @Binding var defaultExample: String
     @Binding var text: String
     
     func makeUIView(context: UIViewRepresentableContext<MultiTextFieldForHeadline>) -> UITextView {
         
         let view = UITextView()
         view.font = .systemFont(ofSize: 26)
-        view.text = "Friendly and jazz enthusiast saxophonist"
+        view.text = defaultExample
         view.textColor = UIColor.black.withAlphaComponent(0.9)
         view.backgroundColor = .clear
         view.delegate = context.coordinator
@@ -50,7 +51,7 @@ struct MultiTextFieldForHeadline: UIViewRepresentable {
         }
         
         func textViewDidBeginEditing(_ textView: UITextView) {
-            if textView.text == "Friendly and jazz enthusiast saxophonist" {
+            if textView.text == parent.defaultExample {
                 textView.text = ""
             }
             textView.textColor = UIColor.black.withAlphaComponent(0.9)

@@ -11,12 +11,13 @@ import ActivityIndicatorView
 struct UseCurrentLocation: View {
     
     @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
-    @StateObject private var addressViewModel = AddressViewModel()
-    @StateObject private var artistCollectionViewModel = ArtistCollectionViewModel()
+    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
     
-    @Binding var address: Address
+    @ObservedObject var addressViewModel: AddressViewModel
+    
     @Binding var resetToRootView: Bool
     
     @State private var country = ""
@@ -27,6 +28,7 @@ struct UseCurrentLocation: View {
     @State private var fullAddress = ""
     @State private var isLinkActive = false
     @State private var isLoading = true
+    @State private var isAlertPresented = false
     
     var body: some View {
         
@@ -43,7 +45,7 @@ struct UseCurrentLocation: View {
                             VStack(alignment: .leading) {
                                 CustomTextForProfile(text: "Street Number")
                                                 
-                                CustomTextfieldForProfile(bindingText: $subThoroughfare, text: subThoroughfare, textFromDb: address.subThoroughfare)
+                                CustomTextfieldForProfile(bindingText: $subThoroughfare, text: subThoroughfare, textFromDb: addressViewModel.address.subThoroughfare)
                                     .keyboardType(.numberPad)
                             }.padding()
                                         
@@ -52,7 +54,7 @@ struct UseCurrentLocation: View {
                             VStack(alignment: .leading) {
                                 CustomTextForProfile(text: "Street")
                                                 
-                                CustomTextfieldForProfile(bindingText: $thoroughfare, text: thoroughfare, textFromDb: address.thoroughfare)
+                                CustomTextfieldForProfile(bindingText: $thoroughfare, text: thoroughfare, textFromDb: addressViewModel.address.thoroughfare)
                                     .textContentType(.addressCity)
                                     .autocapitalization(.words)
                             }.padding()
@@ -62,7 +64,7 @@ struct UseCurrentLocation: View {
                             VStack(alignment: .leading) {
                                 CustomTextForProfile(text: "City")
                                                 
-                                CustomTextfieldForProfile(bindingText: $locality, text: locality, textFromDb: address.locality)
+                                CustomTextfieldForProfile(bindingText: $locality, text: locality, textFromDb: addressViewModel.address.locality)
                                     .textContentType(.addressCity)
                                     .autocapitalization(.words)
                             }.padding()
@@ -72,7 +74,7 @@ struct UseCurrentLocation: View {
                             VStack(alignment: .leading) {
                                 CustomTextForProfile(text: "Postal Code")
                                                 
-                                CustomTextfieldForProfile(bindingText: $postalCode, text: postalCode, textFromDb: address.postalCode)
+                                CustomTextfieldForProfile(bindingText: $postalCode, text: postalCode, textFromDb: addressViewModel.address.postalCode)
                                     .keyboardType(.numberPad)
                                     .textContentType(.postalCode)
                                     .autocapitalization(.words)
@@ -83,42 +85,41 @@ struct UseCurrentLocation: View {
                             VStack(alignment: .leading) {
                                 CustomTextForProfile(text: "Country")
                                                 
-                                CustomTextfieldForProfile(bindingText: $country, text: country, textFromDb: address.country)
+                                CustomTextfieldForProfile(bindingText: $country, text: country, textFromDb: addressViewModel.address.country)
                                     .textContentType(.countryName)
                                     .autocapitalization(.words)
                             }.padding()
                             
                             Divider()
                         }
-                                    
-                        Text("We'll only share your address with guests who are booked as outlined in our privacy policy.")
-                            .fontWeight(.semibold)
-                            .font(.caption)
-                            .foregroundColor(.gray)
+                        TextForAddressPolicy()
                     }
                 }
             
                 VStack {
                     NavigationLink(destination: ProfilePhotoView(resetToRootView: $resetToRootView), isActive: $isLinkActive) {
                         Button {
-                            fullAddress = "\(selectAddressElement(modifyElement: subThoroughfare, currentElement: address.subThoroughfare))" + " \(selectAddressElement(modifyElement: thoroughfare, currentElement: address.thoroughfare))" + ", \(selectAddressElement(modifyElement: postalCode, currentElement: address.postalCode))" + " \(selectAddressElement(modifyElement: locality, currentElement: address.locality))" + ", \(selectAddressElement(modifyElement: country, currentElement: address.country))"
                             
-                            artistCollectionViewModel.addSingleDocumentToArtistCollection(id: authentificationViewModel.userInAuthentification.id ?? "", nameDocument: "address", document: fullAddress)
+                            fullAddress = "\(addressViewModel.selectAddressElement(modifyElement: subThoroughfare, currentElement: addressViewModel.address.subThoroughfare))" + " \(addressViewModel.selectAddressElement(modifyElement: thoroughfare, currentElement: addressViewModel.address.thoroughfare))" + ", \(addressViewModel.selectAddressElement(modifyElement: postalCode, currentElement: addressViewModel.address.postalCode))" + " \(addressViewModel.selectAddressElement(modifyElement: locality, currentElement: addressViewModel.address.locality))" + ", \(addressViewModel.selectAddressElement(modifyElement: country, currentElement: addressViewModel.address.country))"
                             
-                            isLinkActive = true
-                            
+                            artistCollectionViewModel.addAddressInformationToDatabase(documentId: authentificationViewModel.userId.id ?? "", documentAddress: fullAddress, documentDepartment: addressViewModel.determineDepartmentToSaveInDatabase(postalCode: addressViewModel.selectAddressElement(modifyElement: postalCode, currentElement: addressViewModel.address.postalCode))) {
+                                isLinkActive = true
+                            }
                         } label: {
                             CustomTextForButton(text: "Looks good")
+                                .padding()
                         }
+                    }.alert(isPresented: $isAlertPresented) {
+                        Alert(title: Text("Please fill all required information."))
                     }
-                }.padding(.vertical, 30)
+                }.padding(.vertical, 8)
             }.isHidden(isLoading ? true : false)
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     isLoading = false
                 }
             }
-        }.frame(width: UIScreen.main.bounds.width - 10)
+        }.padding(.horizontal, 5)
         .navigationBarTitle(Text("Confirm your address"), displayMode: .inline)
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading:
@@ -127,18 +128,11 @@ struct UseCurrentLocation: View {
             }, label: {
                 BackwardChevron()
             }))
-        }
-    
-    private func selectAddressElement(modifyElement: String, currentElement: String) -> String {
-        if modifyElement == "" {
-            return currentElement
-        }
-        return modifyElement
     }
 }
 
 struct ConfirmAddressView_Previews: PreviewProvider {
     static var previews: some View {
-        UseCurrentLocation(address: .constant(Address(country: "", locality: "", thoroughfare: "", postalCode: "", subThoroughfare: "")), resetToRootView: .constant(false))
+        UseCurrentLocation(addressViewModel: AddressViewModel(), resetToRootView: .constant(false))
     }
 }

@@ -6,256 +6,199 @@
 //
 
 import SwiftUI
-import FirebaseStorage
 import SDWebImageSwiftUI
 
 struct ProfileUserView: View {
     
-    init() {
-        UITextField.appearance().clearButtonMode = .whileEditing
-    }
-    
-    @StateObject var userCollectionViewModel = UserCollectionViewModel()
-    
     @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    
+    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
+    
+    @ObservedObject var userCollectionViewModel: UserCollectionViewModel
     
     @State private var showImagePicker = false
     @State private var showActionSheet = false
     @State private var imageSelected = UIImage()
-    @State var sourceType: UIImagePickerController.SourceType = .camera
-    @State private var url = ""
-    @State private var isShownPersonalInformationView = false
+    @State private var sourceType: UIImagePickerController.SourceType = .camera
     @State private var isShownBecomeAnArtistHomePageView = false
-    @State private var firstName = ""
-    @State private var updatedFirstName = ""
+    @State private var isShownArtistTabView = false
+    @State private var isShownParametersView = false
+    @State private var isShownHomePage = false
+    @State private var isAlertPresented = false
     
     var body: some View {
+        
         NavigationView {
             
-            VStack(spacing: -5) {
-                HStack {
-                    ZStack {
-                        Button(action: {
+            ZStack {
+            
+                VStack {
+                    
+                    HStack {
+                       
+                        Button {
                             showActionSheet = true
-                            
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 30) {
-                                if imageSelected.size.width != 0 {
-                                    userCollectionViewModel.uploadProfilePhoto(photo: imageSelected, fileName: User.profilePhotoFileName, pathName: authentificationViewModel.userInAuthentification.id ?? "")
-                                }
-                            }
-                        }, label: {
+                        } label: {
                             if imageSelected.size.width != 0 {
                                 Image(uiImage: imageSelected)
                                     .resizable()
-                                    .frame(width: 60, height: 60)
-                                    .clipShape(Circle())
+                                    .modifier(ModifierForImageInProfileUserView())
                             } else {
-                                if url != "" {
-                                    AnimatedImage(url: URL(string: url))
+                                if userCollectionViewModel.user.profilePhoto != "" {
+                                    AnimatedImage(url: URL(string: userCollectionViewModel.user.profilePhoto))
                                         .resizable()
-                                        .frame(width: 60, height: 60)
-                                        .clipShape(Circle())
+                                        .modifier(ModifierForImageInProfileUserView())
                                 } else {
-                                    Image("profileImage")
-                                        .resizable()
-                                        .frame(width: 60, height: 60)
-                                        .clipShape(Circle())
+                                    ZStack {
+                                        Image("profileImage")
+                                            .resizable()
+                                            .modifier(ModifierForImageInProfileUserView())
+                                            
+                                        Image(systemName: "plus")
+                                            .frame(width: 25, height: 25)
+                                            .foregroundColor(.black)
+                                            .clipShape(Circle())
+                                    }
                                 }
                             }
-                        }).padding()
+                        }.padding()
                         
-                        if imageSelected.size.width == 0 && url == "" {
-                            Image(systemName: "plus")
-                                .frame(width: 15, height: 15)
-                                .foregroundColor(.black)
-                                .clipShape(Circle())
-                        }
+                        Text(userCollectionViewModel.user.firstName)
+                            .bold()
+                            .font(.title)
+                            
+                        Spacer()
+                        
                     }.actionSheet(isPresented: $showActionSheet) {
                         ActionSheet(title: Text("Add a photo to your profile."), message: nil, buttons: [
                             .default(Text("Camera"), action: {
-                                self.showImagePicker = true
-                                self.sourceType = .camera
+                                showImagePicker = true
+                                sourceType = .camera
                             }),
                             .default(Text("Photo Library"), action: {
-                                self.showImagePicker = true
-                                self.sourceType = .photoLibrary
+                                showImagePicker = true
+                                sourceType = .photoLibrary
                             }),
                             .cancel()
                         ])
                     }.sheet(isPresented: $showImagePicker) {
                         ImagePicker(selectedImage: $imageSelected, sourceType: $sourceType)
                     }
-                    
-                    Text(displayFirstName())
-                        .bold()
-                        .font(.system(size: 18))
-                        
                     Spacer()
+                }.onDisappear {
+                    if imageSelected.size.width != 0 {
+                        userCollectionViewModel.uploadProfilePhotoToDatabase(image: imageSelected, documentId: authentificationViewModel.userId.id ?? "", nameField: "profilePhoto") { result in
+                            switch result {
+                            case .success(let success):
+                                print(success)
+                            case .failure(let error):
+                                print(error.localizedDescription)
+                            }
+                        }
+                    }
                 }
                 
-                Form {
-                    Section(header: Text("Account parameters")) {
-                        Button(action: {
-                            isShownPersonalInformationView.toggle()
-                        }, label: {
-                            HStack {
-                                Text("Personal information")
-                                    .foregroundColor(.black)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "person.circle")
-                                    .foregroundColor(.black)
-                                
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.secondary)
-                            }
-                        }).fullScreenCover(isPresented: $isShownPersonalInformationView, content: {
-                            PersonalInformationView.init(updatedFirstName: $updatedFirstName)
-                        })
+                VStack(alignment: .leading, spacing: 30) {
+            
+                    Text("ACCOUNT PARAMETERS")
+                        .font(.callout)
+                        .foregroundColor(.gray)
+                        .bold()
+                    
+                    Button {
+                        isShownParametersView.toggle()
+                    } label: {
+                        CustomHStackInProfileUserView(image: "person.circle", text: "Personal information")
                         
-                        NavigationLink(destination: PaymentView()) {
-                            HStack {
-                                Text("Payments & Payouts")
-                                Spacer()
-                                Image(systemName: "creditcard")
+                    }.background(NavigationLink("", destination: PersonalInformationView(userCollectionViewModel: userCollectionViewModel), isActive: $isShownParametersView))
+                          
+                    Text("BECOMING A SWART ARTIST")
+                        .font(.callout)
+                        .foregroundColor(.gray)
+                        .bold()
+                        .padding(.top, 20)
+                    
+                    Button {
+                        artistCollectionViewModel.isAlreadyAnArtist(documentId: authentificationViewModel.userId.id ?? "") { result in
+                            if result {
+                                isShownArtistTabView.toggle()
+                            } else {
+                                isShownBecomeAnArtistHomePageView.toggle()
                             }
                         }
+                    } label: {
+                        CustomHStackInProfileUserView(image: "arrow.triangle.swap", text: "Switch to artist mode")
                         
-                        NavigationLink(destination: NotificationsView()) {
-                            HStack {
-                                Text("Notifications")
-                                Spacer()
-                                Image(systemName: "bell")
-                            }
-                        }
-                    }
-                    Section(header: Text("Becoming a swart artist")) {
-                        Button(action: {
-                            isShownBecomeAnArtistHomePageView.toggle()
-                        }, label: {
-                            HStack {
-                                Text("Switch to artist mode")
-                                    .foregroundColor(.black)
-                                Spacer()
-                                
-                                Image(systemName: "arrow.triangle.swap")
-                                    .foregroundColor(.black)
-                                
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.secondary)
-                            }
-                        }).fullScreenCover(isPresented: $isShownBecomeAnArtistHomePageView, content: {
-                            BecomeAnArtistHomePageView.init()
-                        })
-                        
-                        NavigationLink(destination: PaymentView()) {
-                            HStack {
-                                Text("Post your ad")
-                                Spacer()
-                                Image(systemName: "paintbrush.pointed")
-                            }
-                        }
-                        
-                        NavigationLink(destination: NotificationsView()) {
-                            HStack {
-                                Text("My guides")
-                                Spacer()
-                                Image(systemName: "book")
-                            }
-                        }
-                    }
-                    Section(header: Text("Referral credit & coupons")) {
-                        NavigationLink(destination: PersonalInformationView(updatedFirstName: $updatedFirstName)) {
-                            HStack {
-                                Text("Refer an artist")
-                                Spacer()
-                                Image(systemName: "gift")
-                            }
-                        }
-                    }
-                    Section(header: Text("Support")) {
-                        NavigationLink(destination: PersonalInformationView(updatedFirstName: $updatedFirstName)) {
-                            HStack {
-                                Text("How Swart works")
-                                Spacer()
-                                Image(systemName: "globe")
-                            }
-                        }
-                        
-                        NavigationLink(destination: PaymentView()) {
-                            HStack {
-                                Text("Trust & Safety")
-                                Spacer()
-                                Image(systemName: "lock.shield")
-                            }
-                        }
-                        
-                        NavigationLink(destination: NotificationsView()) {
-                            HStack {
-                                Text("Help Centre")
-                                Spacer()
-                                Image(systemName: "questionmark.circle")
-                            }
-                        }
-                    }
-                    Section(header: Text("Legal")) {
-                        NavigationLink(destination: PersonalInformationView(updatedFirstName: $updatedFirstName)) {
-                            HStack {
-                                Text("Service condition")
-                                Spacer()
-                                Image(systemName: "doc.text.magnifyingglass")
-                            }
-                        }
-                        
-                        NavigationLink(destination: PaymentView()) {
-                            HStack {
-                                Text("Privacy settings")
-                                Spacer()
-                                Image(systemName: "lock")
-                            }
-                        }
-                    }
-                    Section {
-                        NavigationLink(destination: PaymentView()) {
-                            Text("Log out")
-                                .foregroundColor(Color(.brown))
-                                .bold()
-                                .font(.system(size: 17))
-                        }
-                    }
+                    }.fullScreenCover(isPresented: $isShownBecomeAnArtistHomePageView, content: {
+                        BecomeAnArtistHomePageView()
+                    }).fullScreenCover(isPresented: $isShownArtistTabView, content: {
+                        ArtistTabView()
+                    })
+                }.padding(.vertical, 30)
+                .padding(.horizontal, 22)
+                
+                VStack {
+       
+                    Spacer()
+                    
+                    Button {
+                        isAlertPresented = true
+                    } label: {
+                        LabelForLogOutButton()
+                    }.fullScreenCover(isPresented: $isShownHomePage, content: {
+                        HomeView()
+                    })
+                }.padding(.bottom, 40)
+                .padding(.horizontal, 50)
+                .alert(isPresented: $isAlertPresented) {
+                    Alert(title: Text("Are you sure you want to log out?"),
+                    message: .none,
+                    primaryButton: .destructive(Text("Confirm")) {
+                        isShownHomePage = true
+                    },
+                    secondaryButton: .cancel())
                 }
             }.navigationBarHidden(true)
-        }.onAppear(perform: {
-            userCollectionViewModel.get(documentPath: authentificationViewModel.userInAuthentification.id ?? "")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                firstName = userCollectionViewModel.userSwart.firstName
-                
-                userCollectionViewModel.downloadProfilePhoto { result in
-                    switch result {
-                    case .success(let url):
-                        self.url = url
-                    case .failure(let error):
-                        print(error.localizedDescription)
-                    }
-                }
-            }
-            
-        })
-    }
-    
-    private func displayFirstName() -> String {
-        if updatedFirstName == "" {
-            return firstName
-        } else {
-            return updatedFirstName
         }
     }
 }
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileUserView()
-            .environmentObject(AuthentificationViewModel())
+        ProfileUserView(userCollectionViewModel: UserCollectionViewModel())
+    }
+}
+
+struct ModifierForImageInProfileUserView: ViewModifier {
+    
+    func body(content: Content) -> some View {
+        content
+            .frame(width: 80, height: 80)
+            .clipShape(Circle())
+    }
+}
+
+struct CustomHStackInProfileUserView: View {
+    
+    var image: String
+    var text: String
+    
+    var body: some View {
+        
+        HStack {
+            Image(systemName: image)
+                .foregroundColor(.black)
+                .font(.system(size: 22))
+            Text(text)
+                .font(.system(size: 22))
+                .foregroundColor(.black)
+                .padding(.horizontal, 8)
+                
+            Spacer()
+                
+            Image(systemName: "chevron.right")
+                .foregroundColor(.black)
+                .font(.system(size: 22))
+        }
     }
 }

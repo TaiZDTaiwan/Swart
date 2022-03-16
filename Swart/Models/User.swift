@@ -8,12 +8,16 @@
 import SwiftUI
 import FirebaseFirestoreSwift
 
-struct User: Identifiable, Codable {
-    @DocumentID var id: String?
+struct User: Codable, Hashable {
     var firstName: String
     var lastName: String
     var birthdate: String
+    var address: String
+    var department: String
     var email: String
-    
-    static let profilePhotoFileName = "users_profile_photos"
+    var profilePhoto: String
+    var wishlist: [String]
+    var pendingRequest: [String]
+    var comingRequest: [String]
+    var previousRequest: [String]
 }

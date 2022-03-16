@@ -22,7 +22,7 @@ struct ButtonsForArtistForm: View {
             
             DismissButtonForArtistForm(isAlertDismissPresented: $isAlertDismissPresented, resetToRootView: $resetToRootView)
             
-        }.padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5))
+        }.padding(.horizontal, 10)
     }
 }
 
@@ -50,6 +50,9 @@ struct BackButtonForArtistForm: View {
 
 struct DismissButtonForArtistForm: View {
     
+    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
+    
     @Binding var isAlertDismissPresented: Bool
     @Binding var resetToRootView: Bool
     
@@ -67,6 +70,7 @@ struct DismissButtonForArtistForm: View {
                 title: Text("You are about to undo current artist form."),
                 message: .none,
                 primaryButton: .destructive(Text("Confirm")) {
+                    artistCollectionViewModel.removeUnfinishedArtistFromDatabase(documentId: authentificationViewModel.userId.id ?? "")
                     resetToRootView = false
                 },
                 secondaryButton: .cancel()
@@ -114,6 +118,7 @@ struct NextButtonForArtistForm: View {
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .foregroundColor(.mainRed).opacity(0.8))
+            .padding(.top, -5)
     }
 }
 
@@ -156,5 +161,31 @@ struct CaptionForArtistForm: View {
             .font(.caption)
             .foregroundColor(.white)
             .padding()
+    }
+}
+
+struct LabelAddressView: View {
+    
+    var image: String
+    var text: String
+    
+    var body: some View {
+        
+        ZStack {
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.gray, lineWidth: 0.5)
+                .frame(height: 55)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 20)
+            
+            HStack(spacing: 15) {
+                Image(systemName: image)
+                    .foregroundColor(.black)
+                
+                Text(text)
+                    .foregroundColor(.black)
+                    .font(.system(size: 19))
+            }
+        }
     }
 }

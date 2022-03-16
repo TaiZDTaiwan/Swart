@@ -54,18 +54,20 @@ struct BecomeAnArtistHomePageView: View {
                     }
                 
                     NavigationLink(destination: WhichArtView(resetToRootView: $resetToRootView), isActive: self.$resetToRootView) {
-                                        
+                        
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 5)
+                                .foregroundColor(.mainRed)
+                                .frame(height: 45)
+                                .frame(maxWidth: .infinity)
+                            
                             Text("Let's go!").bold()
-                                .frame(width: UIScreen.main.bounds.size.width * 3/4, height: 15, alignment: .center)
                                 .font(.system(size: 20))
                                 .foregroundColor(.white)
-                                .padding()
-                                .background(
-                                    RoundedRectangle(cornerRadius: 5)
-                                        .foregroundColor(.mainRed))
-                        
-                        }.isDetailLink(false)
-                    
+                            
+                        }.padding(.horizontal, 30)
+                    }.isDetailLink(false)
+         
                     Spacer()
                 }
             }

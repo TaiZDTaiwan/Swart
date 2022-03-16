@@ -8,249 +8,84 @@
 import SwiftUI
 
 struct ProfileArtistView: View {
+    
+    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    
+    @ObservedObject var artistCollectionViewModel: ArtistCollectionViewModel
+    
+    @State private var isShownMyArtView = false
+    @State private var isShownUserTabView = false
+    @State private var isShownHomePage = false
+    @State private var isAlertPresented = false
+    
     var body: some View {
         
         NavigationView {
             
-            ScrollView {
+            ZStack {
                 
                 VStack(alignment: .leading, spacing: 30) {
-                        
-                    Text("ARTIST")
-                        .font(.callout)
-                        .foregroundColor(.gray)
-                        .bold()
-                    
-                    VStack(spacing: 28) {
-                        
-                        NavigationLink(destination: NotificationsView()) {
-                            
-                            HStack {
-                                
-                                Image(systemName: "paintbrush.pointed")
-                                    .foregroundColor(.black)
-                                
-                                Text("My Arts")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(.black)
-                                    .padding(.horizontal, 8)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.black)
-                            }
-                        }
-                    
-                        NavigationLink(destination: NotificationsView()) {
-                            
-                            HStack {
-                                
-                                Image(systemName: "plus.app")
-                                    .foregroundColor(.black)
-                                
-                                Text("Create a new art listing")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(.black)
-                                    .padding(.horizontal, 8)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.black)
-                            }
-                        }
-                    }
-                }.padding(.vertical, 30)
-                .padding(.horizontal, 22)
-                
-                Divider()
-                    .padding(.horizontal, 15)
-                
-                VStack(alignment: .leading, spacing: 30) {
-                        
+            
                     Text("ACCOUNT")
                         .font(.callout)
                         .foregroundColor(.gray)
                         .bold()
                     
-                    VStack(spacing: 28) {
+                    Button {
+                        isShownMyArtView = true
+                    } label: {
+
+                        CustomHStackInProfileUserView(image: "paintbrush.pointed", text: "My Art")
                         
-                        NavigationLink(destination: NotificationsView()) {
-                            
-                            HStack {
-                                
-                                Image(systemName: "person")
-                                    .foregroundColor(.black)
-                                
-                                Text("Your profile")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(.black)
-                                    .padding(.horizontal, 8)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.black)
-                            }
-                        }
+                    }.fullScreenCover(isPresented: $isShownMyArtView, content: {
+                        MyArtsView(artistCollectionViewModel: artistCollectionViewModel)
+                    })
+                          
+                    Text("DISCOVER A MULTITUDE OF ARTISTS")
+                        .font(.callout)
+                        .foregroundColor(.gray)
+                        .bold()
+                        .padding(.top, 20)
                     
-                        NavigationLink(destination: NotificationsView()) {
-                            
-                            HStack {
-                                
-                                Image(systemName: "gearshape")
-                                    .foregroundColor(.black)
-                                
-                                Text("Settings")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(.black)
-                                    .padding(.horizontal, 8)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.black)
-                            }
-                        }
-                        
-                        NavigationLink(destination: NotificationsView()) {
-                            
-                            HStack {
-                                
-                                Image(systemName: "questionmark.circle")
-                                    .foregroundColor(.black)
-                                
-                                Text("Get help")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(.black)
-                                    .padding(.horizontal, 8)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.black)
-                            }
-                        }
-                        
-                        NavigationLink(destination: NotificationsView()) {
-                            
-                            HStack {
-                                
-                                Image(systemName: "questionmark.circle")
-                                    .foregroundColor(.black)
-                                
-                                Text("Explore hosting ressources")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(.black)
-                                    .padding(.horizontal, 8)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.black)
-                            }
-                        }
-                        
-                        NavigationLink(destination: NotificationsView()) {
-                            
-                            HStack {
-                                
-                                Image(systemName: "questionmark.circle")
-                                    .foregroundColor(.black)
-                                
-                                Text("Visit our community forum")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(.black)
-                                    .padding(.horizontal, 8)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.black)
-                            }
-                        }
-                        
-                        NavigationLink(destination: NotificationsView()) {
-                            
-                            HStack {
-                                
-                                Image(systemName: "questionmark.circle")
-                                    .foregroundColor(.black)
-                                
-                                Text("Give us feedback")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(.black)
-                                    .padding(.horizontal, 8)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.black)
-                            }
-                        }
-                        
-                        NavigationLink(destination: NotificationsView()) {
-                            
-                            HStack {
-                                
-                                Image(systemName: "questionmark.circle")
-                                    .foregroundColor(.black)
-                                
-                                Text("Refer a host")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(.black)
-                                    .padding(.horizontal, 8)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "chevron.right")
-                                    .foregroundColor(.black)
-                            }
-                        }
-                    }
-                }.padding(.vertical, 30)
+                    Button {
+                        isShownUserTabView = true
+                    } label: {
+                        CustomHStackInProfileUserView(image: "arrow.triangle.swap", text: "Switch to user mode")
+                    }.fullScreenCover(isPresented: $isShownUserTabView, content: {
+                        UserTabView()
+                    })
+                }.padding(.top, -106)
                 .padding(.horizontal, 22)
                 
-                Divider()
-                    .padding(.horizontal, 15)
-                
-                VStack(spacing: 20) {
+                VStack {
                     
-                    NavigationLink(destination: NotificationsView()) {
+                    Spacer()
                     
-                        Text("Switch to user mode")
-                            .font(.system(size: 20))
-                            .foregroundColor(.black)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .stroke(Color.black, lineWidth: 1))
-                    }
-                    
-                    NavigationLink(destination: NotificationsView()) {
-                    
-                        Text("Log out")
-                            .font(.system(size: 20))
-                            .foregroundColor(.white).bold()
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(RoundedRectangle(cornerRadius: 12).fill(Color.mainRed))
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .stroke(Color.mainRed, lineWidth: 1))
-                    }
-                }.padding(.vertical, 30)
-                .padding(.horizontal, 30)
+                    Button {
+                        isAlertPresented = true
+                    } label: {
+                        LabelForLogOutButton()
+                    }.fullScreenCover(isPresented: $isShownHomePage, content: {
+                        HomeView()
+                    })
+                }.padding(.bottom, 40)
+                .padding(.horizontal, 50)
+                .alert(isPresented: $isAlertPresented) {
+                    Alert(title: Text("Are you sure you want to log out?"),
+                    message: .none,
+                    primaryButton: .destructive(Text("Confirm")) {
+                        isShownHomePage = true
+                    },
+                    secondaryButton: .cancel())
+                }
+                .navigationTitle("Profile")
             }
-            .navigationTitle("Profile")
         }
     }
 }
 
 struct ProfileArtistView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileArtistView()
+        ProfileArtistView(artistCollectionViewModel: ArtistCollectionViewModel())
     }
 }

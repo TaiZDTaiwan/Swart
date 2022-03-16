@@ -12,10 +12,9 @@ import SDWebImageSwiftUI
 struct ProfilePhotoView: View {
         
     @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
-    @EnvironmentObject var storeArtistContentViewModel: StoreArtistContentViewModel
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
-    @StateObject var userCollectionViewModel = UserCollectionViewModel()
+    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
     
     @Binding var resetToRootView: Bool
     @State private var isLinkActive = false
@@ -26,8 +25,9 @@ struct ProfilePhotoView: View {
     @State private var showImagePicker = false
     @State private var showActionSheet = false
     @State private var imageSelected = UIImage()
-    @State var sourceType: UIImagePickerController.SourceType = .camera
+    @State private var sourceType: UIImagePickerController.SourceType = .camera
     @State private var url = ""
+    @State private var initialText = ""
     
     var body: some View {
         
@@ -66,12 +66,12 @@ struct ProfilePhotoView: View {
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .clipShape(Circle())
-                                        .padding(EdgeInsets(top: 40, leading: 40, bottom: 40, trailing: 40))
+                                        .padding(40)
                                 } else {
                                     ZStack {
                                         Circle()
                                             .fill(Color.white)
-                                            .padding(EdgeInsets(top: 40, leading: 40, bottom: 40, trailing: 40))
+                                            .padding(40)
                                             
                                         Image(systemName: "person.crop.circle.badge.plus")
                                             .resizable()
@@ -103,15 +103,24 @@ struct ProfilePhotoView: View {
                             NavigationLink(destination: HeadlineView(resetToRootView: $resetToRootView), isActive: $isLinkActive) {
                                 Button(action: {
                                     if isPhotoPresenting {
-                                        userCollectionViewModel.uploadProfilePhoto(photo: imageSelected, fileName: Artist.profilePhotoFileName, pathName: authentificationViewModel.userInAuthentification.id ?? "")
-                                        storeArtistContentViewModel.hasUploadedProfilePhoto = true
+                                        artistCollectionViewModel.uploadProfilePhotoToDatabase(image: imageSelected, documentId: authentificationViewModel.userId.id ?? "", nameDocument: "profilePhoto") { result in
+                                            switch result {
+                                            case .success(let success):
+                                                print(success)
+                                            case .failure(let error):
+                                                print(error.localizedDescription)
+                                            }
+                                        }
+                                    } else {
+                                        artistCollectionViewModel.addSingleDocumentToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameDocument: "profilePhoto", document: "")
                                     }
                                     self.isLinkActive = true
                                 }, label: {
                                    textLabel()
                                 })
                             }.isDetailLink(false)
-                        }.padding(EdgeInsets(top: 3, leading: 19, bottom: 0, trailing: 19))
+                        }.padding(.horizontal, 20)
+                        .padding(.vertical, 10)
                     }
                 }
             }
@@ -122,12 +131,10 @@ struct ProfilePhotoView: View {
     }
     
     private func didDismiss() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            if imageSelected.size.width != 0 {
-                isPhotoPresenting = true
-            } else {
-                isPhotoPresenting = false
-            }
+        if imageSelected.size.width != 0 {
+            isPhotoPresenting = true
+        } else {
+            isPhotoPresenting = false
         }
     }
     

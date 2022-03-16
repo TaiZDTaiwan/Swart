@@ -6,157 +6,232 @@
 //
 
 import SwiftUI
-import Firebase
-import FirebaseFirestore
-import FirebaseFirestoreSwift
-import FirebaseStorage
 
 final class ArtistCollectionViewModel: ObservableObject {
     
-    @Published var artist = Artist(art: "", place: "", address: "", headline: "", textPresentation: "")
+    @Published var artist = Artist(id: "", art: "", place: "", address: "", department: "", headline: "", textPresentation: "", profilePhoto: "", presentationVideo: "", artContentMedia: [], blockedDates: [], pendingRequest: [], comingRequest: [], previousRequest: [])
+    @Published var artistsResult: [Artist] = []
+    @Published var urlArrayForArtContent: [String] = []
     
-    @Published var retrieveUrlsArray: [String] = []
-    
+    static let storagePathArtistProfilePhoto = "artists_profile_photos"
+    static let storagePathArtistPresentationVideo = "artists_presentation_videos"
+    static let storagePathArtistContent = "artists_content"
     static let collectionPath = "artist"
+    private let artistCollectionRepository = ArtistCollectionRepository()
     
-    private let store = Firestore.firestore()
-    private let storage = Storage.storage().reference()
+    func setArtistCollection(documentId: String, nameDocument: String, document: String, completion: @escaping (() -> Void)) {
+        artistCollectionRepository.setArtistCollection(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, nameDocument: nameDocument, document: document)
+        completion()
+    }
     
-    func setArtistCollection(id: String, nameDocument: String, document: String) {
-        store.collection(ArtistCollectionViewModel.collectionPath).document(id).setData([nameDocument: document]) { err in
-            if let err = err {
-                print("Error writing document: \(err)")
-            } else {
-                print("Single document successfully written!")
-            }
+    func addEmptyDataToArtistCollection(documentId: String) {
+        self.addSingleArrayToArtistCollection(documentId: documentId, nameDocument: "blockedDates", array: [])
+        self.addSingleArrayToArtistCollection(documentId: documentId, nameDocument: "pendingRequest", array: [])
+        self.addSingleArrayToArtistCollection(documentId: documentId, nameDocument: "comingRequest", array: [])
+        self.addSingleArrayToArtistCollection(documentId: documentId, nameDocument: "previousRequest", array: [])
+    }
+    
+    func get(documentId: String, completion: (() -> Void)? = nil) {
+        artistCollectionRepository.get(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId) { artist in
+            self.artist = artist
+            completion?()
         }
     }
     
-    func get(documentPath: String) {
-        let docRef = store.collection(ArtistCollectionViewModel.collectionPath).document(documentPath)
-
-        docRef.getDocument { (document, error) in
-            let result = Result {
-              try document?.data(as: Artist.self)
-            }
-            switch result {
-            case .success(let artist):
-                if let artist = artist {
-                    self.artist = artist
-                } else {
-                    print("Document does not exist")
-                }
-            case .failure(let error):
-                print("Error decoding user: \(error)")
-            }
-        }
+    func removeUnfinishedArtistFromDatabase(documentId: String) {
+        artistCollectionRepository.removeUnfinishedArtistFromDatabase(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId)
+    }
+    
+    func isAlreadyAnArtist(documentId: String, completion: @escaping (Bool) -> Void) {
+        artistCollectionRepository.isAlreadyAnArtist(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, completion: completion)
     }
 
-    func addSingleDocumentToArtistCollection(id: String, nameDocument: String, document: String) {
-        store.collection(ArtistCollectionViewModel.collectionPath).document(id).updateData([nameDocument: document]) { err in
-            if let err = err {
-                print("Error writing document: \(err)")
-            } else {
-                print("Single document successfully written!")
-            }
-        }
+    func addSingleDocumentToArtistCollection(documentId: String, nameDocument: String, document: String, completion: (() -> Void)? = nil) {
+        artistCollectionRepository.addSingleDocumentToArtistCollection(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, nameDocument: nameDocument, document: document)
+        completion?()
     }
     
-    func uploadPresentationVideo(url: URL, id: String) {
-        let uploadTask = storage.child(Artist.videoPresentationFileName).child(id).putFile(from: url, metadata: nil) { (_, error) in
-            if let error = error {
-                print("An error has occured - \(error)")
-            } else {
-                print("Video uploaded successfully")
-            }
-        }
-        uploadTask.observe(.progress) { (snapshot) in
-            if let completedUnitCount = snapshot.progress?.completedUnitCount {
-                print(completedUnitCount)
-            }
-        }
+    func addSingleArrayToArtistCollection(documentId: String, nameDocument: String, array: [String], completion: (() -> Void)? = nil) {
+        artistCollectionRepository.addSingleArrayToArtistCollection(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, nameDocument: nameDocument, array: array)
+        completion?()
     }
     
-    func uploadArtContentVideos(url: URL, id: String, fileName: String, completion: @escaping (Result<String, Error>) -> Void) {
-        let uploadTask = storage.child(Artist.artContentFileName).child(id).child(fileName).putFile(from: url, metadata: nil) { (_, error) in
-            if let error = error {
-                print("An error has occured - \(error)")
-            } else {
-                completion(.success("Video uploaded successfully"))
-            }
-        }
-        uploadTask.observe(.progress) { (snapshot) in
-            if let completedUnitCount = snapshot.progress?.completedUnitCount {
-                print(completedUnitCount)
-            }
-        }
+    func addAddressInformationToDatabase(documentId: String, documentAddress: String, documentDepartment: String, completion: @escaping (() -> Void)) {
+        self.addSingleDocumentToArtistCollection(documentId: documentId, nameDocument: "address", document: documentAddress)
+        self.addSingleDocumentToArtistCollection(documentId: documentId, nameDocument: "department", document: documentDepartment)
+        completion()
     }
     
-    func uploadArtContentImages(image: UIImage, id: String, fileName: String, completion: @escaping (Result<String, Error>) -> Void) {
-        if let imageData = image.jpegData(compressionQuality: 1) {
-            storage.child(Artist.artContentFileName).child(id).child(fileName).putData(imageData, metadata: nil) { (_, err) in
-                if let err = err {
-                    print("An error has occured - \(err.localizedDescription)")
-                } else {
-                    completion(.success("Image uploaded successfully"))
+    func uploadArtContentVideosToDatabase(localFile: URL, documentId: String, fileName: String, completion: @escaping (Result<String, Error>) -> Void) {
+        artistCollectionRepository.uploadArtContentVideosToDatabase(storagePath: ArtistCollectionViewModel.storagePathArtistContent, documentId: documentId, localFile: localFile, fileName: fileName, completion: completion)
+    }
+    
+    func uploadVideoPresentationToDatabase(localFile: URL, documentId: String, nameDocument: String, completion: @escaping (Result<String, Error>) -> Void) {
+        artistCollectionRepository.uploadVideoPresentationToDatabase(storagePath: ArtistCollectionViewModel.storagePathArtistPresentationVideo, collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, localFile: localFile, nameDocument: nameDocument, completion: completion)
+    }
+    
+    func uploadProfilePhotoToDatabase(image: UIImage, documentId: String, nameDocument: String, completion: @escaping (Result<String, Error>) -> Void) {
+        artistCollectionRepository.uploadProfilePhotoToDatabase(storagePath: ArtistCollectionViewModel.storagePathArtistProfilePhoto, collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, image: image, nameDocument: nameDocument, completion: completion)
+    }
+    
+    func uploadArtContentImagesToDatabase(image: UIImage, documentId: String, fileName: String, completion: @escaping (Result<String, Error>) -> Void) {
+        artistCollectionRepository.uploadArtContentImagesToDatabase(storagePath: ArtistCollectionViewModel.storagePathArtistContent, documentId: documentId, fileName: fileName, image: image, completion: completion)
+    }
+    
+    func uploadArtContentMediaUrls(documentId: String, completion: @escaping (() -> Void)) {
+        obtainArtContentMediaUrls {
+            self.addSingleArrayToArtistCollection(documentId: documentId, nameDocument: "artContentMedia", array: self.urlArrayForArtContent) {
+                self.get(documentId: documentId) {
+                    completion()
                 }
             }
         }
     }
     
-    func downloadArtContentImages(id: String, fileName: String, progress: @escaping (Result<String, Error>) -> Void) {
+    private func obtainArtContentMediaUrls(completion: @escaping (() -> Void)) {
+        var orderingArray: [String] = []
+        for url in self.urlArrayForArtContent {
+            if let range = url.range(of: "image_") {
+                let cut = url[range.upperBound...]
+                let index = cut.prefix(1)
+                orderingArray.append(String(index))
+            } else if let range = url.range(of: "video_") {
+                let cut = url[range.upperBound...]
+                let index = cut.prefix(1)
+                orderingArray.append(String(index))
+            }
+        }
+        let combined = zip(orderingArray, self.urlArrayForArtContent).sorted { $0.0 < $1.0 }
+        orderingArray = combined.map {$0.0}
+        self.urlArrayForArtContent = combined.map {$0.1}
+        completion()
+    }
+    
+    func deleteArtContentMediaFromStorage(documentId: String, completion: @escaping (() -> Void)) {
+        let group = DispatchGroup()
+        var index = 0
         
-        storage.child("artists_content").child(id).child(fileName).downloadURL { (url, error) in
-            if error != nil {
-                progress(.failure(error!))
+        for url in artist.artContentMedia {
+            group.enter()
+            if url.contains("image") {
+                artistCollectionRepository.deleteArtContentMediaFromStorage(storagePath: ArtistCollectionViewModel.storagePathArtistContent, documentId: documentId, fileName: "image_" + "\(index)", message: "Photos have been deleted.") {
+                    group.leave()
+                }
+            } else {
+                artistCollectionRepository.deleteArtContentMediaFromStorage(storagePath: ArtistCollectionViewModel.storagePathArtistContent, documentId: documentId, fileName: "video_" + "\(index)", message: "Videos have been deleted.") {
+                    group.leave()
+                }
             }
-            if let url = url {
-                progress(.success("\(url)"))
-            }
+            index += 1
+        }
+        group.notify(queue: .main) {
+            completion()
         }
     }
     
-    func downloadProfileImage(id: String, progress: @escaping (Result<String, Error>) -> Void) {
-        storage.child("artists_profile_photos").child(id).downloadURL { (url, error) in
-            if error != nil {
-                progress(.failure(error!))
-            }
-            if let url = url {
-                progress(.success("\(url)"))
-            }
-        }
+    func removeArtContentMediaFromDatabase(documentId: String, completion: @escaping (() -> Void)) {
+        artistCollectionRepository.removeArtContentMediaFromDatabase(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, fieldName: "artContentMedia")
+        completion()
     }
     
-    func downloadPresentationVideo(id: String, progress: @escaping (Result<String, Error>) -> Void) {
-        storage.child("artists_presentation_videos").child(id).downloadURL { (url, error) in
-            if error != nil {
-                progress(.failure(error!))
-            }
-            if let url = url {
-                progress(.success("\(url)"))
-            }
-        }
+    func insertElementInArray(documentId: String, titleField: String, element: String, completion: (() -> Void)? = nil) {
+        artistCollectionRepository.insertElementInArray(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, titleField: titleField, element: element)
+        completion?()
     }
     
-    func deleteArtContentMedia(id: String, nbOfPhotos: Int, nbOfVideos: Int) {
-        
-        for photo in 1..<nbOfPhotos + 1 {
-            storage.child("artists_content").child(id).child("image_" + "\(photo)").delete { error in
-                if let error = error {
-                    print(error.localizedDescription)
-                } else {
-                  print("Photos have been deleted.")
+    func removeElementFromArray(documentId: String, titleField: String, element: String, completion: (() -> Void)? = nil) {
+        artistCollectionRepository.removeElementFromArray(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, titleField: titleField, element: element)
+        completion?()
+    }
+    
+    func researchFilteredArtists(art: String, department: [String], place: String, completion: @escaping (() -> Void)) {
+        if art == "" {
+            if place == "Anywhere suits you" {
+                artistCollectionRepository.researchArtists(collectionPath: ArtistCollectionViewModel.collectionPath, department: department) { artist in
+                    self.artistsResult.append(artist)
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    completion()
+                }
+            } else {
+                artistCollectionRepository.researchArtists(collectionPath: ArtistCollectionViewModel.collectionPath, department: department, place: place) { artist in
+                    self.artistsResult.append(artist)
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    completion()
+                }
+            }
+        } else {
+            if place == "Anywhere suits you" {
+                artistCollectionRepository.researchArtists(collectionPath: ArtistCollectionViewModel.collectionPath, art: art, department: department) { artist in
+                    self.artistsResult.append(artist)
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    completion()
+                }
+            } else {
+                artistCollectionRepository.researchArtists(collectionPath: ArtistCollectionViewModel.collectionPath, art: art, department: department, place: place) { artist in
+                    self.artistsResult.append(artist)
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    completion()
                 }
             }
         }
+    }
+    
+    func researchFilteredArtistsWithGivenDate(art: String, department: [String], place: String, selectedDate: String, completion: @escaping (() -> Void)) {
+        let group = DispatchGroup()
         
-        for video in 1..<nbOfVideos + 1 {
-            storage.child("artists_content").child(id).child("video_" + "\(video)").delete { error in
-                if let error = error {
-                    print(error.localizedDescription)
-                } else {
-                  print("Videos have been deleted.")
+        self.researchFilteredArtists(art: art, department: department, place: place) {
+            for artist in self.artistsResult where artist.blockedDates.contains(selectedDate) {
+                group.enter()
+                if let index = self.artistsResult.firstIndex(of: artist) {
+                    self.artistsResult.remove(at: index)
+                    group.leave()
                 }
+            }
+            group.notify(queue: .main) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    completion()
+                }
+            }
+        }
+    }
+    
+    func uploadArtContentMediaToStorage(mediaItems: [Media], documentId: String, completion: @escaping ((Double) -> Void), completionHandler: @escaping (() -> Void)) {
+        let firstGroup = DispatchGroup()
+        self.urlArrayForArtContent.removeAll()
+        for (index, element) in mediaItems.enumerated() {
+            if element.mediaType == .video {
+                firstGroup.enter()
+                self.uploadArtContentVideosToDatabase(localFile: element.url ?? URL(fileURLWithPath: ""), documentId: documentId, fileName: "video_" + "\(index)") { result in
+                    switch result {
+                    case .success(let url):
+                        self.urlArrayForArtContent.append(url)
+                        completion(1 / Double(mediaItems.count))
+                        firstGroup.leave()
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                    }
+                }
+            } else {
+                firstGroup.enter()
+                self.uploadArtContentImagesToDatabase(image: element.photo ?? UIImage(), documentId: documentId, fileName: "image_" + "\(index)") { result in
+                    switch result {
+                    case .success(let url):
+                        self.urlArrayForArtContent.append(url)
+                        completion(1 / Double(mediaItems.count))
+                        firstGroup.leave()
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                    }
+                }
+            }
+        }
+        firstGroup.notify(queue: .main) {
+            self.uploadArtContentMediaUrls(documentId: documentId) {
+                completionHandler()
             }
         }
     }

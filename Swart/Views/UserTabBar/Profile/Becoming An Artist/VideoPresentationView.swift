@@ -8,16 +8,15 @@
 import SwiftUI
 import AVKit
 import PhotosUI
-import FirebaseStorage
 
 struct VideoPresentationView: View {
     
     @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
-    @EnvironmentObject var storeArtistContentViewModel: StoreArtistContentViewModel
+    
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
-    @ObservedObject var mediaItems = PickedMediaItems()
+    @StateObject var mediaItems = PhotoPickerViewModel()
         
     @Binding var resetToRootView: Bool
     
@@ -31,8 +30,6 @@ struct VideoPresentationView: View {
     @State private var isPresented = false
     @State private var isVideoPresenting = false
     @State private var player = AVPlayer()
-    @State private var url: URL = URL(fileURLWithPath: "")
-    @State private var textUrl = ""
     
     var body: some View {
         
@@ -44,16 +41,15 @@ struct VideoPresentationView: View {
                 
                 ButtonsForArtistForm(presentationMode: _presentationMode, isAlertDismissPresented: $isAlertDismissPresented, resetToRootView: $resetToRootView)
                 
-                Spacer()
-                
                 VStack(alignment: .leading, spacing: -20) {
                     
                     TitleForArtistForm(text: "... now in video")
                     
                     CaptionForArtistForm(text: "This step is not mandatory and can be realized later. But keep in mind, this format is an opportunity to get closer to your future audience and express freely your creativity !")
-                }
+                }.padding(.top, 15)
                 
                 ZStack {
+                    
                     Color(.white)
                         .ignoresSafeArea()
                 
@@ -63,9 +59,12 @@ struct VideoPresentationView: View {
                             
                             Color.lightGrayForBackground
                             
-                            VideoPlayer(player: player)
-                                .frame(minHeight: 200)
-                                .isHidden(isVideoPresenting ? false : true)
+                            if mediaItems.items.count > 0 {
+                            
+                                VideoPlayer(player: AVPlayer(url: mediaItems.items[0].url!))
+                                    .frame(minHeight: 200)
+                                    .isHidden(mediaItems.items.count > 0 ? false : true)
+                            }
                             
                             Button {
                                 isPresented = true
@@ -73,99 +72,85 @@ struct VideoPresentationView: View {
                                 ZStack {
                                     RoundedRectangle(cornerRadius: 25)
                                         .fill(Color.white)
-                                        .padding(EdgeInsets(top: 40, leading: 40, bottom: 40, trailing: 40))
+                                        .padding(40)
                                     
-                                    if !isVideoPresenting {
-                                        Image(systemName: "video.badge.plus")
-                                            .resizable()
-                                            .frame(width: 110, height: 75)
-                                            .foregroundColor(.mainRed)
-                                    }
+                                    Image(systemName: "video.badge.plus")
+                                        .resizable()
+                                        .frame(width: 110, height: 75)
+                                        .foregroundColor(.mainRed)
                                 }
-                            }.isHidden(isVideoPresenting ? true : false)
+                            }.isHidden(mediaItems.items.count > 0 ? true : false)
                         }
                         
                         HStack {
-                            HStack(spacing: 30) {
-                                Button {
-                                    isPresented = true
-                                } label: {
-                                    ImageForVideoPresentationView(text: "plus")
-                                        .foregroundColor(.black)
-                                }.isHidden(isVideoPresenting ? false : true)
-                                
-                                Button {
-                                    isAlertDeleteVideoPresented = true
-                                } label: {
-                                    ImageForVideoPresentationView(text: "trash")
-                                        .foregroundColor(.mainRed)
-                                }.isHidden(isVideoPresenting ? false : true)
-                                .alert(isPresented: $isAlertDeleteVideoPresented) {
-                                    Alert(
-                                        title: Text("You are about to delete the current video. Do you confirm?"),
-                                        message: .none,
-                                        primaryButton: .destructive(Text("Confirm")) {
-                                            mediaItems.deleteAll()
-                                            isVideoPresenting = false
-                                        },
-                                        secondaryButton: .cancel()
-                                    )
-                                }
+                           
+                            Button {
+                                isAlertDeleteVideoPresented = true
+                            } label: {
+                                ImageForVideoPresentationView(text: "trash")
+                                    .foregroundColor(.black)
+                            }.isHidden(mediaItems.items.count > 0 ? false : true)
+                            .alert(isPresented: $isAlertDeleteVideoPresented) {
+                                Alert(
+                                    title: Text("You are about to delete the current video. Do you confirm?"),
+                                    message: .none,
+                                    primaryButton: .destructive(Text("Confirm")) {
+                                        mediaItems.deleteAll()
+                                    },
+                                    secondaryButton: .cancel()
+                                )
                             }
 
                             Spacer()
                             
                             NavigationLink(destination: ArtistContentView(resetToRootView: $resetToRootView), isActive: $isLinkActive) {
                                 Button(action: {
-                                    if isVideoPresenting {
-                                        artistCollectionViewModel.uploadPresentationVideo(url: self.url, id: authentificationViewModel.userInAuthentification.id ?? "")
-                                        storeArtistContentViewModel.hasUploadedPresentationVideo = true
+                                    if mediaItems.items.count > 0 {
+                        
+                                        artistCollectionViewModel.uploadVideoPresentationToDatabase(localFile: mediaItems.items[0].url!, documentId: authentificationViewModel.userId.id ?? "", nameDocument: "presentationVideo") { result in
+                                            switch result {
+                                            case .success(let success):
+                                                print(success)
+                                            case .failure(let error):
+                                                print(error.localizedDescription)
+                                            }
+                                        }
+                                    } else {
+                                        artistCollectionViewModel.addSingleDocumentToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameDocument: "presentationVideo", document: "")
                                     }
                                     self.isLinkActive = true
                                 }, label: {
-                                    textLabel()
+                                    textLabel(count: mediaItems.items.count)
                                 })
                             }.isDetailLink(false)
-                        }.padding(EdgeInsets(top: 3, leading: 19, bottom: 0, trailing: 19))
+                        }.padding(.horizontal, 20)
+                        .padding(.vertical, 10)
                     }
                 }
-            }.sheet(isPresented: $isPresented, onDismiss: didDismiss) {
+            }.sheet(isPresented: $isPresented, onDismiss: didDismiss, content: {
                 PhotoPicker(mediaItems: mediaItems, filter: $filter, selectionLimit: $selectionLimit) { _ in
                     isPresented = false
                 }
-            }
+            })
         }
         .navigationBarTitle("", displayMode: .inline)
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
     }
-        
-    private func didDismiss() {
-        
-        mediaItems.deleteAll()
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-        
-            if mediaItems.items.count > 0 {
-                if let url = mediaItems.items[0].url {
-                    self.url = url
-                    textUrl = url.absoluteString
-                    player = AVPlayer(url: URL(string: textUrl)!)
-                    isVideoPresenting = true
-                }
-            } else {
-                isVideoPresenting = false
-            }
-        }
-    }
     
-    private func textLabel() -> some View {
+    private func textLabel(count: Int) -> some View {
         return Group {
-            if isVideoPresenting {
+            if count > 0 {
                 TextLabelNextForArtistForm()
             } else {
                 TextLabelIgnoreForArtistForm()
             }
+        }
+    }
+    
+    private func didDismiss() {
+        if mediaItems.items.count > 0 {
+            mediaItems.items.remove(at: 0)
         }
     }
 }

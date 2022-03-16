@@ -6,8 +6,6 @@
 //
 
 import SwiftUI
-import Firebase
-import AuthenticationServices
 
 struct LogInView: View {
     
@@ -15,10 +13,8 @@ struct LogInView: View {
     
     @State private var email = ""
     @State private var password = ""
-    
     @State private var user: User?
     @State private var showMain = false
-    
     @State private var isAlertPresented = false
     @State private var alertMessage = ""
 
@@ -58,12 +54,11 @@ struct LogInView: View {
                             .disableAutocorrection(true)
                     }
                          
-                        NavigationLink(
-                            destination: EmailForgotPasswordView()) {
+                        NavigationLink(destination: EmailForgotPasswordView()) {
                             
                             Text("Forgot password?").bold()
                                 .font(.system(size: 15))
-                                .frame(width: UIScreen.main.bounds.size.width/2, height: 20, alignment: .trailing)
+                                .frame(height: 20, alignment: .trailing)
                                 .font(.title3)
                                 .foregroundColor(.white)
                         }
@@ -84,7 +79,7 @@ struct LogInView: View {
                     CustomTextForSmallButton(text: "Log In")
                 })
                 .fullScreenCover(isPresented: $showMain, content: {
-                    UserTabView.init(userRepositoryViewModel: UserCollectionViewModel())
+                    UserTabView()
                 })
                 
                 Spacer()
@@ -98,20 +93,5 @@ struct LogInView: View {
 struct Test_Previews: PreviewProvider {
     static var previews: some View {
         LogInView()
-    }
-}
-
-struct CustomTextForSmallButton: View {
-    var text: String
-    
-    var body: some View {
-        Text(text)
-            .frame(width: UIScreen.main.bounds.size.width/4, height: 20, alignment: .center)
-            .font(.system(size: 20))
-            .foregroundColor(.white)
-            .padding()
-            .background(
-                RoundedRectangle(cornerRadius: 6)
-                    .foregroundColor(.lightBlack))
     }
 }

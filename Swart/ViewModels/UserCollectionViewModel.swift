@@ -6,69 +6,49 @@
 //
 
 import SwiftUI
-import Firebase
-import FirebaseFirestore
-import FirebaseFirestoreSwift
-import FirebaseStorage
 
 final class UserCollectionViewModel: ObservableObject {
     
-    @Published var userSwart = User(id: "", firstName: "", lastName: "", birthdate: "", email: "")
+    @Published var user = User(firstName: "", lastName: "", birthdate: "", address: "", department: "", email: "", profilePhoto: "", wishlist: [], pendingRequest: [], comingRequest: [], previousRequest: [])
     
     static let collectionPath = "user"
+    static let storagePathUserProfilePhoto = "users_profile_photos"
     
-    private let store = Firestore.firestore()
-    private let storage = Storage.storage().reference()
+    private let userCollectionRepository = UserCollectionRepository()
     
-    func addToUserCollection(id: String, user: User) {
-        do {
-            try store.collection(UserCollectionViewModel.collectionPath).document(id).setData(from: user)
-            print("Document successfully written!")
-        } catch {
-            print("Error writing document: \(error)")
+    func addToUserCollection(documentId: String, user: User, completion: @escaping (() -> Void)) {
+        userCollectionRepository.addToUserCollection(collectionPath: UserCollectionViewModel.collectionPath, documentId: documentId, user: user)
+        completion()
+    }
+    
+    func get(documentId: String, completion: (() -> Void)? = nil) {
+        userCollectionRepository.get(collectionPath: UserCollectionViewModel.collectionPath, id: documentId) { user in
+            self.user = user
+            completion?()
         }
     }
     
-    func get(documentPath: String) {
-        let docRef = store.collection(UserCollectionViewModel.collectionPath).document(documentPath)
+    func addSingleDocumentToUserCollection(documentId: String, nameDocument: String, document: String) {
+        userCollectionRepository.addSingleDocumentToUserCollection(collectionPath: UserCollectionViewModel.collectionPath, documentId: documentId, nameDocument: nameDocument, document: document)
+    }
 
-        docRef.getDocument { (document, error) in
-            let result = Result {
-              try document?.data(as: User.self)
-            }
-            switch result {
-            case .success(let user):
-                if let user = user {
-                    self.userSwart = user
-                } else {
-                    print("Document does not exist")
-                }
-            case .failure(let error):
-                print("Error decoding user: \(error)")
-            }
-        }
+    func insertElementInArray(documentId: String, titleField: String, element: String, completion: (() -> Void)? = nil) {
+        userCollectionRepository.insertElementInArray(collectionPath: UserCollectionViewModel.collectionPath, documentId: documentId, titleField: titleField, element: element)
+        completion?()
     }
     
-    func uploadProfilePhoto(photo: UIImage, fileName: String, pathName: String) {
-        if let imageData = photo.jpegData(compressionQuality: 1) {
-            storage.child(fileName).child(pathName).putData(imageData, metadata: nil) { (_, err) in
-                if let err = err {
-                    print("An error has occured - \(err.localizedDescription)")
-                } else {
-                    print("Image uploaded successfully")
-                }
-            }
-        }
+    func removeElementFromArray(documentId: String, titleField: String, element: String, completion: (() -> Void)? = nil) {
+        userCollectionRepository.removeElementFromArray(collectionPath: UserCollectionViewModel.collectionPath, documentId: documentId, titleField: titleField, element: element)
+        completion?()
     }
     
-    func downloadProfilePhoto(progress: @escaping (Result<String, Error>) -> Void) {
-        storage.child("users_profile_photos").child(userSwart.id ?? "").downloadURL { (url, error) in
-            if error != nil {
-                progress(.failure(error!))
-            }
-            if let url = url {
-                progress(.success("\(url)"))
-            }
-        }
+    func uploadProfilePhotoToDatabase(image: UIImage, documentId: String, nameField: String, completion: @escaping (Result<String, Error>) -> Void) {
+        userCollectionRepository.uploadProfilePhotoToDatabase(storagePath: "users_profile_photos", collectionPath: UserCollectionViewModel.collectionPath, image: image, documentId: documentId, nameField: nameField, completion: completion)
+    }
+    
+    func addAddressInformationToDatabase(documentId: String, documentAddress: String, documentDepartment: String, completion: @escaping (() -> Void)) {
+        self.addSingleDocumentToUserCollection(documentId: documentId, nameDocument: "address", document: documentAddress)
+        self.addSingleDocumentToUserCollection(documentId: documentId, nameDocument: "department", document: documentDepartment)
+        completion()
     }
 }

@@ -3,5 +3,5 @@ disabled_rules:
     - identifier_name
     - function_parameter_count
 line_length:
-    warning: 600
-    error: 650
+    warning: 950
+    error: 1000

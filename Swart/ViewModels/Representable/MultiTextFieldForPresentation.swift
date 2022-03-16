@@ -14,13 +14,14 @@ struct MultiTextFieldForPresentation: UIViewRepresentable {
         return MultiTextFieldForPresentation.Coordinator(parent1: self)
     }
     
+    @Binding var defaultExample: String
     @Binding var text: String
     
     func makeUIView(context: UIViewRepresentableContext<MultiTextFieldForPresentation>) -> UITextView {
         
         let view = UITextView()
         view.font = .systemFont(ofSize: 16)
-        view.text = "Hello everyone, I'm Max, a jazz lover and enthusiast. Since the age of 8, my saxophone and I have been inseparable. We have played in front of various audiences, from conservatory to local coffees to concert halls!\nSo, if you also admire Charlie Parker, Johnny Griffin, Stan Getz or John Coltrane, or if, on the contrary, jazz is an art that is still unknown to you, I will be happy to come to your place or to welcome you for a memorable performance."
+        view.text = defaultExample
         view.textColor = UIColor.black.withAlphaComponent(0.5)
         view.backgroundColor = .clear
         view.delegate = context.coordinator
@@ -50,7 +51,7 @@ struct MultiTextFieldForPresentation: UIViewRepresentable {
         }
         
         func textViewDidBeginEditing(_ textView: UITextView) {
-            if textView.text == "Hello everyone, I'm Max, a jazz lover and enthusiast. Since the age of 8, my saxophone and I have been inseparable. We have played in front of various audiences, from conservatory to local coffees to concert halls!\nSo, if you also admire Charlie Parker, Johnny Griffin, Stan Getz or John Coltrane, or if, on the contrary, jazz is an art that is still unknown to you, I will be happy to come to your place or to welcome you for a memorable performance." {
+            if textView.text == parent.defaultExample {
                 textView.text = ""
             }
             textView.textColor = UIColor.black.withAlphaComponent(0.6)

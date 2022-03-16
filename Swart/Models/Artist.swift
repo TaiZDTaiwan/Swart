@@ -7,14 +7,19 @@
 
 import SwiftUI
 
-struct Artist: Codable {
+struct Artist: Codable, Hashable {
+    var id: String
     var art: String
     var place: String
     var address: String
+    var department: String
     var headline: String
     var textPresentation: String
-    
-    static let profilePhotoFileName = "artists_profile_photos"
-    static let videoPresentationFileName = "artists_presentation_videos"
-    static let artContentFileName = "artists_content"
+    var profilePhoto: String
+    var presentationVideo: String
+    var artContentMedia: [String]
+    var blockedDates: [String]
+    var pendingRequest: [String]
+    var comingRequest: [String]
+    var previousRequest: [String]
 }

@@ -9,52 +9,53 @@ import SwiftUI
 
 struct UserTabView: View {
     
-    @ObservedObject var userCollectionViewModel: UserCollectionViewModel
-    
     @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
     
-    init(userRepositoryViewModel: UserCollectionViewModel) {
-        UITabBar.appearance().barTintColor = .white
-        UITabBar.appearance().unselectedItemTintColor = .gray
-        _userCollectionViewModel = .init(initialValue: userRepositoryViewModel)
-    }
+    @StateObject var userCollectionViewModel = UserCollectionViewModel()
+    @StateObject var requestUserCollectionViewModel = RequestUserCollectionViewModel()
+    @StateObject var wishlistViewModel = WishlistViewModel()
     
-    func test() {
-        userCollectionViewModel.get(documentPath: authentificationViewModel.userInAuthentification.id ?? "")
-        print(userCollectionViewModel.userSwart.email)
-    }
-    
+    @State var fromTabBar = true
+
     var body: some View {
+        
         TabView {
         
-            Text("Search")
+            SearchArtistView()
                 .tabItem {
                     Image(systemName: "magnifyingglass")
                     Text("Search")
             }
             
-            Text("Favorite")
+            WishlistView(wishlistViewModel: wishlistViewModel, userCollectionViewModel: userCollectionViewModel)
                 .tabItem {
                     Image(systemName: "heart")
-                    Text("Favorite")
+                    Text("Wishlist")
             }
             
-            Text("Experiences")
+            ExperiencesView(userCollectionViewModel: userCollectionViewModel, requestUserCollectionViewModel: requestUserCollectionViewModel)
                 .tabItem {
                     Image(systemName: "wand.and.stars")
                     Text("Experiences")
             }
             
-            Text("Messages")
-                .tabItem {
-                    Image(systemName: "bubble.right")
-                    Text("Messages")
-            }
-            
-            ProfileUserView()
+            ProfileUserView(userCollectionViewModel: userCollectionViewModel)
                 .tabItem {
                     Image(systemName: "person.circle")
                     Text("Profile")
+            }
+        }.accentColor(.mainRed)
+        .onAppear {
+            userCollectionViewModel.get(documentId: authentificationViewModel.userId.id ?? "") {
+                for wish in userCollectionViewModel.user.wishlist {
+                    wishlistViewModel.getArtistsInWishlist(documentId: wish)
+                }
+                
+                requestUserCollectionViewModel.getRequests(pendingRequest: userCollectionViewModel.user.pendingRequest, comingRequest: userCollectionViewModel.user.comingRequest, previousRequest: userCollectionViewModel.user.previousRequest, documentId: authentificationViewModel.userId.id ?? "") {
+                    userCollectionViewModel.get(documentId: authentificationViewModel.userId.id ?? "") {
+                        requestUserCollectionViewModel.retrieveRequests(pendingRequest: userCollectionViewModel.user.pendingRequest, comingRequest: userCollectionViewModel.user.comingRequest, previousRequest: userCollectionViewModel.user.previousRequest)
+                    }
+                }
             }
         }
     }
@@ -62,6 +63,6 @@ struct UserTabView: View {
 
 struct TabBarView_Previews: PreviewProvider {
     static var previews: some View {
-        UserTabView(userRepositoryViewModel: UserCollectionViewModel())
+        UserTabView()
     }
 }

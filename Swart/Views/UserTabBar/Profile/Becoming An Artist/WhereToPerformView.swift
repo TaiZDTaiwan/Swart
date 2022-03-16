@@ -10,6 +10,7 @@ import SwiftUI
 struct WhereToPerformView: View {
     
     @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
@@ -22,70 +23,103 @@ struct WhereToPerformView: View {
     @State private var isAlertPresented = false
     @State private var alertMessage = ""
     
-    var places = ["Your place", "Audience's place", "Anywhere suits you", "Online only"]
+    var places: [Place] = PlaceListArtistForm.places
     
     var body: some View {
 
         ZStack {
+            
             BackgroundForArtistForm()
                     
             VStack(alignment: .leading) {
                 
                 ButtonsForArtistForm(presentationMode: _presentationMode, isAlertDismissPresented: $isAlertDismissPresented, resetToRootView: $resetToRootView)
                 
-                Spacer(minLength: 190)
-
-                TitleForArtistForm(text: "Where do you intend to realize your art?")
-                                            
-                ZStack {
-                    Color(.white)
-                        .ignoresSafeArea()
+              Spacer()
+            }
+                
+            VStack {
+                
+                Spacer()
+                
+                HStack {
+                
+                    TitleForArtistForm(text: "Where do you intend to realize your art?")
+                        .padding(.top, -30)
                     
-                    VStack {
-                        ZStack {
-                            Color.lightGrayForBackground
+                    Spacer()
+                }
+            
+                ZStack {
+                            
+                    Rectangle()
+                        .foregroundColor(.white)
+                        .frame(height: UIScreen.main.bounds.height / 1.9)
                         
-                            ScrollView {
-                                ForEach(places, id: \.self) { place in
-                                    Button {
-                                        selectedPlaceName = place
-                                    } label: {
-                                        Text(place)
+                    VStack {
+                        
+                        VStack(spacing: -10) {
+                        
+                            ForEach(places) { place in
+                    
+                                Button {
+                                    selectedPlaceName = place.name
+                                } label: {
+                        
+                                    HStack {
+                                                
+                                        Image(place.imageName)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 28, height: 28)
+                                            .padding(.bottom, 10)
+                                                            
+                                        Text(place.name)
                                             .fontWeight(.semibold)
                                             .foregroundColor(.black)
-                                            .frame(width: UIScreen.main.bounds.width - 45, height: 80, alignment: .center)
-                                            .font(.system(size: 18))
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 15)
-                                                    .foregroundColor(selectedPlaceName == place ? Color.selectedOrange : Color.white))
-                                    }
-                                }.padding()
-                            }
-                        }
-                
-                        HStack {
-
-                            Spacer()
-                            
-                            NavigationLink(destination: AddressView(resetToRootView: $resetToRootView), isActive: $isLinkActive) {
-                                Button(action: {
-                                    if selectedPlaceName == "" {
-                                        alertMessage = "Please select a proposition before going to the next step."
-                                        isAlertPresented = true
-                                    } else {
-                                        artistCollectionViewModel.addSingleDocumentToArtistCollection(id: authentificationViewModel.userInAuthentification.id ?? "", nameDocument: "place", document: selectedPlaceName)
-                                        self.isLinkActive = true
-                                    }
-                                }, label: {
-                                    NextButtonForArtistForm()
-                                }).alert(isPresented: $isAlertPresented) {
-                                    Alert(title: Text(alertMessage))
+                                            .font(.system(size: 19))
+                                            .padding(.horizontal, 10)
+                                            
+                                        Spacer()
+                                                            
+                                    }.padding()
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .foregroundColor(selectedPlaceName == place.name ? Color.selectedOrange : Color.white))
+                                    .background(RoundedRectangle(cornerRadius: 10)
+                                                .fill(Color.white).shadow(radius: 5, y: 3))
                                 }
-                            }.isDetailLink(false)
-                        }.padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 19))
-                    }
+                            }.padding()
+                        }.padding(.top, -12)
+                    }.padding(.horizontal, 20)
                 }
-            }
+            }.edgesIgnoringSafeArea(.bottom)
+            
+            VStack {
+                Spacer()
+                
+                HStack {
+                    Spacer()
+                        
+                    NavigationLink(destination: AddressView(resetToRootView: $resetToRootView), isActive: $isLinkActive) {
+                        Button(action: {
+                            if selectedPlaceName == "" {
+                                alertMessage = "Please select a proposition before going to the next step."
+                                isAlertPresented = true
+                            } else {
+                                artistCollectionViewModel.addSingleDocumentToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameDocument: "place", document: selectedPlaceName) {
+                                    self.isLinkActive = true
+                                }
+                            }
+                        }, label: {
+                            NextButtonForArtistForm()
+                        }).alert(isPresented: $isAlertPresented) {
+                            Alert(title: Text(alertMessage))
+                        }
+                    }.isDetailLink(false)
+                }
+            }.padding(.horizontal, 20)
+            .padding(.bottom, 5)
         }.navigationBarTitle("", displayMode: .inline)
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)

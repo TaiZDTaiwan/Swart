@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Firebase
 import ActivityIndicatorView
 
 struct EmailForgotPasswordView: View {
@@ -16,10 +15,10 @@ struct EmailForgotPasswordView: View {
     @Environment(\.presentationMode) private var presentationMode
     
     @State private var email = ""
-    
     @State private var isAlertPresented = false
     @State private var alertMessage = ""
     @State private var isLoading = false
+    @State private var isMailRestaured = false
 
     var body: some View {
         
@@ -36,28 +35,34 @@ struct EmailForgotPasswordView: View {
                     .textContentType(.emailAddress)
                     .keyboardType(.emailAddress).autocapitalization(.none)
                     .disableAutocorrection(true)
-                    .isHidden(isLoading ? true : false)
                 
                 Button(action: {
+                    isLoading = true
+                    
                     authentificationViewModel.forgotPassword(email: email) { result in
                         switch result {
                         case .success(let message):
                             alertMessage = message
+                            isMailRestaured = true
                         case .failure(let error):
                             alertMessage = error.localizedDescription
                         }
+                    }
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        isLoading = false
                         isAlertPresented = true
                     }
                 }, label: {
                     CustomTextForSmallButton(text: "Send")
-                        .isHidden(isLoading ? true : false)
                 })
                 Spacer()
-            }.padding()
+            }.isHidden(isLoading ? true : false)
+            .padding()
         }.navigationBarTitle("Forgot password?", displayMode: .large)
         .alert(isPresented: $isAlertPresented) {
             Alert(title: Text(alertMessage), message: .none, dismissButton: .default(Text("OK"), action: {
-                if alertMessage == "A link to restaure your password has been sent to your mailbox." {
+                if isMailRestaured {
                     presentationMode.wrappedValue.dismiss()
                 }
             })

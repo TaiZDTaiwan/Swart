@@ -10,6 +10,7 @@ import SwiftUI
 struct TextPresentationView: View {
     
     @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
@@ -22,6 +23,7 @@ struct TextPresentationView: View {
     @State private var isAlertDismissPresented = false
     @State private var isAlertPresented = false
     @State private var alertMessage = ""
+    @State private var textExamples = TextExamples()
     
     var body: some View {
 
@@ -47,13 +49,13 @@ struct TextPresentationView: View {
                     
                     VStack {
                         ScrollView {
-                            VStack(alignment: .leading, spacing: 4, content: {
+                            VStack(alignment: .leading, spacing: 4) {
                                 
                                 Text("Your description")
                                     .font(.system(size: 14)).bold()
                                     .padding(.vertical, 7)
                                 
-                                MultiTextFieldForPresentation(text: $text)
+                                MultiTextFieldForPresentation(defaultExample: $textExamples.exampleForTextPresentation, text: $text)
                                     .frame(height: 250)
                                     .background(Color.lightGrayForBackground)
                                     .cornerRadius(10)
@@ -67,10 +69,9 @@ struct TextPresentationView: View {
                                         .padding(.trailing)
                                         .padding(.top, 4)
                                 }
-                            }).padding(.vertical, 20)
+                            }.padding(.vertical, 20)
                             .padding(.horizontal)
                             .padding(.bottom, keyboardHandler.keyboardHeight)
-                            .animation(.default)
                         }
                         
                         Spacer()
@@ -80,22 +81,22 @@ struct TextPresentationView: View {
                             Spacer()
                             
                             NavigationLink(destination: VideoPresentationView(resetToRootView: $resetToRootView), isActive: $isLinkActive) {
-                                Button(action: {
+                                Button {
                                     if text.isEmpty {
                                         alertMessage = "Please write a presentation for your future audience."
                                         isAlertPresented = true
                                     } else {
-                                        print(text)
-                                        artistCollectionViewModel.addSingleDocumentToArtistCollection(id: authentificationViewModel.userInAuthentification.id ?? "", nameDocument: "textPresentation", document: text)
+                                        artistCollectionViewModel.addSingleDocumentToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameDocument: "textPresentation", document: text)
                                         self.isLinkActive = true
                                     }
-                                }, label: {
+                                } label: {
                                     NextButtonForArtistForm()
-                                }).alert(isPresented: $isAlertPresented) {
+                                }.alert(isPresented: $isAlertPresented) {
                                     Alert(title: Text(alertMessage))
                                 }
                             }.isDetailLink(false)
-                        }.padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 19))
+                        }.padding(.horizontal, 20)
+                        .padding(.vertical, 10)
                     }
                 }
             }

@@ -10,6 +10,7 @@ import SwiftUI
 struct HeadlineView: View {
     
     @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
@@ -22,6 +23,7 @@ struct HeadlineView: View {
     @State private var isAlertDismissPresented = false
     @State private var isAlertPresented = false
     @State private var alertMessage = ""
+    @State private var textExamples = TextExamples()
     
     var body: some View {
 
@@ -41,13 +43,13 @@ struct HeadlineView: View {
                         .ignoresSafeArea()
                     
                     VStack {
-                        VStack(alignment: .leading, spacing: 4, content: {
+                        VStack(alignment: .leading, spacing: 4) {
                             
                             Text("Your headline")
                                 .font(.system(size: 14)).bold()
                                 .padding(.vertical, 7)
                             
-                            MultiTextFieldForHeadline(text: $headline)
+                            MultiTextFieldForHeadline(defaultExample: $textExamples.exampleForHeadline, text: $headline)
                                 .frame(height: 115)
                                 .background(Color.lightGrayForBackground)
                                 .cornerRadius(10)
@@ -61,10 +63,9 @@ struct HeadlineView: View {
                                     .padding(.trailing)
                                     .padding(.top, 4)
                             }
-                        }).padding(.vertical, 20)
+                        }.padding(.vertical, 20)
                         .padding(.horizontal)
                         .padding(.bottom, keyboardHandler.keyboardHeight)
-                        .animation(.default)
                         
                         Spacer()
                     
@@ -73,21 +74,22 @@ struct HeadlineView: View {
                             Spacer()
                             
                             NavigationLink(destination: TextPresentationView(resetToRootView: $resetToRootView), isActive: $isLinkActive) {
-                                Button(action: {
+                                Button {
                                     if headline.isEmpty {
                                         alertMessage = "Please come out with a headline before continuing."
                                         isAlertPresented = true
                                     } else {
-                                        artistCollectionViewModel.addSingleDocumentToArtistCollection(id: authentificationViewModel.userInAuthentification.id ?? "", nameDocument: "headline", document: headline)
+                                        artistCollectionViewModel.addSingleDocumentToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameDocument: "headline", document: headline)
                                         self.isLinkActive = true
                                     }
-                                }, label: {
+                                } label: {
                                     NextButtonForArtistForm()
-                                }).alert(isPresented: $isAlertPresented) {
+                                }.alert(isPresented: $isAlertPresented) {
                                     Alert(title: Text(alertMessage))
                                 }
                             }.isDetailLink(false)
-                        }.padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 19))
+                        }.padding(.horizontal, 20)
+                        .padding(.vertical, 10)
                     }
                 }
             }
