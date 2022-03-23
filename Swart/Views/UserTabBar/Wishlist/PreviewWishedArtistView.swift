@@ -9,10 +9,14 @@ import SwiftUI
 import SDWebImageSwiftUI
 import AVKit
 
+// To preview selected favorite artist information, also the possibility to remove that artist from the wishlist.
+// User can after book a performance date with that artist.
 struct PreviewWishedArtistView: View {
+    
+    // MARK: - Properties
         
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
     @ObservedObject var wishlistViewModel: WishlistViewModel
     @ObservedObject var userCollectionViewModel: UserCollectionViewModel
@@ -25,6 +29,8 @@ struct PreviewWishedArtistView: View {
     @State private var hasSelectedADate = false
     @State private var selectedPlaceName = ""
     @State private var selectedDateForRequest = ""
+    
+    // MARK: - Body
         
     var body: some View {
         
@@ -41,7 +47,7 @@ struct PreviewWishedArtistView: View {
                         
                         Button(action: {
                             if removeFromWishlist {
-                                userCollectionViewModel.removeElementFromArray(documentId: authentificationViewModel.userId.id ?? "", titleField: "wishlist", element: selectedArtist.id)
+                                userCollectionViewModel.removeElementFromExistingArrayField(documentId: authentificationViewModel.userId.id ?? "", titleField: "wishlist", element: selectedArtist.id)
                                 for artist in wishlistViewModel.wishedArtistsResult where artist.id.contains(selectedArtist.id) {
                                     let index = wishlistViewModel.wishedArtistsResult.firstIndex(of: artist)
                                     wishlistViewModel.wishedArtistsResult.remove(at: index!)
@@ -101,7 +107,7 @@ struct PreviewWishedArtistView: View {
             .navigationBarTitle("", displayMode: .inline)
             .navigationBarHidden(true)
             .navigationBarBackButtonHidden(true)
-        }
+        }.navigationViewStyle(.stack)
     }
 }
 

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Artist structure to download and upload in Firebase.
 struct Artist: Codable, Hashable {
     var id: String
     var art: String

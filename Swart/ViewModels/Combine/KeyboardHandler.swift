@@ -8,6 +8,7 @@
 import Combine
 import SwiftUI
 
+// To determine keyboard height in textfield.
 final class KeyboardHandler: ObservableObject {
     
     @Published private(set) var keyboardHeight: CGFloat = 0

@@ -7,12 +7,17 @@
 
 import Firebase
 
+// Firebase methods to interact with request user properties in the database.
 class RequestUserCollectionRepository {
+    
+    // MARK: - Properties
     
     private let store = Firestore.firestore()
     private let storage = Storage.storage().reference()
     
-    func addRequestToUser(collectionPath: String, request: RequestUser, completion: @escaping (String) -> Void) {
+    // MARK: - Methods
+    
+    func addDocumentToRequestUserCollection(collectionPath: String, request: RequestUser, completion: @escaping (String) -> Void) {
         var reference: DocumentReference?
         do {
             reference = try store.collection(collectionPath).addDocument(from: request) { err in
@@ -29,7 +34,6 @@ class RequestUserCollectionRepository {
     
     func getRequest(collectionPath: String, documentId: String, completion: @escaping (RequestUser) -> Void) {
         let docRef = store.collection(collectionPath).document(documentId)
-
         docRef.getDocument { (document, error) in
             let result = Result {
               try document?.data(as: RequestUser.self)
@@ -49,7 +53,6 @@ class RequestUserCollectionRepository {
     
     func addIdToRequest(collectionPath: String, documentId: String) {
         let docRef = store.collection(collectionPath).document(documentId)
-
         docRef.updateData(["requestId": documentId]) { err in
             if let err = err {
                 print("Error updating document: \(err)")
@@ -61,7 +64,6 @@ class RequestUserCollectionRepository {
     
     func acceptPendingRequest(collectionPath: String, documentId: String) {
         let docRef = store.collection(collectionPath).document(documentId)
-
         docRef.updateData(["accepted": true]) { err in
             if let err = err {
                 print("Error updating document: \(err)")

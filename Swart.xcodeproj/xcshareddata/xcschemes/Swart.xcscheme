@@ -26,13 +26,24 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES"
+      onlyGenerateCoverageForSpecifiedTargets = "YES">
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "C22F65E826C6B54D00326227"
+            BuildableName = "Swart.app"
+            BlueprintName = "Swart"
+            ReferencedContainer = "container:Swart.xcodeproj">
+         </BuildableReference>
+      </CodeCoverageTargets>
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C22F65F926C6B54E00326227"
+               BlueprintIdentifier = "C267CCCE27E25B6E00FBA26F"
                BuildableName = "SwartTests.xctest"
                BlueprintName = "SwartTests"
                ReferencedContainer = "container:Swart.xcodeproj">

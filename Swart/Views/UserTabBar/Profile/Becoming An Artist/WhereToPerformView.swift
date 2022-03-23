@@ -7,13 +7,16 @@
 
 import SwiftUI
 
+// Third view for artist form where the future artist is asked to select the location he wants to perform his art, this information will be after saved in his assigned document.
 struct WhereToPerformView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
-    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var artistCollectionViewModel = ArtistCollectionViewModel()
     
     @Binding var resetToRootView: Bool
     
@@ -23,7 +26,9 @@ struct WhereToPerformView: View {
     @State private var isAlertPresented = false
     @State private var alertMessage = ""
     
-    var places: [Place] = PlaceListArtistForm.places
+    private let places: [Place] = PlaceListArtistForm.places
+    
+    // MARK: - Body
     
     var body: some View {
 
@@ -107,7 +112,7 @@ struct WhereToPerformView: View {
                                 alertMessage = "Please select a proposition before going to the next step."
                                 isAlertPresented = true
                             } else {
-                                artistCollectionViewModel.addSingleDocumentToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameDocument: "place", document: selectedPlaceName) {
+                                artistCollectionViewModel.addSingleFieldToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameField: "place", field: selectedPlaceName) {
                                     self.isLinkActive = true
                                 }
                             }

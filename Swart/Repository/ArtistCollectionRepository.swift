@@ -6,11 +6,17 @@
 //
 
 import Firebase
+import SwiftUI
 
+// Firebase methods to interact with artist properties in the database.
 class ArtistCollectionRepository {
+    
+    // MARK: - Properties
     
     private let store = Firestore.firestore()
     private let storage = Storage.storage().reference()
+    
+    // MARK: - Methods
     
     func setArtistCollection(collectionPath: String, documentId: String, nameDocument: String, document: String) {
         store.collection(collectionPath).document(documentId).setData([nameDocument: document]) { err in
@@ -24,7 +30,6 @@ class ArtistCollectionRepository {
     
     func get(collectionPath: String, documentId: String, completion: @escaping (Artist) -> Void) {
         let docRef = store.collection(collectionPath).document(documentId)
-
         docRef.getDocument { (document, error) in
             let result = Result {
               try document?.data(as: Artist.self)
@@ -53,9 +58,7 @@ class ArtistCollectionRepository {
     }
     
     func isAlreadyAnArtist(collectionPath: String, documentId: String, completion: @escaping (Bool) -> Void) {
-        
-        let docRef =  store.collection(collectionPath).document(documentId)
-        
+        let docRef = store.collection(collectionPath).document(documentId)
         docRef.getDocument { (document, error) in
             if let document = document, document.exists {
                 completion(true)
@@ -66,8 +69,8 @@ class ArtistCollectionRepository {
         }
     }
     
-    func addSingleDocumentToArtistCollection(collectionPath: String, documentId: String, nameDocument: String, document: String) {
-        store.collection(collectionPath).document(documentId).updateData([nameDocument: document]) { err in
+    func addSingleFieldToArtistCollection(collectionPath: String, documentId: String, nameField: String, field: String) {
+        store.collection(collectionPath).document(documentId).updateData([nameField: field]) { err in
             if let err = err {
                 print("Error writing document: \(err)")
             } else {
@@ -76,8 +79,8 @@ class ArtistCollectionRepository {
         }
     }
     
-    func addSingleArrayToArtistCollection(collectionPath: String, documentId: String, nameDocument: String, array: [String]) {
-        store.collection(collectionPath).document(documentId).updateData([nameDocument: array]) { err in
+    func addSingleArrayToArtistCollection(collectionPath: String, documentId: String, nameField: String, array: [String]) {
+        store.collection(collectionPath).document(documentId).updateData([nameField: array]) { err in
             if let err = err {
                 print("Error writing document: \(err)")
             } else {
@@ -87,9 +90,7 @@ class ArtistCollectionRepository {
     }
     
     func uploadArtContentVideosToDatabase(storagePath: String, documentId: String, localFile: URL, fileName: String, completion: @escaping (Result<String, Error>) -> Void) {
-        
         let riversRef = storage.child(storagePath).child(documentId).child(fileName)
-        
         let uploadTask = riversRef.putFile(from: localFile, metadata: nil) { (_, error) in
             if let error = error {
                 print("An error has occured - \(error)")
@@ -115,9 +116,7 @@ class ArtistCollectionRepository {
     }
     
     func uploadVideoPresentationToDatabase(storagePath: String, collectionPath: String, documentId: String, localFile: URL, nameDocument: String, completion: @escaping (Result<String, Error>) -> Void) {
-        
         let riversRef = storage.child(storagePath).child(documentId)
-        
         let uploadTask = riversRef.putFile(from: localFile, metadata: nil) { (_, error) in
             if let error = error {
                 print("An error has occured - \(error)")
@@ -127,7 +126,7 @@ class ArtistCollectionRepository {
                         print(error.localizedDescription as Any)
                     } else {
                         if let textUrl = url?.absoluteString {
-                            self.addSingleDocumentToArtistCollection(collectionPath: collectionPath, documentId: documentId, nameDocument: nameDocument, document: textUrl)
+                            self.addSingleFieldToArtistCollection(collectionPath: collectionPath, documentId: documentId, nameField: nameDocument, field: textUrl)
                         }
                     }
                 }
@@ -156,7 +155,7 @@ class ArtistCollectionRepository {
                             print(error.localizedDescription as Any)
                         } else {
                             if let textUrl = url?.absoluteString {
-                                self.addSingleDocumentToArtistCollection(collectionPath: collectionPath, documentId: documentId, nameDocument: nameDocument, document: textUrl)
+                                self.addSingleFieldToArtistCollection(collectionPath: collectionPath, documentId: documentId, nameField: nameDocument, field: textUrl)
                             }
                         }
                     }
@@ -167,9 +166,7 @@ class ArtistCollectionRepository {
     }
     
     func uploadArtContentImagesToDatabase(storagePath: String, documentId: String, fileName: String, image: UIImage, completion: @escaping (Result<String, Error>) -> Void) {
-        
         let storageRef =  storage.child(storagePath).child(documentId).child(fileName)
-        
         if let imageData = image.jpegData(compressionQuality: 1) {
             storageRef.putData(imageData, metadata: nil) { (_, err) in
                 if let err = err {
@@ -211,11 +208,11 @@ class ArtistCollectionRepository {
         }
     }
     
-    func insertElementInArray(collectionPath: String, documentId: String, titleField: String, element: String) {
+    func insertElementInExistingArrayField(collectionPath: String, documentId: String, titleField: String, element: String) {
         store.collection(collectionPath).document(documentId).updateData([titleField: FieldValue.arrayUnion([element])])
     }
     
-    func removeElementFromArray(collectionPath: String, documentId: String, titleField: String, element: String) {
+    func removeElementFromExistingArrayField(collectionPath: String, documentId: String, titleField: String, element: String) {
         store.collection(collectionPath).document(documentId).updateData([titleField: FieldValue.arrayRemove([element])])
     }
     
@@ -241,11 +238,7 @@ class ArtistCollectionRepository {
                     }
                     switch result {
                     case .success(let artist):
-                        if let artist = artist {
-                            completion(artist)
-                        } else {
-                            print("Error getting documents")
-                        }
+                        completion(artist)
                     case .failure(let error):
                         print("Error decoding user: \(error)")
                     }

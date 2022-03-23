@@ -7,17 +7,23 @@
 
 import SwiftUI
 
+// Home view where user can select to create a new account or log in.
 struct HomeView: View {
     
+    // To set up in all project specific UI for navigation bars, textfiels and table views.
     init() {
         UINavigationBar.appearance().tintColor = UIColor(.black)
         UITextField.appearance().clearButtonMode = .whileEditing
         UITableView.appearance().backgroundColor = UIColor(.white)
     }
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
+
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
     @State private var showLogInSheetView = false
+    
+    // MARK: - Body
 
     var body: some View {
         

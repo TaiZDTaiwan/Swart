@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Extension for background gradient to insert in views.
 extension View {
     public func gradientForeground(colors: [Color]) -> some View {
         self.overlay(LinearGradient(gradient: .init(colors: colors),

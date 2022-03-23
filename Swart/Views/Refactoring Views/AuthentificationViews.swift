@@ -8,12 +8,14 @@
 import SwiftUI
 import ActivityIndicatorView
 
+// Refactoring structures using in authentification views.
 struct ActivityIndicator: View {
     
     var isLoadingBinding: Binding<Bool>
     var isLoading: Bool
     
     var body: some View {
+        
         GeometryReader { geometry in
             ActivityIndicatorView(isVisible: isLoadingBinding, type: .arcs)
                 .foregroundColor(.mainRed)
@@ -25,9 +27,11 @@ struct ActivityIndicator: View {
 }
 
 struct CustomTextForButton: View {
+    
     var text: String
     
     var body: some View {
+        
         Text(text)
             .frame(maxWidth: .infinity)
             .frame(height: 10, alignment: .center)
@@ -41,11 +45,13 @@ struct CustomTextForButton: View {
 }
 
 struct CustomTextfieldForProfile: View {
+    
     var bindingText: Binding<String>
     var text: String
     var textFromDb: String
     
     var body: some View {
+        
         TextField("", text: bindingText)
             .placeholder(when: text.isEmpty) {
                 Text(textFromDb).foregroundColor(.black)
@@ -55,9 +61,11 @@ struct CustomTextfieldForProfile: View {
 }
 
 struct CustomTextForProfile: View {
+    
     var text: String
     
     var body: some View {
+        
         Text(text)
             .bold()
             .font(.system(size: 12))
@@ -65,9 +73,11 @@ struct CustomTextForProfile: View {
 }
 
 struct CustomTextForSmallButton: View {
+    
     var text: String
     
     var body: some View {
+        
         Text(text)
             .font(.system(size: 20))
             .foregroundColor(.white)
@@ -82,6 +92,7 @@ struct CustomTextForSmallButton: View {
 struct BackwardChevron: View {
     
     var body: some View {
+        
         Image(systemName: "chevron.backward")
             .foregroundColor(.black)
             .opacity(0.7)
@@ -91,6 +102,7 @@ struct BackwardChevron: View {
 struct TextForAddressPolicy: View {
     
     var body: some View {
+        
         Text("We'll only share your address with artists who are booked as outlined in our privacy policy.")
             .fontWeight(.semibold)
             .font(.caption)
@@ -102,6 +114,7 @@ struct TextForAddressPolicy: View {
 struct LabelForLogOutButton: View {
     
     var body: some View {
+        
         Text("Log out")
             .font(.system(size: 20))
             .foregroundColor(.white).bold()

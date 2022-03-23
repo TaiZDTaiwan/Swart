@@ -9,15 +9,20 @@ import SwiftUI
 import SDWebImageSwiftUI
 import ActivityIndicatorView
 
+// Last search view where all booking information are summarized, user needs to check them and to fill as well the number of guests and send a private message to the artist.
+// Once confirmed, create one user request and one artist request which are sent to the database and add requests reference in user and artist collection, then user returns to home user tab view.
 struct RequestToBookView: View {
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
-    @StateObject var addressViewModel = AddressViewModel()
-    @StateObject var requestArtistCollectionViewModel = RequestArtistCollectionViewModel()
-    @StateObject var requestUserCollectionViewModel = RequestUserCollectionViewModel()
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
+    
+    @StateObject private var artistCollectionViewModel = ArtistCollectionViewModel()
+    @StateObject private var addressViewModel = AddressViewModel()
+    @StateObject private var requestArtistCollectionViewModel = RequestArtistCollectionViewModel()
+    @StateObject private var requestUserCollectionViewModel = RequestUserCollectionViewModel()
     
     @ObservedObject var userCollectionViewModel: UserCollectionViewModel
     
@@ -37,7 +42,9 @@ struct RequestToBookView: View {
     @State private var requestArtist = RequestArtist(requestId: "", requestIdUser: "", idUser: "", firstName: "", city: "", department: "", address: "", date: "", location: "", guest: "", message: "", coverPhoto: "", accepted: false)
     @State private var requestUser = RequestUser(requestId: "", headline: "", city: "", department: "", address: "", date: "", location: "", guest: "", coverPhoto: "", accepted: false)
     
-    let number = ["1", "2", "3", "4", "5", "6", "7", "8"]
+    private let number = ["1", "2", "3", "4", "5", "6", "7", "8"]
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -161,12 +168,12 @@ struct RequestToBookView: View {
                                 requestArtist = RequestArtist(requestId: "", requestIdUser: "", idUser: authentificationViewModel.userId.id ?? "", firstName: userCollectionViewModel.user.firstName, city: addressViewModel.determineCity(address: userCollectionViewModel.user.address), department: addressViewModel.rewriteDepartment(department: selectedArtist.department), address: userCollectionViewModel.user.address, date: selectedDateForRequest, location: addressViewModel.determineLocation(selectedPlaceName: selectedPlaceName, artistPlace: selectedArtist.place), guest: guest, message: message, coverPhoto: userCollectionViewModel.user.profilePhoto, accepted: false)
                                 requestUser = RequestUser(requestId: "", headline: selectedArtist.headline, city: addressViewModel.determineCity(address: selectedArtist.address), department: addressViewModel.rewriteDepartment(department: selectedArtist.department), address: selectedArtist.address, date: selectedDateForRequest, location: addressViewModel.determineLocation(selectedPlaceName: selectedPlaceName, artistPlace: selectedArtist.place), guest: guest, coverPhoto: selectedArtist.profilePhoto, accepted: false)
                                 
-                                requestArtistCollectionViewModel.addRequestToArtist(request: requestArtist) {
-                                    requestUserCollectionViewModel.addRequestToUser(request: requestUser) {
+                                requestArtistCollectionViewModel.addDocumentToRequestArtistCollection(request: requestArtist) {
+                                    requestUserCollectionViewModel.addDocumentToRequestUserCollection(request: requestUser) {
                                         requestUserCollectionViewModel.addIdToRequest()
                                         requestArtistCollectionViewModel.addIdsToRequest(requestIdUser: requestUserCollectionViewModel.requestReference)
-                                        artistCollectionViewModel.insertElementInArray(documentId: selectedArtist.id, titleField: "pendingRequest", element: requestArtistCollectionViewModel.requestReference)
-                                        userCollectionViewModel.insertElementInArray(documentId: authentificationViewModel.userId.id ?? "", titleField: "pendingRequest", element: requestUserCollectionViewModel.requestReference)
+                                        artistCollectionViewModel.insertElementInExistingArrayField(documentId: selectedArtist.id, titleField: "pendingRequest", element: requestArtistCollectionViewModel.requestReference)
+                                        userCollectionViewModel.insertElementInExistingArrayField(documentId: authentificationViewModel.userId.id ?? "", titleField: "pendingRequest", element: requestUserCollectionViewModel.requestReference)
                                         
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                                             isShowMainAlert = true
@@ -218,6 +225,8 @@ struct RequestToBookView_Previews: PreviewProvider {
         RequestToBookView(userCollectionViewModel: UserCollectionViewModel(), selectedArtist: .constant(Artist(id: "", art: "", place: "", address: "", department: "", headline: "", textPresentation: "", profilePhoto: "", presentationVideo: "", artContentMedia: [], blockedDates: [], pendingRequest: [], comingRequest: [], previousRequest: [])), selectedDate: .constant(""), selectedDateForRequest: .constant(""), selectedPlaceName: .constant(""))
     }
 }
+
+// MARK: - Refactoring structures
 
 struct CustomVStackInRequestToBookView: View {
     

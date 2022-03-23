@@ -9,19 +9,23 @@ import SwiftUI
 import AVKit
 import PhotosUI
 
+// Eighth view for artist form where the future artist is proposed to add a presentation video but this is not mandatory.
+// If video added, it will be sent in firebase storage and its url in future artist personal document in firestore.
 struct VideoPresentationView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
-    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
-    @StateObject var mediaItems = PhotoPickerViewModel()
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var artistCollectionViewModel = ArtistCollectionViewModel()
+    @StateObject private var mediaItems = PhotoPickerViewModel()
         
     @Binding var resetToRootView: Bool
     
-    @State var filter: PHPickerFilter = .videos
-    @State var selectionLimit = 1
+    @State private var filter: PHPickerFilter = .videos
+    @State private var selectionLimit = 1
     @State private var isLinkActive = false
     @State private var isAlertDismissPresented = false
     @State private var isAlertPresented = false
@@ -30,6 +34,8 @@ struct VideoPresentationView: View {
     @State private var isPresented = false
     @State private var isVideoPresenting = false
     @State private var player = AVPlayer()
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -116,7 +122,7 @@ struct VideoPresentationView: View {
                                             }
                                         }
                                     } else {
-                                        artistCollectionViewModel.addSingleDocumentToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameDocument: "presentationVideo", document: "")
+                                        artistCollectionViewModel.addSingleFieldToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameField: "presentationVideo", field: "")
                                     }
                                     self.isLinkActive = true
                                 }, label: {
@@ -128,7 +134,7 @@ struct VideoPresentationView: View {
                     }
                 }
             }.sheet(isPresented: $isPresented, onDismiss: didDismiss, content: {
-                PhotoPicker(mediaItems: mediaItems, filter: $filter, selectionLimit: $selectionLimit) { _ in
+                MediaPicker(mediaItems: mediaItems, filter: $filter, selectionLimit: $selectionLimit) { _ in
                     isPresented = false
                 }
             })
@@ -137,6 +143,8 @@ struct VideoPresentationView: View {
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
     }
+    
+    // MARK: - Methods
     
     private func textLabel(count: Int) -> some View {
         return Group {
@@ -160,6 +168,8 @@ struct ArtistVideoPresentationView_Previews: PreviewProvider {
         VideoPresentationView(resetToRootView: .constant(false))
     }
 }
+
+// MARK: - Refactoring structure
 
 struct ImageForVideoPresentationView: View {
     

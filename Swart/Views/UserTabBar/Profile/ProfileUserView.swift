@@ -8,11 +8,14 @@
 import SwiftUI
 import SDWebImageSwiftUI
 
+// Fourth user tab where user can edit his personal information and add a profile photo, become an artist by filling a form, navigate to the artist tab view if form already filled or possibility to log out and return to HomeView.
 struct ProfileUserView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
+    
+    @StateObject private var artistCollectionViewModel = ArtistCollectionViewModel()
     
     @ObservedObject var userCollectionViewModel: UserCollectionViewModel
     
@@ -25,6 +28,8 @@ struct ProfileUserView: View {
     @State private var isShownParametersView = false
     @State private var isShownHomePage = false
     @State private var isAlertPresented = false
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -159,7 +164,7 @@ struct ProfileUserView: View {
                     secondaryButton: .cancel())
                 }
             }.navigationBarHidden(true)
-        }
+        }.navigationViewStyle(.stack)
     }
 }
 
@@ -168,6 +173,8 @@ struct ProfileView_Previews: PreviewProvider {
         ProfileUserView(userCollectionViewModel: UserCollectionViewModel())
     }
 }
+
+// MARK: - Refactoring structures
 
 struct ModifierForImageInProfileUserView: ViewModifier {
     

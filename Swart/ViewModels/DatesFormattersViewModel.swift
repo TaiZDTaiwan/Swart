@@ -7,60 +7,63 @@
 
 import SwiftUI
 
+// Various methods to check if user is an adult.
 class DatesFormattersViewModel {
     
     func userIs18(birthdate: Date) -> Bool {
+        let isAdult: Bool
         let now = Date()
         let formatter = DateFormatter()
         formatter.dateFormat = "MM/dd/yyyy"
         let today = formatter.string(from: now)
         let birthday = formatter.string(from: birthdate)
         
-        let currentYear = convertDateToYear(date: today)
-        let birthdayYear = convertDateToYear(date: birthday)
+        let currentYear = isolateYearFromGivenDate(date: today)
+        let birthdayYear = isolateYearFromGivenDate(date: birthday)
         
-        let currentMonth = convertDateToMonth(date: today)
-        let birthdayMonth = convertDateToMonth(date: birthday)
+        let currentMonth = isolateMonthFromGivenDate(date: today)
+        let birthdayMonth = isolateMonthFromGivenDate(date: birthday)
         
-        let currentDay = convertDateToDay(date: today)
-        let birthdayDay = convertDateToDay(date: birthday)
+        let currentDay = isolateDayFromGivenDate(date: today)
+        let birthdayDay = isolateDayFromGivenDate(date: birthday)
         
         if Int(currentYear)! - Int(birthdayYear)! < 18 {
-            return false
+            isAdult = false
         } else if Int(currentYear)! - Int(birthdayYear)! == 18 {
             if Int(currentMonth)! < Int(birthdayMonth)! {
-                return false
+                isAdult = false
             } else {
                 if Int(currentMonth)! == Int(birthdayMonth)! {
                     if Int(currentDay)! < Int(birthdayDay)! {
-                        return false
+                        isAdult = false
                     } else {
-                        return true
+                        isAdult = true
                     }
                 } else {
-                    return true
+                    isAdult = true
                 }
             }
         } else {
-            return true
+            isAdult = true
         }
+        return isAdult
     }
     
-    private func convertDateToYear(date: String) -> String {
+    func isolateYearFromGivenDate(date: String) -> String {
         let startYear = date.index(date.startIndex, offsetBy: 6)
         let endYear = date.index(date.startIndex, offsetBy: 10)
         let year = startYear..<endYear
         return String(date[year])
     }
     
-    private func convertDateToMonth(date: String) -> String {
+    func isolateMonthFromGivenDate(date: String) -> String {
         let startMonth = date.index(date.startIndex, offsetBy: 0)
         let endMonth = date.index(date.startIndex, offsetBy: 2)
         let month = startMonth..<endMonth
         return String(date[month])
     }
     
-    private func convertDateToDay(date: String) -> String {
+    func isolateDayFromGivenDate(date: String) -> String {
         let startDay = date.index(date.startIndex, offsetBy: 3)
         let endDay = date.index(date.startIndex, offsetBy: 5)
         let day = startDay..<endDay

@@ -9,11 +9,14 @@ import SwiftUI
 import SDWebImageSwiftUI
 import AVKit
 
+// Second user tab where user favorite artists are displayed and can be consulted at anytime.
 struct WishlistView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @StateObject var addressViewModel = AddressViewModel()
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
+    
+    @StateObject private var addressViewModel = AddressViewModel()
     
     @ObservedObject var wishlistViewModel: WishlistViewModel
     @ObservedObject var userCollectionViewModel: UserCollectionViewModel
@@ -21,6 +24,8 @@ struct WishlistView: View {
     @State private var player = AVPlayer()
     @State private var selectedArtist = Artist(id: "", art: "", place: "", address: "", department: "", headline: "", textPresentation: "", profilePhoto: "", presentationVideo: "", artContentMedia: [], blockedDates: [], pendingRequest: [], comingRequest: [], previousRequest: [])
     @State private var isPresented = false
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -91,7 +96,7 @@ struct WishlistView: View {
                 .listStyle(GroupedListStyle())
                 .navigationTitle("Wishlist")
             }
-        }
+        }.navigationViewStyle(.stack)
     }
 }
 

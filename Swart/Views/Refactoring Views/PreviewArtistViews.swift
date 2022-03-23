@@ -9,6 +9,7 @@ import SwiftUI
 import SDWebImageSwiftUI
 import AVKit
 
+// Refactoring structures using in preview artist views.
 struct CustomScrollViewToPreviewArtist: View {
     
     @State private var player = AVPlayer()

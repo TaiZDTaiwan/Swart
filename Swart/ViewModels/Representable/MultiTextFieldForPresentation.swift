@@ -7,18 +7,17 @@
 
 import SwiftUI
 
+// To set custom textfield used for text presentation.
 struct MultiTextFieldForPresentation: UIViewRepresentable {
-    
-    func makeCoordinator() -> MultiTextFieldForPresentation.Coordinator {
-        
-        return MultiTextFieldForPresentation.Coordinator(parent1: self)
-    }
     
     @Binding var defaultExample: String
     @Binding var text: String
     
+    func makeCoordinator() -> MultiTextFieldForPresentation.Coordinator {
+        return MultiTextFieldForPresentation.Coordinator(parent1: self)
+    }
+    
     func makeUIView(context: UIViewRepresentableContext<MultiTextFieldForPresentation>) -> UITextView {
-        
         let view = UITextView()
         view.font = .systemFont(ofSize: 16)
         view.text = defaultExample
@@ -32,7 +31,6 @@ struct MultiTextFieldForPresentation: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UITextView, context: UIViewRepresentableContext<MultiTextFieldForPresentation>) {
-        
     }
     
     class Coordinator: NSObject, UITextViewDelegate {

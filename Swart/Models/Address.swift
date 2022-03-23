@@ -7,13 +7,11 @@
 
 import SwiftUI
 
+// Address to store in database or to use with geocoder.
 struct Address: Codable {
     var country: String
     var locality: String
-    // Ville
     var thoroughfare: String
-    // Rue
     var postalCode: String
     var subThoroughfare: String
-    // Num rue
 }

@@ -7,13 +7,17 @@
 
 import SwiftUI
 
+// User accepts to be geolocated and all his address information are retrieved in that view, he only needs to confirm or edit them if needed.
+// Before going to the next view, upload in database user address information.
 struct UseUserCurrentLocationView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
-    @StateObject var userCollectionViewModel = UserCollectionViewModel()
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var userCollectionViewModel = UserCollectionViewModel()
     
     @ObservedObject var addressViewModel: AddressViewModel
     
@@ -32,6 +36,8 @@ struct UseUserCurrentLocationView: View {
     @State private var isLoading = true
     @State private var isShowAlert = false
     @State private var fromAddressView = true
+    
+    // MARK: - Body
     
     var body: some View {
         

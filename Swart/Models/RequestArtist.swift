@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Request reserved for artists structure to download and upload in Firebase.
 struct RequestArtist: Codable, Hashable {
     var requestId: String
     var requestIdUser: String

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Refactoring structures using in edit address views.
 struct DisplayAddressInformation: View {
     
     @Binding var subThoroughfare: String

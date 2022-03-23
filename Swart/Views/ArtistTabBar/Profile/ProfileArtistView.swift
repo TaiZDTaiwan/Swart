@@ -7,9 +7,12 @@
 
 import SwiftUI
 
+// Third artist tab where artist can edit his art information, navigate to the user tab view or to log out and return to HomeView.
 struct ProfileArtistView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
+    
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
     @ObservedObject var artistCollectionViewModel: ArtistCollectionViewModel
     
@@ -17,6 +20,8 @@ struct ProfileArtistView: View {
     @State private var isShownUserTabView = false
     @State private var isShownHomePage = false
     @State private var isAlertPresented = false
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -80,7 +85,7 @@ struct ProfileArtistView: View {
                 }
                 .navigationTitle("Profile")
             }
-        }
+        }.navigationViewStyle(.stack)
     }
 }
 

@@ -9,12 +9,16 @@ import SwiftUI
 import SDWebImageSwiftUI
 import AVKit
 
+// Sixth search view where the selected artist information are displayed, also the possibility to add the artist into user wishlist.
 struct PreviewSelectedArtistView: View {
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @StateObject var wishlistViewModel = WishlistViewModel()
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
+    
+    @StateObject private var wishlistViewModel = WishlistViewModel()
     
     @ObservedObject var userCollectionViewModel: UserCollectionViewModel
     
@@ -26,6 +30,8 @@ struct PreviewSelectedArtistView: View {
     @State private var addToWhishlist = false
     @State private var showSheet = false
     @State private var hasSelectedADate = false
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -83,7 +89,7 @@ struct PreviewSelectedArtistView: View {
             })
             .onDisappear {
                 if addToWhishlist && !userCollectionViewModel.user.wishlist.contains(selectedArtist.id) {
-                    userCollectionViewModel.insertElementInArray(documentId: authentificationViewModel.userId.id ?? "", titleField: "wishlist", element: selectedArtist.id) {
+                    userCollectionViewModel.insertElementInExistingArrayField(documentId: authentificationViewModel.userId.id ?? "", titleField: "wishlist", element: selectedArtist.id) {
                         userCollectionViewModel.get(documentId: authentificationViewModel.userId.id ?? "") {
                             for wish in userCollectionViewModel.user.wishlist {
                                 wishlistViewModel.getArtistsInWishlist(documentId: wish)
@@ -91,7 +97,7 @@ struct PreviewSelectedArtistView: View {
                         }
                     }
                 } else if !addToWhishlist && userCollectionViewModel.user.wishlist.contains(selectedArtist.id) {
-                    userCollectionViewModel.removeElementFromArray(documentId: authentificationViewModel.userId.id ?? "", titleField: "wishlist", element: selectedArtist.id) {
+                    userCollectionViewModel.removeElementFromExistingArrayField(documentId: authentificationViewModel.userId.id ?? "", titleField: "wishlist", element: selectedArtist.id) {
                         userCollectionViewModel.get(documentId: authentificationViewModel.userId.id ?? "") {
                             for wish in userCollectionViewModel.user.wishlist {
                                 wishlistViewModel.getArtistsInWishlist(documentId: wish)

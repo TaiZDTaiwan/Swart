@@ -8,13 +8,16 @@
 import SwiftUI
 import ActivityIndicatorView
 
+// User can fill his address information in this view, and if address already submitted, can edit it, the information in the database will bu uptaded accordingly.
 struct EditAddressView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
-    @StateObject var addressViewModel = AddressViewModel()
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var addressViewModel = AddressViewModel()
     
     @ObservedObject var userCollectionViewModel: UserCollectionViewModel
     
@@ -33,7 +36,9 @@ struct EditAddressView: View {
     @State private var isAlertConfirmAddressPresented = false
     @State private var fullAddress = ""
     
-    let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    private let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -77,7 +82,7 @@ struct EditAddressView: View {
                                     
                                     fullAddress = "\(selectAddressElement(modifyElement: subThoroughfare, currentElement: subThoroughfareFromDb))" + " \(selectAddressElement(modifyElement: thoroughfare, currentElement: thoroughfareFromDb))" + ", \(selectAddressElement(modifyElement: postalCode, currentElement: postalCodeFromDb))" + " \(selectAddressElement(modifyElement: locality, currentElement: localityFromDb))" + ", \(selectAddressElement(modifyElement: country, currentElement: countryFromDb))"
                                 
-                                    addressViewModel.convertAddress(address: fullAddress) {
+                                    addressViewModel.convertAddressIntoMapLocation(address: fullAddress) {
                                         if addressViewModel.convertedCoordinatesAddress != nil {
                                             userCollectionViewModel.addAddressInformationToDatabase(documentId: authentificationViewModel.userId.id ?? "", documentAddress: fullAddress, documentDepartment: addressViewModel.determineDepartmentToSaveInDatabase(postalCode: selectAddressElement(modifyElement: postalCode, currentElement: postalCodeFromDb))) {
                                                 userCollectionViewModel.get(documentId: authentificationViewModel.userId.id ?? "") {
@@ -148,6 +153,8 @@ struct EditAddressView: View {
             .navigationBarBackButtonHidden(true)
         }
     }
+    
+    // MARK: - Method
     
     private func selectAddressElement(modifyElement: String, currentElement: String) -> String {
         if modifyElement == "" {

@@ -7,16 +7,20 @@
 
 import SwiftUI
 
-final class UserCollectionViewModel: ObservableObject {
+// Various methods to interact with user properties in the database or other properties in different views.
+class UserCollectionViewModel: ObservableObject {
+    
+    // MARK: - Properties
     
     @Published var user = User(firstName: "", lastName: "", birthdate: "", address: "", department: "", email: "", profilePhoto: "", wishlist: [], pendingRequest: [], comingRequest: [], previousRequest: [])
     
     static let collectionPath = "user"
     static let storagePathUserProfilePhoto = "users_profile_photos"
-    
     private let userCollectionRepository = UserCollectionRepository()
     
-    func addToUserCollection(documentId: String, user: User, completion: @escaping (() -> Void)) {
+    // MARK: - Methods
+    
+    func addDocumentToUserCollection(documentId: String, user: User, completion: @escaping (() -> Void)) {
         userCollectionRepository.addToUserCollection(collectionPath: UserCollectionViewModel.collectionPath, documentId: documentId, user: user)
         completion()
     }
@@ -28,27 +32,27 @@ final class UserCollectionViewModel: ObservableObject {
         }
     }
     
-    func addSingleDocumentToUserCollection(documentId: String, nameDocument: String, document: String) {
-        userCollectionRepository.addSingleDocumentToUserCollection(collectionPath: UserCollectionViewModel.collectionPath, documentId: documentId, nameDocument: nameDocument, document: document)
+    func addSingleFieldToUserCollection(documentId: String, nameField: String, field: String) {
+        userCollectionRepository.addSingleFieldToUserCollection(collectionPath: UserCollectionViewModel.collectionPath, documentId: documentId, nameField: nameField, field: field)
     }
 
-    func insertElementInArray(documentId: String, titleField: String, element: String, completion: (() -> Void)? = nil) {
-        userCollectionRepository.insertElementInArray(collectionPath: UserCollectionViewModel.collectionPath, documentId: documentId, titleField: titleField, element: element)
+    func insertElementInExistingArrayField(documentId: String, titleField: String, element: String, completion: (() -> Void)? = nil) {
+        userCollectionRepository.insertElementInExistingArrayField(collectionPath: UserCollectionViewModel.collectionPath, documentId: documentId, titleField: titleField, element: element)
         completion?()
     }
     
-    func removeElementFromArray(documentId: String, titleField: String, element: String, completion: (() -> Void)? = nil) {
-        userCollectionRepository.removeElementFromArray(collectionPath: UserCollectionViewModel.collectionPath, documentId: documentId, titleField: titleField, element: element)
+    func removeElementFromExistingArrayField(documentId: String, titleField: String, element: String, completion: (() -> Void)? = nil) {
+        userCollectionRepository.removeElementFromExistingArrayField(collectionPath: UserCollectionViewModel.collectionPath, documentId: documentId, titleField: titleField, element: element)
         completion?()
     }
     
     func uploadProfilePhotoToDatabase(image: UIImage, documentId: String, nameField: String, completion: @escaping (Result<String, Error>) -> Void) {
-        userCollectionRepository.uploadProfilePhotoToDatabase(storagePath: "users_profile_photos", collectionPath: UserCollectionViewModel.collectionPath, image: image, documentId: documentId, nameField: nameField, completion: completion)
+        userCollectionRepository.uploadProfilePhotoToDatabase(storagePath: "users_profile_photos", collectionPath: UserCollectionViewModel.collectionPath, image: image, documentId: documentId, nameDocument: nameField, completion: completion)
     }
     
     func addAddressInformationToDatabase(documentId: String, documentAddress: String, documentDepartment: String, completion: @escaping (() -> Void)) {
-        self.addSingleDocumentToUserCollection(documentId: documentId, nameDocument: "address", document: documentAddress)
-        self.addSingleDocumentToUserCollection(documentId: documentId, nameDocument: "department", document: documentDepartment)
+        self.addSingleFieldToUserCollection(documentId: documentId, nameField: "address", field: documentAddress)
+        self.addSingleFieldToUserCollection(documentId: documentId, nameField: "department", field: documentDepartment)
         completion()
     }
 }

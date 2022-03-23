@@ -8,19 +8,21 @@
 import SwiftUI
 import MapKit
 
-final class AddressViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
+// Various methods related to address properties and to ask and check for user localization.
+class AddressViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     
-    static let span = MKCoordinateSpan(latitudeDelta: 0.03, longitudeDelta: 0.03)
+    // MARK: - Properties
     
     @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 48.858370, longitude: 2.294481),
                                                span: AddressViewModel.span)
-    
     @Published var convertedCoordinatesAddress: CLLocationCoordinate2D?
     @Published var permissionDenied = false
-    @Published var searchLocation = ""
     @Published var address = Address(country: "", locality: "", thoroughfare: "", postalCode: "", subThoroughfare: "")
     
+    static let span = MKCoordinateSpan(latitudeDelta: 0.03, longitudeDelta: 0.03)
     var locationManager: CLLocationManager?
+    
+    // MARK: - Methods
     
     func checkIfLocationServicesIsEnabled() {
         if CLLocationManager.locationServicesEnabled() {
@@ -33,11 +35,10 @@ final class AddressViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
         checkLocationAuthorization()
     }
     
-    private func checkLocationAuthorization() {
+    func checkLocationAuthorization() {
         guard let locationManager = locationManager else { return }
 
         switch locationManager.authorizationStatus {
-            
         case .notDetermined:
             locationManager.requestWhenInUseAuthorization()
         case .restricted:
@@ -54,8 +55,8 @@ final class AddressViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
         }
     }
     
-    private func getAddressFromLatLon() {
-       
+    // Get all address elements for a given region store in the class property "region".
+    func getAddressFromLatLon() {
         let geocoder: CLGeocoder = CLGeocoder()
         let location: CLLocation = CLLocation(latitude: region.center.latitude, longitude: region.center.longitude)
             
@@ -63,7 +64,6 @@ final class AddressViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
             if error != nil {
                 print("reverse geodcode fail: \(error!.localizedDescription)")
             }
-        
             let placemark = placemarks! as [CLPlacemark]
             
             if placemark.count > 0 {
@@ -77,7 +77,7 @@ final class AddressViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
         })
     }
     
-    func convertAddress(address: String, completion: @escaping (() -> Void)) {
+    func convertAddressIntoMapLocation(address: String, completion: @escaping (() -> Void)) {
         getCoordinate(addressString: address) { (location, error) in
             if error != nil {
                 print("reverse geodcode fail: \(error!.localizedDescription)")
@@ -102,7 +102,6 @@ final class AddressViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
                     return
                 }
             }
-                
             completionHandler(kCLLocationCoordinate2DInvalid, error as NSError?)
         }
     }
@@ -136,51 +135,45 @@ final class AddressViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
     }
     
     func determineLocation(selectedPlaceName: String, artistPlace: String) -> String {
-        
+        var location = ""
         if selectedPlaceName == "Anywhere suits you" {
             if artistPlace == "Your place" || artistPlace == "Anywhere suits you" {
-                return "Artist's place"
+                location = "Artist's place"
             } else if artistPlace == "Audience's place" {
-                return "Your place"
+                location = "Your place"
             }
         } else {
-            return selectedPlaceName
+            location = selectedPlaceName
         }
-        return ""
+        return location
     }
     
     func retrieveAllAddressElements(address: String, subThoroughfare: @escaping ((String) -> Void), thoroughfare: @escaping ((String) -> Void), locality: @escaping ((String) -> Void), postalCode: @escaping ((String) -> Void), country: @escaping ((String) -> Void)) {
         if address != "" {
-    
-            let subThoroughfareFromDb: String
-            let thoroughfareFromDb: String
-            let localityFromDb: String
-            let postalCodeFromDb: String
-            let countryFromDb: String
-        
-            subThoroughfareFromDb = address.components(separatedBy: " ").first ?? ""
-            subThoroughfare(subThoroughfareFromDb)
-            
-            let thoroughFirst = address.components(separatedBy: ",").first ?? ""
-            let thoroughSecond = thoroughFirst.components(separatedBy: CharacterSet.decimalDigits).joined(separator: "")
-            thoroughfareFromDb = String(thoroughSecond.dropFirst())
-            thoroughfare(thoroughfareFromDb)
-            
+            if let subThoroughfareFromDb = address.components(separatedBy: " ").first {
+                subThoroughfare(subThoroughfareFromDb)
+            }
+            if let thoroughFirst = address.components(separatedBy: ",").first {
+                let thoroughSecond = thoroughFirst.components(separatedBy: CharacterSet.decimalDigits).joined(separator: "")
+                let thoroughfareFromDb = String(thoroughSecond.dropFirst())
+                thoroughfare(thoroughfareFromDb)
+            }
             if let localityFirst = (address.range(of: ",")?.upperBound) {
                 let localitySecond = String(address.suffix(from: localityFirst))
                 let localityThird = String(localitySecond.dropFirst())
-                let localityFourth = localityThird.components(separatedBy: ",").first ?? ""
-                let localityFifth = localityFourth.components(separatedBy: CharacterSet.decimalDigits).joined(separator: "")
-                
-                localityFromDb = String(localityFifth.dropFirst())
-                locality(localityFromDb)
-                postalCodeFromDb = localityFourth.components(separatedBy: " ").first ?? ""
-                postalCode(postalCodeFromDb)
+                if let localityFourth = localityThird.components(separatedBy: ",").first {
+                    let localityFifth = localityFourth.components(separatedBy: CharacterSet.decimalDigits).joined(separator: "")
+                    let localityFromDb = String(localityFifth.dropFirst())
+                    locality(localityFromDb)
+                    if let postalCodeFromDb = localityFourth.components(separatedBy: " ").first {
+                        postalCode(postalCodeFromDb)
+                    }
+                }
             }
-            
-            let countryFirst = address.components(separatedBy: ",").last ?? ""
-            countryFromDb = String(countryFirst.dropFirst())
-            country(countryFromDb)
+            if let countryFirst = address.components(separatedBy: ",").last {
+                let countryFromDb = String(countryFirst.dropFirst())
+                country(countryFromDb)
+            }
         }
     }
 }

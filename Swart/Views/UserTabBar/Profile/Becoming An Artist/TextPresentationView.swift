@@ -7,13 +7,17 @@
 
 import SwiftUI
 
+// Seventh view for artist form where the future artist is asked to add a text presentation.
+// Once confirmed, send text presentation to database.
 struct TextPresentationView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
-    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var artistCollectionViewModel = ArtistCollectionViewModel()
     @StateObject private var keyboardHandler = KeyboardHandler()
     
     @Binding var resetToRootView: Bool
@@ -24,6 +28,8 @@ struct TextPresentationView: View {
     @State private var isAlertPresented = false
     @State private var alertMessage = ""
     @State private var textExamples = TextExamples()
+    
+    // MARK: - Body
     
     var body: some View {
 
@@ -86,7 +92,7 @@ struct TextPresentationView: View {
                                         alertMessage = "Please write a presentation for your future audience."
                                         isAlertPresented = true
                                     } else {
-                                        artistCollectionViewModel.addSingleDocumentToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameDocument: "textPresentation", document: text)
+                                        artistCollectionViewModel.addSingleFieldToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameField: "textPresentation", field: text)
                                         self.isLinkActive = true
                                     }
                                 } label: {
@@ -110,6 +116,5 @@ struct TextPresentationView: View {
 struct TextPresentationView_Previews: PreviewProvider {
     static var previews: some View {
         TextPresentationView(resetToRootView: .constant(false))
-            
     }
 }

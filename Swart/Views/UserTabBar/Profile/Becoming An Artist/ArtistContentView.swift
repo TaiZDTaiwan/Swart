@@ -10,19 +10,23 @@ import AVKit
 import PhotosUI
 import ActivityIndicatorView
 
+// Ninth view for artist form where the future artist is asked to upload at least 5 photos or videos which describe the best his art.
+// When media confirmed, it will be sent in firebase storage and its url in future artist personal document in firestore.
 struct ArtistContentView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
-    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
-    @StateObject var mediaItems = PhotoPickerViewModel()
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var artistCollectionViewModel = ArtistCollectionViewModel()
+    @StateObject private var mediaItems = PhotoPickerViewModel()
 
     @Binding var resetToRootView: Bool
     
-    @State var filter: PHPickerFilter = .any(of: [.images, .livePhotos, .videos])
-    @State var selectionLimit = 0
+    @State private var filter: PHPickerFilter = .any(of: [.images, .livePhotos, .videos])
+    @State private var selectionLimit = 0
     @State private var showSheet = false
     @State private var isLinkActive = false
     @State private var isAlertDismissPresented = false
@@ -33,6 +37,8 @@ struct ArtistContentView: View {
     @State private var downloadedPercentage = 0.0
     @State private var percentageToAdd = 0.0
     @State private var downloadIsOver = false
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -95,7 +101,7 @@ struct ArtistContentView: View {
                             }.padding(.horizontal, 10)
                             .isHidden(mediaItems.items.isEmpty ? true : false)
                             .sheet(isPresented: $showSheet, content: {
-                                PhotoPicker(mediaItems: mediaItems, filter: $filter, selectionLimit: $selectionLimit) { _ in
+                                MediaPicker(mediaItems: mediaItems, filter: $filter, selectionLimit: $selectionLimit) { _ in
                                     showSheet = false
                                 }
                             })
@@ -136,7 +142,7 @@ struct ArtistContentView: View {
                 }
             }.isHidden(isLoading ? true : false)
             .sheet(isPresented: $isPresented) {
-                PhotoPicker(mediaItems: mediaItems, filter: $filter, selectionLimit: $selectionLimit) { _ in
+                MediaPicker(mediaItems: mediaItems, filter: $filter, selectionLimit: $selectionLimit) { _ in
                     isPresented = false
                 }
             }
@@ -149,6 +155,8 @@ struct ArtistContentView: View {
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
     }
+    
+    // MARK: - Method
     
     private func move(fromOffsets source: IndexSet, toOffsets destination: Int) {
         mediaItems.items.move(fromOffsets: source, toOffset: destination)

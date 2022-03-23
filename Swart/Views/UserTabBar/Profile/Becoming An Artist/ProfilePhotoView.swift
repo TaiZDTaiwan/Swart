@@ -9,14 +9,20 @@ import SwiftUI
 import FirebaseStorage
 import SDWebImageSwiftUI
 
+// Fifth view for artist form where the future artist is proposed to add a profile photo but this is not mandatory.
+// If photo added, it will be sent in firebase storage and its url in future artist personal document in firestore.
 struct ProfilePhotoView: View {
-        
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
-    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
+    // MARK: - Properties
+        
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
+    
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var artistCollectionViewModel = ArtistCollectionViewModel()
     
     @Binding var resetToRootView: Bool
+    
     @State private var isLinkActive = false
     @State private var isAlertDismissPresented = false
     @State private var isAlertPresented = false
@@ -28,6 +34,8 @@ struct ProfilePhotoView: View {
     @State private var sourceType: UIImagePickerController.SourceType = .camera
     @State private var url = ""
     @State private var initialText = ""
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -112,7 +120,7 @@ struct ProfilePhotoView: View {
                                             }
                                         }
                                     } else {
-                                        artistCollectionViewModel.addSingleDocumentToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameDocument: "profilePhoto", document: "")
+                                        artistCollectionViewModel.addSingleFieldToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameField: "profilePhoto", field: "")
                                     }
                                     self.isLinkActive = true
                                 }, label: {
@@ -129,6 +137,8 @@ struct ProfilePhotoView: View {
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
     }
+    
+    // MARK: - Methods
     
     private func didDismiss() {
         if imageSelected.size.width != 0 {

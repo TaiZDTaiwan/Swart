@@ -7,9 +7,12 @@
 
 import SwiftUI
 
+// Second artist tab where the artist can look at his personal calendar and select one or several dates to inform users about his availabilities and unavailabilities.
 struct CalendarView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
+    
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
     @ObservedObject var calendarViewModel: CalendarViewModel
     
@@ -21,6 +24,8 @@ struct CalendarView: View {
     @State private var hasEdited = false
     @State private var selectedDates: [String] = []
     @State private var selectedDatesForDetailView: [String] = []
+    
+    // MARK: - Body
 
     var body: some View {
             
@@ -164,8 +169,10 @@ struct CalendarView: View {
                     currentYear = year
                 }
             }.navigationBarTitle("Set your agenda")
-        }
+        }.navigationViewStyle(.stack)
     }
+    
+    // MARK: - Methods
     
     private func getDatesView(date: Int) -> AnyView {
         
@@ -227,6 +234,8 @@ struct CalendarView_Previews: PreviewProvider {
         CalendarView(calendarViewModel: CalendarViewModel())
     }
 }
+
+// MARK: - Refactoring structures
 
 struct ModifierForPastDates: ViewModifier {
     func body(content: Content) -> some View {

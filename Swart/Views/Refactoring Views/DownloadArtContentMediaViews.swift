@@ -9,13 +9,13 @@ import SwiftUI
 import AVKit
 import PhotosUI
 
+// Refactoring structures using in download art content media views.
 struct CustomArtContentProgressView: View {
     
     @Binding var downloadedPercentage: Double
     @Binding var percentageToAdd: Double
     @Binding var downloadIsOver: Bool
     @Binding var isLoading: Bool
-    
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     
     var body: some View {
@@ -61,6 +61,7 @@ struct CustomCircularProgressViewStyle: ProgressViewStyle {
 }
 
 struct DetermineMediaItem: View {
+    
     var item: Media
     
     var body: some View {

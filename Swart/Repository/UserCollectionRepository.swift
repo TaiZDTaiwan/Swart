@@ -6,11 +6,17 @@
 //
 
 import Firebase
+import SwiftUI
 
+// Firebase methods to interact with user properties in the database.
 class UserCollectionRepository {
+    
+    // MARK: - Properties
     
     private let store = Firestore.firestore()
     private let storage = Storage.storage().reference()
+    
+    // MARK: - Methods
     
     func addToUserCollection(collectionPath: String, documentId: String, user: User) {
         do {
@@ -22,9 +28,7 @@ class UserCollectionRepository {
     }
     
     func get(collectionPath: String, id: String, completion: @escaping (User) -> Void) {
-        
         let docRef = store.collection(collectionPath).document(id)
-
         docRef.getDocument { (document, error) in
             let result = Result {
               try document?.data(as: User.self)
@@ -33,7 +37,6 @@ class UserCollectionRepository {
             case .success(let user):
                 if let user = user {
                     completion(user)
-                    print("Finish downloading user info")
                 } else {
                     print("Document does not exist")
                 }
@@ -43,8 +46,8 @@ class UserCollectionRepository {
         }
     }
     
-    func addSingleDocumentToUserCollection(collectionPath: String, documentId: String, nameDocument: String, document: String) {
-        store.collection(collectionPath).document(documentId).updateData([nameDocument: document]) { err in
+    func addSingleFieldToUserCollection(collectionPath: String, documentId: String, nameField: String, field: String) {
+        store.collection(collectionPath).document(documentId).updateData([nameField: field]) { err in
             if let err = err {
                 print("Error writing document: \(err)")
             } else {
@@ -53,15 +56,15 @@ class UserCollectionRepository {
         }
     }
     
-    func insertElementInArray(collectionPath: String, documentId: String, titleField: String, element: String) {
+    func insertElementInExistingArrayField(collectionPath: String, documentId: String, titleField: String, element: String) {
         store.collection(collectionPath).document(documentId).updateData([titleField: FieldValue.arrayUnion([element])])
     }
     
-    func removeElementFromArray(collectionPath: String, documentId: String, titleField: String, element: String) {
+    func removeElementFromExistingArrayField(collectionPath: String, documentId: String, titleField: String, element: String) {
         store.collection(collectionPath).document(documentId).updateData([titleField: FieldValue.arrayRemove([element])])
     }
     
-    func uploadProfilePhotoToDatabase(storagePath: String, collectionPath: String, image: UIImage, documentId: String, nameField: String, completion: @escaping (Result<String, Error>) -> Void) {
+    func uploadProfilePhotoToDatabase(storagePath: String, collectionPath: String, image: UIImage, documentId: String, nameDocument: String, completion: @escaping (Result<String, Error>) -> Void) {
         
         let storageRef =  storage.child(storagePath).child(documentId)
         
@@ -76,21 +79,11 @@ class UserCollectionRepository {
                             return
                         }
                         if let textUrl = url?.absoluteString {
-                            self.addSingleFieldToUserCollection(collectionPath: collectionPath, documentId: documentId, nameField: nameField, field: textUrl)
+                            self.addSingleFieldToUserCollection(collectionPath: collectionPath, documentId: documentId, nameField: nameDocument, field: textUrl)
                             completion(.success("Profile photo uploaded successfully as \(downloadURL)"))
                       }
                     }
                 }
-            }
-        }
-    }
-    
-    private func addSingleFieldToUserCollection(collectionPath: String, documentId: String, nameField: String, field: String) {
-        store.collection(collectionPath).document(documentId).updateData([nameField: field]) { err in
-            if let err = err {
-                print("Error writing document: \(err)")
-            } else {
-                print("Single document successfully written!")
             }
         }
     }

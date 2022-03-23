@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// To store the different arts names proposed and their related images.
 struct Art: Identifiable, Equatable {
     let id = UUID()
     let name: String

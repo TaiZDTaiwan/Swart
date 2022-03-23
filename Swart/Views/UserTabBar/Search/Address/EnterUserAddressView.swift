@@ -7,9 +7,12 @@
 
 import SwiftUI
 
+// If user chooses his place for the perfomance, he needs to communicate his address manually and with the geolocation feature.
 struct EnterUserAddressView: View {
     
-    @StateObject var addressViewModel = AddressViewModel()
+    // MARK: - Properties
+    
+    @StateObject private var addressViewModel = AddressViewModel()
     
     @Binding var selectedArtName: String
     @Binding var selectedDepartments: [String]
@@ -20,6 +23,8 @@ struct EnterUserAddressView: View {
     @State private var isLinkActive = false
     @State private var isLinkActiveManually = false
     @State private var street = ""
+    
+    // MARK: - Body
     
     var body: some View {
         

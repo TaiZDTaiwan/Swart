@@ -9,14 +9,17 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
+// Fourth view for artist form where the future artist is asked to communicate his address. If geolocation accepted, display a map with future artist's location pin.
 struct AddressView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
-    @StateObject var userCollectionViewModel = UserCollectionViewModel()
-    @StateObject var addressViewModel = AddressViewModel()
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var userCollectionViewModel = UserCollectionViewModel()
+    @StateObject private var addressViewModel = AddressViewModel()
         
     @Binding var resetToRootView: Bool
     
@@ -28,6 +31,8 @@ struct AddressView: View {
     @State private var isAlertPresented = false
     @State private var alertMessage = ""
     @State private var isLinkActive = false
+    
+    // MARK: - Body
     
     var body: some View {
         

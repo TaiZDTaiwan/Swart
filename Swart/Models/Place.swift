@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// To store the different places names proposed and their related images.
 struct Place: Identifiable, Equatable {
     let id = UUID()
     let name: String

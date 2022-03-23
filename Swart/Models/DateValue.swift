@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// To store date properties using to display calendars.
 struct DateValue: Identifiable, Hashable {
     var id = UUID().uuidString
     var day: Int

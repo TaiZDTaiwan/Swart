@@ -7,16 +7,21 @@
 
 import SwiftUI
 
+// User tab view where all user's information are retrieved and communicated to child views: user personal information, user artists wishlist and related requests.
+// Also, coming requests which booking date is already passed are transferred to previous requests in the database.
+
 struct UserTabView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @StateObject var userCollectionViewModel = UserCollectionViewModel()
-    @StateObject var requestUserCollectionViewModel = RequestUserCollectionViewModel()
-    @StateObject var wishlistViewModel = WishlistViewModel()
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
-    @State var fromTabBar = true
-
+    @StateObject private var userCollectionViewModel = UserCollectionViewModel()
+    @StateObject private var requestUserCollectionViewModel = RequestUserCollectionViewModel()
+    @StateObject private var wishlistViewModel = WishlistViewModel()
+    
+    // MARK: - Body
+    
     var body: some View {
         
         TabView {

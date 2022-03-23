@@ -8,9 +8,13 @@
 import SwiftUI
 import ActivityIndicatorView
 
+// To allow user to change his log in password.
+
 struct EmailForgotPasswordView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
+    
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
     @Environment(\.presentationMode) private var presentationMode
     
@@ -19,6 +23,8 @@ struct EmailForgotPasswordView: View {
     @State private var alertMessage = ""
     @State private var isLoading = false
     @State private var isMailRestaured = false
+    
+    // MARK: - Body
 
     var body: some View {
         

@@ -8,7 +8,11 @@
 import SwiftUI
 import SDWebImageSwiftUI
 
+// First artist tab where all artist requests are displayed and divided into three kind: pending, coming and previous.
+// Artist can navigate and choose the request he wants to consult.
 struct ExperiencesArtistView: View {
+    
+    // MARK: - Properties
     
     @ObservedObject var artistCollectionViewModel: ArtistCollectionViewModel
     @ObservedObject var requestArtistCollectionViewModel: RequestArtistCollectionViewModel
@@ -17,6 +21,8 @@ struct ExperiencesArtistView: View {
     @State private var isPresented = false
     @State private var requestType = RequestType.pending
     @State private var convertedDate = ""
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -101,8 +107,10 @@ struct ExperiencesArtistView: View {
                 }
             }
             .navigationTitle("Next Performances")
-        }
+        }.navigationViewStyle(.stack)
     }
+    
+    // MARK: - Method
     
     private func convertDate(date: String) -> String {
         let array = date.components(separatedBy: "/")
@@ -119,6 +127,8 @@ struct ExperiencesArtistView_Previews: PreviewProvider {
         ExperiencesArtistView(artistCollectionViewModel: ArtistCollectionViewModel(), requestArtistCollectionViewModel: RequestArtistCollectionViewModel())
     }
 }
+
+// MARK: - Refactoring structures
 
 struct CustomNoRequestArtistFoundText: View {
     

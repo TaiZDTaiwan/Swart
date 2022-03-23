@@ -7,21 +7,26 @@
 
 import SwiftUI
 
+// Cover view for the artist form, also setting up of a dismiss button which is communicated to all child views for the user to exit the form whenever he wants and delete the artist information already sent to the database.
 struct BecomeAnArtistHomePageView: View {
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    // MARK: - Properties
     
-    @State var resetToRootView = false
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     
-    var btnBack : some View {
+    @State private var resetToRootView = false
+    
+    private var btnBack : some View {
         Button(action: {
             self.presentationMode.wrappedValue.dismiss()
         }, label: {
             Image(systemName: "clear")
                 .foregroundColor(.white)
                 .opacity(0.7)
-            })
-        }
+        })
+    }
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -73,7 +78,7 @@ struct BecomeAnArtistHomePageView: View {
             }
             .navigationBarBackButtonHidden(true)
             .navigationBarItems(leading: btnBack)
-        }
+        }.navigationViewStyle(.stack)
     }
 }
 

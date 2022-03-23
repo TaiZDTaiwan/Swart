@@ -9,13 +9,17 @@ import SwiftUI
 import AVKit
 import PhotosUI
 
+// To edit artist's art content media. To do so, the artist needs to upload at least five photos or videos.
+// Once confirmed, it would replace old media urls in storage and firestore.
 struct EditMediaView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
-    @StateObject var mediaItems = PhotoPickerViewModel()
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var mediaItems = PhotoPickerViewModel()
     
     @ObservedObject var artistCollectionViewModel: ArtistCollectionViewModel
     
@@ -30,7 +34,9 @@ struct EditMediaView: View {
     @State private var hasEdited = false
     @State private var isAboveFive = false
     
-    let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    private let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -89,7 +95,7 @@ struct EditMediaView: View {
                             }.padding(.horizontal, 10)
                             .isHidden(hasEdited ? false : true)
                             .sheet(isPresented: $showSheet, content: {
-                                PhotoPicker(mediaItems: mediaItems, filter: $filter, selectionLimit: $selectionLimit) { _ in
+                                MediaPicker(mediaItems: mediaItems, filter: $filter, selectionLimit: $selectionLimit) { _ in
                                     showSheet = false
                                 }
                             })
@@ -158,6 +164,8 @@ struct EditMediaView: View {
         .navigationBarBackButtonHidden(true)
     }
     
+    // MARK: - Method
+    
     private func move(fromOffsets source: IndexSet, toOffsets destination: Int) {
         mediaItems.items.move(fromOffsets: source, toOffset: destination)
         withAnimation {
@@ -168,6 +176,6 @@ struct EditMediaView: View {
 
 struct EditMediaView_Previews: PreviewProvider {
     static var previews: some View {
-        EditMediaView(mediaItems: PhotoPickerViewModel(), artistCollectionViewModel: ArtistCollectionViewModel())
+        EditMediaView(artistCollectionViewModel: ArtistCollectionViewModel())
     }
 }

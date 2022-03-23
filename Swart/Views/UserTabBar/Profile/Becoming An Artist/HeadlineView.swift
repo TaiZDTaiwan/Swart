@@ -7,13 +7,17 @@
 
 import SwiftUI
 
+// Sixth view for artist form where the future artist is asked to add a headline.
+// Once confirmed, send headline to database.
 struct HeadlineView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
-    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var artistCollectionViewModel = ArtistCollectionViewModel()
     @StateObject private var keyboardHandler = KeyboardHandler()
     
     @Binding var resetToRootView: Bool
@@ -24,6 +28,8 @@ struct HeadlineView: View {
     @State private var isAlertPresented = false
     @State private var alertMessage = ""
     @State private var textExamples = TextExamples()
+    
+    // MARK: - Body
     
     var body: some View {
 
@@ -79,7 +85,7 @@ struct HeadlineView: View {
                                         alertMessage = "Please come out with a headline before continuing."
                                         isAlertPresented = true
                                     } else {
-                                        artistCollectionViewModel.addSingleDocumentToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameDocument: "headline", document: headline)
+                                        artistCollectionViewModel.addSingleFieldToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameField: "headline", field: headline)
                                         self.isLinkActive = true
                                     }
                                 } label: {

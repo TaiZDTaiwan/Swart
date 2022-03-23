@@ -10,11 +10,14 @@ import AVKit
 import PhotosUI
 import SDWebImageSwiftUI
 
+// Last view for artist form where all previous information are displayed, once confirmed, the user is becoming an artist, can receive booking requests and have accessed to artist tab view.
 struct ReviewProfileView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
+
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     
     @ObservedObject var artistCollectionViewModel: ArtistCollectionViewModel
     
@@ -23,6 +26,8 @@ struct ReviewProfileView: View {
     @State private var isAlertDismissPresented = false
     @State private var isLinkActive = false
     @State private var showArtistTabBar = false
+    
+    // MARK: - Body
     
     var body: some View {
         

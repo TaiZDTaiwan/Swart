@@ -7,9 +7,12 @@
 
 import SwiftUI
 
+// Second search view where user selects between one to four departments to filter his artists search.
 struct SelectDepartmentView: View {
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    // MARK: - Properties
+    
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     
     @Binding var selectedArtName: String
     
@@ -18,7 +21,9 @@ struct SelectDepartmentView: View {
     @State private var selectedDepartments: [String] = [""]
     @State private var hasEdited = false
     
-    let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    private let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    
+    // MARK: - Body
     
     var body: some View {
 

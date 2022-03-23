@@ -7,7 +7,10 @@
 
 import SwiftUI
 
-final class RequestUserCollectionViewModel: ObservableObject {
+// Various methods to interact with request user properties in the database or other properties in different views.
+class RequestUserCollectionViewModel: ObservableObject {
+    
+    // MARK: - Properties
     
     @Published var pendingRequests: [RequestUser] = []
     @Published var comingRequests: [RequestUser] = []
@@ -20,8 +23,10 @@ final class RequestUserCollectionViewModel: ObservableObject {
     private let requestUsertCollectionRepository = RequestUserCollectionRepository()
     private let userCollectionViewModel = UserCollectionViewModel()
     
-    func addRequestToUser(request: RequestUser, completion: @escaping (() -> Void)) {
-        requestUsertCollectionRepository.addRequestToUser(collectionPath: RequestUserCollectionViewModel.collectionPath, request: request) { documentId in
+    // MARK: - Methods
+    
+    func addDocumentToRequestUserCollection(request: RequestUser, completion: @escaping (() -> Void)) {
+        requestUsertCollectionRepository.addDocumentToRequestUserCollection(collectionPath: RequestUserCollectionViewModel.collectionPath, request: request) { documentId in
             self.requestReference = documentId
             completion()
         }
@@ -51,15 +56,12 @@ final class RequestUserCollectionViewModel: ObservableObject {
     }
     
     func retrieveRequests(pendingRequest: [String], comingRequest: [String], previousRequest: [String]) {
-        
         for path in pendingRequest {
             self.getPendingRequest(documentId: path)
         }
-        
         for path in comingRequest {
             self.getComingRequest(documentId: path)
         }
-
         for path in previousRequest {
             self.getPreviousRequest(documentId: path)
         }
@@ -79,7 +81,6 @@ final class RequestUserCollectionViewModel: ObservableObject {
     
     private func getComingRequestToReorder(comingRequest: [String], completion: @escaping (() -> Void)) {
         let group = DispatchGroup()
-        
         for path in comingRequest {
             group.enter()
             requestUsertCollectionRepository.getRequest(collectionPath: RequestUserCollectionViewModel.collectionPath, documentId: path) { request in
@@ -98,9 +99,9 @@ final class RequestUserCollectionViewModel: ObservableObject {
         }
     }
     
-    private func determineComingRequestDates(completion: @escaping (() -> Void)) {
+    // To isolate all the coming request dates.
+    func determineComingRequestDates(completion: @escaping (() -> Void)) {
         let group = DispatchGroup()
-        
         for request in self.toReorderComingRequests {
             group.enter()
             self.addDates(date: request.date) {
@@ -112,20 +113,21 @@ final class RequestUserCollectionViewModel: ObservableObject {
         }
     }
     
-    private func addDates(date: String, completion: @escaping (() -> Void)) {
+    func addDates(date: String, completion: @escaping (() -> Void)) {
         self.dates.append(date)
         completion()
     }
     
+    // If a coming request date already passed, necessity to insert that request in previous array and remove it from coming.
     func orderRequestsInDatabase(documentId: String, titleFieldToInsert: String, titleFieldToRemove: String, element: String, completion: @escaping (() -> Void)) {
-        self.userCollectionViewModel.insertElementInArray(documentId: documentId, titleField: titleFieldToInsert, element: element) {
-            self.userCollectionViewModel.removeElementFromArray(documentId: documentId, titleField: titleFieldToRemove, element: element) {
+        self.userCollectionViewModel.insertElementInExistingArrayField(documentId: documentId, titleField: titleFieldToInsert, element: element) {
+            self.userCollectionViewModel.removeElementFromExistingArrayField(documentId: documentId, titleField: titleFieldToRemove, element: element) {
                 completion()
             }
         }
     }
     
-    private func isRequestPassed(bookingDate: String, completion: @escaping (Bool) -> Void) {
+    func isRequestPassed(bookingDate: String, completion: @escaping (Bool) -> Void) {
         let date = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
@@ -146,6 +148,7 @@ final class RequestUserCollectionViewModel: ObservableObject {
         requestUsertCollectionRepository.addIdToRequest(collectionPath: RequestUserCollectionViewModel.collectionPath, documentId: self.requestReference)
     }
     
+    // To determine if a request has been validated or declined.
     func acceptPendingRequest(documentId: String, completion: @escaping (() -> Void)) {
         requestUsertCollectionRepository.acceptPendingRequest(collectionPath: RequestUserCollectionViewModel.collectionPath, documentId: documentId)
         completion()

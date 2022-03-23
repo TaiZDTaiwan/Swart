@@ -8,9 +8,12 @@
 import SwiftUI
 import MapKit
 
+// In this view, future artist decides between using geolocated address information or manually enters its.
 struct EnterAddressView: View {
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    // MARK: - Properties
+    
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     
     @ObservedObject var addressViewModel: AddressViewModel
 
@@ -19,6 +22,8 @@ struct EnterAddressView: View {
     @State private var isLinkActive = false
     @State private var isLinkActiveManually = false
     @State private var street = ""
+    
+    // MARK: - Body
     
     var body: some View {
         

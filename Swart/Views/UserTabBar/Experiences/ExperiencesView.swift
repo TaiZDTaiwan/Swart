@@ -8,7 +8,10 @@
 import SwiftUI
 import SDWebImageSwiftUI
 
+// Third user tab where all user requests are displayed and divided into three kind: pending, coming and previous. User can navigate and choose the request he wants to consult.
 struct ExperiencesView: View {
+    
+    // MARK: - Properties
     
     @ObservedObject var userCollectionViewModel: UserCollectionViewModel
     @ObservedObject var requestUserCollectionViewModel: RequestUserCollectionViewModel
@@ -17,6 +20,8 @@ struct ExperiencesView: View {
     @State private var isPresented = false
     @State private var requestType = RequestType.pending
     @State private var convertedDate = ""
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -110,8 +115,10 @@ struct ExperiencesView: View {
                 }
             }
             .navigationTitle("Experiences")
-        }
+        }.navigationViewStyle(.stack)
     }
+    
+    // MARK: - Method
     
     private func convertDate(date: String) -> String {
         let array = date.components(separatedBy: "/")
@@ -128,6 +135,8 @@ struct ExperiencesView_Previews: PreviewProvider {
         ExperiencesView(userCollectionViewModel: UserCollectionViewModel(), requestUserCollectionViewModel: RequestUserCollectionViewModel())
     }
 }
+
+// MARK: - Refactoring structures
 
 struct CustomNoRequestFoundText: View {
     

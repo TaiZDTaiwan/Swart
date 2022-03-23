@@ -8,9 +8,13 @@
 import SwiftUI
 import Photos
 
+// Various methods to interact with media model, to add and delete medias.
 class PhotoPickerViewModel: ObservableObject {
+    
+    // MARK: - Property
     @Published var items = [Media]()
     
+    // MARK: - Methods
     func append(item: Media) {
         items.append(item)
     }
@@ -20,7 +24,7 @@ class PhotoPickerViewModel: ObservableObject {
     }
     
     func deleteAll() {
-        for (index, _) in items.enumerated() {
+        for index in items.indices {
             items[index].delete()
         }
         items.removeAll()

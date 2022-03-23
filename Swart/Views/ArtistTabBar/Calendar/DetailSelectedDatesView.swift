@@ -8,13 +8,16 @@
 import SwiftUI
 import ActivityIndicatorView
 
+// Let the artist decides wether he will be available at the selected dates and would update accordingly the database: can add unavailabilities in the artist document or delete them from the dedicated array.
 struct DetailSelectedDatesView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
-    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var artistCollectionViewModel = ArtistCollectionViewModel()
     
     @ObservedObject var calendarViewModel: CalendarViewModel
     
@@ -26,6 +29,8 @@ struct DetailSelectedDatesView: View {
     @State private var hasCheckedAvailable = true
     @State private var hasCheckedBlocked = false
     @State private var isLoading = false
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -103,8 +108,8 @@ struct DetailSelectedDatesView: View {
                         Button {
                             if hasCheckedBlocked {
                                 isLoading = true
-                                calendarViewModel.uploadBlockedDates(documentId: authentificationViewModel.userId.id ?? "", dates: selectedDates) {
-                                    calendarViewModel.getBlockedDates(documentId: authentificationViewModel.userId.id ?? "") {
+                                calendarViewModel.addBlockedDatesInArtistDocument(documentId: authentificationViewModel.userId.id ?? "", dates: selectedDates) {
+                                    calendarViewModel.getBlockedDatesFromArtistDocument(documentId: authentificationViewModel.userId.id ?? "") {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                                             selectedDates.removeAll()
                                             hasEdited = false
@@ -120,8 +125,8 @@ struct DetailSelectedDatesView: View {
                                         datesToDelete.append(date)
                                     }
                                 }
-                                calendarViewModel.deleteBlockedDates(documentId: authentificationViewModel.userId.id ?? "", dates: datesToDelete) {
-                                    calendarViewModel.getBlockedDates(documentId: authentificationViewModel.userId.id ?? "") {
+                                calendarViewModel.deleteBlockedDatesFromArtistDocument(documentId: authentificationViewModel.userId.id ?? "", dates: datesToDelete) {
+                                    calendarViewModel.getBlockedDatesFromArtistDocument(documentId: authentificationViewModel.userId.id ?? "") {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                                             selectedDates.removeAll()
                                             hasEdited = false
@@ -141,6 +146,8 @@ struct DetailSelectedDatesView: View {
                         }
                     }.padding(.vertical, 22)
                     .padding(.horizontal)
+                }.onAppear {
+                    print(selectedDatesForDetailView)
                 }
             }.isHidden(isLoading ? true : false)
         }.padding(.horizontal, 20)
@@ -153,12 +160,7 @@ struct DetailDayView_Previews: PreviewProvider {
     }
 }
 
-extension String {
-    var digits: String {
-        return components(separatedBy: CharacterSet.decimalDigits.inverted)
-            .joined()
-    }
-}
+// MARK: - Refactoring structure
 
 struct CircleForDetailSelectedDates: View {
     var hasChecked: Bool

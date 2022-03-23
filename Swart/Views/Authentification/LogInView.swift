@@ -7,9 +7,12 @@
 
 import SwiftUI
 
+// To allow user to fill his log in personal information and access to the tab view.
 struct LogInView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
+    
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
     @State private var email = ""
     @State private var password = ""
@@ -17,6 +20,8 @@ struct LogInView: View {
     @State private var showMain = false
     @State private var isAlertPresented = false
     @State private var alertMessage = ""
+    
+    // MARK: - Body
 
     var body: some View {
         

@@ -8,6 +8,7 @@
 import SwiftUI
 import PhotosUI
 
+// To set live photo representable.
 struct LivePhotoView: UIViewRepresentable {
     var livePhoto: PHLivePhoto
     

@@ -7,11 +7,15 @@
 
 import SwiftUI
 
+// Firebase methods related to user's authentification process and used in different views.
 class AuthentificationViewModel: ObservableObject {
     
-    @Published var userId = UserId(id: "")
+    // MARK: - Properties
     
-    let authentificationRepository = AuthentificationRepository()
+    @Published var userId = UserId(id: "")
+    private let authentificationRepository = AuthentificationRepository()
+    
+    // MARK: - Methods
     
     func createUserInDatabase(email: String, password: String, rePassword: String, newUser: User, progressEmail: @escaping (Result<String, Error>) -> Void) {
         authentificationRepository.createUserInDatabase(email: email, password: password, rePassword: rePassword, newUser: newUser, progressEmail: progressEmail, completion: { userId in

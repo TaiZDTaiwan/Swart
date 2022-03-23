@@ -8,11 +8,14 @@
 import SwiftUI
 import ActivityIndicatorView
 
+// To edit current artist's headline, once confirmed would replace old headline by the new one in the database.
 struct EditHeadlineView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
+    
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     
     @ObservedObject var artistCollectionViewModel: ArtistCollectionViewModel
     
@@ -21,7 +24,9 @@ struct EditHeadlineView: View {
     @State private var hasEdited = false
     @State private var isLoading = false
     
-    let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    private let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -82,7 +87,7 @@ struct EditHeadlineView: View {
                         
                         Button {
                             isLoading = true
-                            artistCollectionViewModel.addSingleDocumentToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameDocument: "headline", document: headline) {
+                            artistCollectionViewModel.addSingleFieldToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameField: "headline", field: headline) {
                                 artistCollectionViewModel.get(documentId: authentificationViewModel.userId.id ?? "") {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                                         self.presentationMode.wrappedValue.dismiss()

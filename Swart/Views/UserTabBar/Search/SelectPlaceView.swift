@@ -7,13 +7,16 @@
 
 import SwiftUI
 
+// Third search view where user selects his desired place to attend the performance.
 struct SelectPlaceView: View {
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    // MARK: - Properties
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     
-    @StateObject var userCollectionViewModel = UserCollectionViewModel()
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
+    
+    @StateObject private var userCollectionViewModel = UserCollectionViewModel()
     
     @Binding var selectedArtName: String
     @Binding var selectedDepartments: [String]
@@ -25,7 +28,9 @@ struct SelectPlaceView: View {
     @State private var selectedPlaceName = ""
     @State private var fromAddressView = false
     
-    var places: [Place] = PlaceList.places
+    private let places: [Place] = PlaceList.places
+    
+    // MARK: - Body
     
     var body: some View {
 

@@ -7,12 +7,17 @@
 
 import SwiftUI
 
+// User decides to manually fill his address information. After validation, upload in database user address information.
 struct ConfirmUserAddressManuallyView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    // MARK: - Properties
     
-    @StateObject var userCollectionViewModel = UserCollectionViewModel()
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
+    
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var userCollectionViewModel = UserCollectionViewModel()
+    
     @ObservedObject var addressViewModel: AddressViewModel
     
     @Binding var selectedArtName: String
@@ -32,6 +37,8 @@ struct ConfirmUserAddressManuallyView: View {
     @State private var isLinkActive = false
     @State private var fullAddress = ""
     @State private var fromAddressView = true
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -119,7 +126,7 @@ struct ConfirmUserAddressManuallyView: View {
                         
                             if !isAddressIncomplete() {
                                 isLoading = true
-                                addressViewModel.convertAddress(address: fullAddress) {
+                                addressViewModel.convertAddressIntoMapLocation(address: fullAddress) {
                                     if addressViewModel.convertedCoordinatesAddress != nil {
                                         userCollectionViewModel.addAddressInformationToDatabase(documentId: authentificationViewModel.userId.id ?? "", documentAddress: fullAddress, documentDepartment: addressViewModel.determineDepartmentToSaveInDatabase(postalCode: postalCode)) {
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
@@ -166,7 +173,9 @@ struct ConfirmUserAddressManuallyView: View {
             }, label: {
                 BackwardChevron()
             }))
-        }
+    }
+    
+    // MARK: - Method
     
     private func isAddressIncomplete() -> Bool {
         let addressArray = [subThoroughfare, thoroughfare, postalCode, locality, country]

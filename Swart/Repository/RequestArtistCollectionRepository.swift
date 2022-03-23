@@ -7,12 +7,17 @@
 
 import Firebase
 
+// Firebase methods to interact with request artist properties in the database.
 class RequestArtistCollectionRepository {
+    
+    // MARK: - Properties
     
     private let store = Firestore.firestore()
     private let storage = Storage.storage().reference()
     
-    func addRequestToArtist(collectionPath: String, request: RequestArtist, completion: @escaping (String) -> Void) {
+    // MARK: - Methods
+    
+    func addDocumentToRequestArtistCollection(collectionPath: String, request: RequestArtist, completion: @escaping (String) -> Void) {
         var reference: DocumentReference?
         do {
             reference = try store.collection(RequestArtistCollectionViewModel.collectionPath).addDocument(from: request) { err in
@@ -30,7 +35,6 @@ class RequestArtistCollectionRepository {
     
     func getRequest(collectionPath: String, documentId: String, completion: @escaping (RequestArtist) -> Void) {
         let docRef = store.collection(collectionPath).document(documentId)
-
         docRef.getDocument { (document, error) in
             let result = Result {
               try document?.data(as: RequestArtist.self)
@@ -50,7 +54,6 @@ class RequestArtistCollectionRepository {
     
     func addIdToRequest(collectionPath: String, documentId: String) {
         let docRef = store.collection(collectionPath).document(documentId)
-
         docRef.updateData(["requestId": documentId]) { err in
             if let err = err {
                 print("Error updating document: \(err)")
@@ -62,7 +65,6 @@ class RequestArtistCollectionRepository {
     
     func addUserIdToRequest(collectionPath: String, documentId: String, requestIdUser: String) {
         let docRef = store.collection(collectionPath).document(documentId)
-
         docRef.updateData(["requestIdUser": requestIdUser]) { err in
             if let err = err {
                 print("Error updating document: \(err)")
@@ -74,7 +76,6 @@ class RequestArtistCollectionRepository {
     
     func acceptPendingRequest(collectionPath: String, documentId: String) {
         let docRef = store.collection(collectionPath).document(documentId)
-
         docRef.updateData(["accepted": true]) { err in
             if let err = err {
                 print("Error updating document: \(err)")

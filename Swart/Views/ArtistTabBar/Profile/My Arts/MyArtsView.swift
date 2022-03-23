@@ -9,11 +9,16 @@ import SwiftUI
 import AVKit
 import SDWebImageSwiftUI
 
+// Display all related art information and possibility to select one for editing.
 struct MyArtsView: View {
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    // MARK: - Properties
+    
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     
     @ObservedObject var artistCollectionViewModel: ArtistCollectionViewModel
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -110,7 +115,7 @@ struct MyArtsView: View {
                     })
                 }
             }
-        }
+        }.navigationViewStyle(.stack)
     }
 }
 
@@ -119,6 +124,8 @@ struct MyArtsView_Previews: PreviewProvider {
         MyArtsView(artistCollectionViewModel: ArtistCollectionViewModel())
     }
 }
+
+// MARK: - Refactoring structure
 
 struct CustomVStackForMyArtsView: View {
     var view: AnyView

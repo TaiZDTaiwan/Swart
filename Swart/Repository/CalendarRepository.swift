@@ -7,11 +7,16 @@
 
 import Firebase
 
+// Firebase methods to interact with properties related to calendars in the database.
 class CalendarRepository {
+    
+    // MARK: - Properties
     
     private let store = Firestore.firestore()
     
-    func uploadBlockedDates(collectionPath: String, documentId: String, dates: [String], completion: @escaping (() -> Void)) {
+    // MARK: - Methods
+    
+    func addBlockedDatesInArtistDocument(collectionPath: String, documentId: String, dates: [String], completion: @escaping (() -> Void)) {
         let docRef =  store.collection(collectionPath).document(documentId)
         docRef.getDocument { (document, error) in
             if let document = document, document.exists {
@@ -25,7 +30,7 @@ class CalendarRepository {
         }
     }
     
-    func deleteBlockedDates(collectionPath: String, documentId: String, dates: [String], completion: @escaping (() -> Void)) {
+    func deleteBlockedDatesFromArtistDocument(collectionPath: String, documentId: String, dates: [String], completion: @escaping (() -> Void)) {
         let docRef =  store.collection(collectionPath).document(documentId)
         docRef.getDocument { (document, error) in
             if let document = document, document.exists {
@@ -39,7 +44,7 @@ class CalendarRepository {
         }
     }
     
-    func getBlockedDates(collectionPath: String, documentId: String, completion: @escaping ([String]) -> Void) {
+    func getBlockedDatesFromArtistDocument(collectionPath: String, documentId: String, completion: @escaping ([String]) -> Void) {
         let docRef =  store.collection(collectionPath).document(documentId)
         docRef.getDocument { (document, error) in
             if let document = document, document.exists {

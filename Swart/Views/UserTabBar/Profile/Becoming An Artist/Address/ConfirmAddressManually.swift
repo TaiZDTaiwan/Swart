@@ -9,12 +9,16 @@ import SwiftUI
 import MapKit
 import ActivityIndicatorView
 
+// Future artist decides to manually fill his address information. After validation, upload in database his address information.
 struct ConfirmAddressManually: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    // MARK: - Properties
     
-    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
+    
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var artistCollectionViewModel = ArtistCollectionViewModel()
     
     @ObservedObject var addressViewModel: AddressViewModel
 
@@ -31,6 +35,8 @@ struct ConfirmAddressManually: View {
     @State private var isLinkActive = false
     @State private var fullAddress = ""
     @State private var isShowLinkAlert = false
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -117,10 +123,10 @@ struct ConfirmAddressManually: View {
                             fullAddress = "\(subThoroughfare)" + " \(thoroughfare)" + ", \(postalCode)" + " \(locality)" + ", \(country)"
                         
                             if !isAddressIncomplete() {
-                                addressViewModel.convertAddress(address: fullAddress) {
+                                addressViewModel.convertAddressIntoMapLocation(address: fullAddress) {
                                 isLoading = true
                                     if addressViewModel.convertedCoordinatesAddress != nil {
-                                        artistCollectionViewModel.addAddressInformationToDatabase(documentId: authentificationViewModel.userId.id ?? "", documentAddress: fullAddress, documentDepartment: addressViewModel.determineDepartmentToSaveInDatabase(postalCode: postalCode)) {
+                                        artistCollectionViewModel.addAddressInformationToDatabase(documentId: authentificationViewModel.userId.id ?? "", address: fullAddress, department: addressViewModel.determineDepartmentToSaveInDatabase(postalCode: postalCode)) {
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                                                 isShowLinkAlert = true
                                                 isLoading = false
@@ -147,7 +153,7 @@ struct ConfirmAddressManually: View {
                         Alert(title: Text("Those information don't seem to match a proper location, are you sure to confirm?"),
                         message: .none,
                         primaryButton: .destructive(Text("Confirm")) {
-                            artistCollectionViewModel.addAddressInformationToDatabase(documentId: authentificationViewModel.userId.id ?? "", documentAddress: fullAddress, documentDepartment: addressViewModel.determineDepartmentToSaveInDatabase(postalCode: postalCode)) {
+                            artistCollectionViewModel.addAddressInformationToDatabase(documentId: authentificationViewModel.userId.id ?? "", address: fullAddress, department: addressViewModel.determineDepartmentToSaveInDatabase(postalCode: postalCode)) {
                                 isShowLinkAlert = true
                             }
                         },
@@ -164,7 +170,9 @@ struct ConfirmAddressManually: View {
             }, label: {
                 BackwardChevron()
             }))
-        }
+    }
+    
+    // MARK: - Method
     
     private func isAddressIncomplete() -> Bool {
         let addressArray = [subThoroughfare, thoroughfare, postalCode, locality, country]

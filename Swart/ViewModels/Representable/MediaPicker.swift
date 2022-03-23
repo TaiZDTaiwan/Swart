@@ -1,5 +1,5 @@
 //
-//  PhotoPicker.swift
+//  MediaPicker.swift
 //  Swart
 //
 //  Created by Raphaël Huang-Dubois on 15/10/2021.
@@ -8,7 +8,8 @@
 import SwiftUI
 import PhotosUI
 
-struct PhotoPicker: UIViewControllerRepresentable {
+// To set the media picker, possible to select photo, video or live photo.
+struct MediaPicker: UIViewControllerRepresentable {
     typealias UIViewControllerType = PHPickerViewController
     
     @ObservedObject var mediaItems: PhotoPickerViewModel
@@ -36,9 +37,9 @@ struct PhotoPicker: UIViewControllerRepresentable {
     }
     
     class Coordinator: PHPickerViewControllerDelegate {
-        var photoPicker: PhotoPicker
+        var photoPicker: MediaPicker
         
-        init(with photoPicker: PhotoPicker) {
+        init(with photoPicker: MediaPicker) {
             self.photoPicker = photoPicker
         }
         
@@ -55,7 +56,7 @@ struct PhotoPicker: UIViewControllerRepresentable {
                 guard let typeIdentifier = itemProvider.registeredTypeIdentifiers.first,
                       let utType = UTType(typeIdentifier)
                 else { continue }
-             
+
                 if utType.conforms(to: .image) {
                     self.getPhoto(from: itemProvider, isLivePhoto: false)
                 } else if utType.conforms(to: .movie) {
@@ -97,17 +98,15 @@ struct PhotoPicker: UIViewControllerRepresentable {
                 if let error = error {
                     print(error.localizedDescription)
                 }
-         
                 guard let url = url else { return }
          
                 let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
                 guard let targetURL = documentsDirectory?.appendingPathComponent(url.lastPathComponent) else { return }
-         
+
                 do {
                     if FileManager.default.fileExists(atPath: targetURL.path) {
                         try FileManager.default.removeItem(at: targetURL)
                     }
-         
                     try FileManager.default.copyItem(at: url, to: targetURL)
          
                     DispatchQueue.main.async {

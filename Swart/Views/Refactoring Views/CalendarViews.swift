@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Refactoring structures using in calendar views.
 struct CustomTextForBlockedDates: View {
     
     var date: Int
@@ -92,7 +93,7 @@ struct CustomDatedStack: View {
     @Binding var currentMonth: Int
     
     var body: some View {
-
+        
         HStack(spacing: 20) {
             VStack(alignment: .leading, spacing: 10) {
                 Text(extractTodaysYear)

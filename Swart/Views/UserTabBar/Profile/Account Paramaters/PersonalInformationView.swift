@@ -8,11 +8,14 @@
 import SwiftUI
 import ActivityIndicatorView
 
+// All user's personal information were retrieved and are displayed in that view, some of those information can be edited by user and will be change in the database accordingly.
 struct PersonalInformationView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
+    
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     
     @ObservedObject var userCollectionViewModel: UserCollectionViewModel
     
@@ -22,7 +25,7 @@ struct PersonalInformationView: View {
     @State private var isShowEditView = false
     @State private var hasEdited = false
     
-    let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    private let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     
     var btnBack : some View {
         Button {
@@ -31,6 +34,8 @@ struct PersonalInformationView: View {
             BackwardChevron()
         }.isHidden(isLoading ? true : false)
     }
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -123,7 +128,7 @@ struct PersonalInformationView: View {
                         
                     let user = User(firstName: getRightPersoInfo(firstName, userCollectionViewModel.user.firstName), lastName: getRightPersoInfo(lastName, userCollectionViewModel.user.lastName), birthdate: userCollectionViewModel.user.birthdate, address: userCollectionViewModel.user.address, department: userCollectionViewModel.user.department, email: userCollectionViewModel.user.email, profilePhoto: userCollectionViewModel.user.profilePhoto, wishlist: userCollectionViewModel.user.wishlist, pendingRequest: userCollectionViewModel.user.pendingRequest, comingRequest: userCollectionViewModel.user.comingRequest, previousRequest: userCollectionViewModel.user.previousRequest)
                         
-                    userCollectionViewModel.addToUserCollection(documentId: authentificationViewModel.userId.id ?? "", user: user) {
+                    userCollectionViewModel.addDocumentToUserCollection(documentId: authentificationViewModel.userId.id ?? "", user: user) {
                         userCollectionViewModel.get(documentId: authentificationViewModel.userId.id ?? "") {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                                 presentationMode.wrappedValue.dismiss()
@@ -138,6 +143,8 @@ struct PersonalInformationView: View {
             }
         }
     }
+    
+    // MARK: - Method
     
     private func getRightPersoInfo(_ info: String, _ placeholder: String) -> String {
         if info == "" {

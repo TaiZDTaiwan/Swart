@@ -7,9 +7,14 @@
 
 import SwiftUI
 
+// Home user tab view where he can start searching for artists.
 struct SearchArtistView: View {
     
+    // MARK: - Property
+    
     @State private var showSheet = false
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -59,7 +64,7 @@ struct SearchArtistView: View {
                 })
             }.navigationBarTitle("", displayMode: .inline)
             .navigationBarHidden(true)
-        }
+        }.navigationViewStyle(.stack)
     }
 }
 

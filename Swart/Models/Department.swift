@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// List of French departments.
 struct Department {
     
     static let names: [String] = [

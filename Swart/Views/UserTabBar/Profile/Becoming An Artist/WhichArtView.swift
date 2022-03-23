@@ -7,13 +7,16 @@
 
 import SwiftUI
 
+// Second view for artist form where the future artist is asked to select the art he wants to perform, once confirmed, would create a new document in artist collection in firebase with the first information submitted.
 struct WhichArtView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
-    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var artistCollectionViewModel = ArtistCollectionViewModel()
     
     @Binding var resetToRootView: Bool
     
@@ -24,7 +27,9 @@ struct WhichArtView: View {
     @State private var isAlertPresented = false
     @State private var alertMessage = ""
     
-    var arts: [Art] = ArtList.arts
+    private let arts: [Art] = ArtList.arts
+    
+    // MARK: - Body
     
     var body: some View {
 
@@ -95,7 +100,7 @@ struct WhichArtView: View {
                                         isAlertPresented = true
                                     } else {
                                         artistCollectionViewModel.setArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameDocument: "id", document: authentificationViewModel.userId.id ?? "") {
-                                            artistCollectionViewModel.addSingleDocumentToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameDocument: "art", document: selectedArtName) {
+                                            artistCollectionViewModel.addSingleFieldToArtistCollection(documentId: authentificationViewModel.userId.id ?? "", nameField: "art", field: selectedArtName) {
                                                 artistCollectionViewModel.addEmptyDataToArtistCollection(documentId: authentificationViewModel.userId.id ?? "")
                                                 self.isLinkActive = true
                                             }

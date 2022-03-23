@@ -7,11 +7,14 @@
 
 import SwiftUI
 
+// If no performance date was chosen, user needs in this view to choose a date according to selected artist's availabilities.
 struct CheckArtistAvailabilityView: View {
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    // MARK: - Properties
     
-    @StateObject var calendarViewModel = CalendarViewModel()
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var calendarViewModel = CalendarViewModel()
     
     @Binding var selectedArtist: Artist
     @Binding var selectedDate: String
@@ -24,6 +27,8 @@ struct CheckArtistAvailabilityView: View {
     @State private var currentYear = 0
     @State private var todaysYear = 0
     @State private var listedArtists: [Artist] = []
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -186,6 +191,8 @@ struct CheckArtistAvailabilityView: View {
         .navigationBarTitle("", displayMode: .inline)
         .navigationBarHidden(true)
     }
+    
+    // MARK: - Methods
     
     private func getDatesView(date: Int) -> AnyView {
         

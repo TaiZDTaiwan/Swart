@@ -8,7 +8,9 @@
 import SwiftUI
 import Photos
 
+// To store the various media elements submitted.
 struct Media: Identifiable, Equatable {
+    
     enum MediaType {
         case photo, video, livePhoto
     }

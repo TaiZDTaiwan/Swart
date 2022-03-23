@@ -6,8 +6,8 @@
 //
 
 import SwiftUI
-import UIKit
 
+// Extension to hide a view.
 extension View {
     @ViewBuilder func isHidden(_ hidden: Bool, remove: Bool = false) -> some View {
         if hidden {

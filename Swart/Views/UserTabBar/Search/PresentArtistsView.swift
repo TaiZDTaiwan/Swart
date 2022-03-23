@@ -9,13 +9,16 @@ import SwiftUI
 import SDWebImageSwiftUI
 import AVKit
 
+// Fifth search view where all filtered artists are shown to user and has the possibility to select one for further details.
 struct PresentArtistsView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @StateObject var userCollectionViewModel = UserCollectionViewModel()
-    @StateObject var calendarViewModel = CalendarViewModel()
-    @StateObject var addressViewModel = AddressViewModel()
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
+    
+    @StateObject private var userCollectionViewModel = UserCollectionViewModel()
+    @StateObject private var calendarViewModel = CalendarViewModel()
+    @StateObject private var addressViewModel = AddressViewModel()
     
     @ObservedObject var artistCollectionViewModel: ArtistCollectionViewModel
     
@@ -29,6 +32,8 @@ struct PresentArtistsView: View {
     @State private var selectedDateConverted = ""
     @State private var isLinkActive = false
     @State private var isShowMain = false
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -162,6 +167,8 @@ struct PresentArtistsView: View {
         }.navigationBarTitle("", displayMode: .inline)
         .navigationBarHidden(true)
     }
+    
+    // MARK: - Method
     
     func determineNumberOfResults() -> String {
         let number = String(artistCollectionViewModel.artistsResult.count)

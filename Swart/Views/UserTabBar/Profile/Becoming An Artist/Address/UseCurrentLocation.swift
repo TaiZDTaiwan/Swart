@@ -8,13 +8,17 @@
 import SwiftUI
 import ActivityIndicatorView
 
+// Future artist accepts to be geolocated and all his address information are retrieved in that view, he only needs to confirm or edit them if needed.
+// Before going to the next view, upload in database artist address information.
 struct UseCurrentLocation: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
-    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var artistCollectionViewModel = ArtistCollectionViewModel()
     
     @ObservedObject var addressViewModel: AddressViewModel
     
@@ -29,6 +33,8 @@ struct UseCurrentLocation: View {
     @State private var isLinkActive = false
     @State private var isLoading = true
     @State private var isAlertPresented = false
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -102,7 +108,7 @@ struct UseCurrentLocation: View {
                             
                             fullAddress = "\(addressViewModel.selectAddressElement(modifyElement: subThoroughfare, currentElement: addressViewModel.address.subThoroughfare))" + " \(addressViewModel.selectAddressElement(modifyElement: thoroughfare, currentElement: addressViewModel.address.thoroughfare))" + ", \(addressViewModel.selectAddressElement(modifyElement: postalCode, currentElement: addressViewModel.address.postalCode))" + " \(addressViewModel.selectAddressElement(modifyElement: locality, currentElement: addressViewModel.address.locality))" + ", \(addressViewModel.selectAddressElement(modifyElement: country, currentElement: addressViewModel.address.country))"
                             
-                            artistCollectionViewModel.addAddressInformationToDatabase(documentId: authentificationViewModel.userId.id ?? "", documentAddress: fullAddress, documentDepartment: addressViewModel.determineDepartmentToSaveInDatabase(postalCode: addressViewModel.selectAddressElement(modifyElement: postalCode, currentElement: addressViewModel.address.postalCode))) {
+                            artistCollectionViewModel.addAddressInformationToDatabase(documentId: authentificationViewModel.userId.id ?? "", address: fullAddress, department: addressViewModel.determineDepartmentToSaveInDatabase(postalCode: addressViewModel.selectAddressElement(modifyElement: postalCode, currentElement: addressViewModel.address.postalCode))) {
                                 isLinkActive = true
                             }
                         } label: {

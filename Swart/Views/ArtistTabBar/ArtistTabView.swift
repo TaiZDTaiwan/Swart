@@ -7,13 +7,19 @@
 
 import SwiftUI
 
+// Artist tab view where all artist's information are retrieved and communicated to child views: artist personal information and related requests.
+// Also, coming requests which booking date is already passed are transferred to previous requests in the database.
 struct ArtistTabView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
-    @StateObject var requestArtistCollectionViewModel = RequestArtistCollectionViewModel()
-    @StateObject var calendarViewModel = CalendarViewModel()
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
+    
+    @StateObject private var artistCollectionViewModel = ArtistCollectionViewModel()
+    @StateObject private var requestArtistCollectionViewModel = RequestArtistCollectionViewModel()
+    @StateObject private var calendarViewModel = CalendarViewModel()
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -39,7 +45,7 @@ struct ArtistTabView: View {
                 }
             }.accentColor(.mainRed)
         }.onAppear {
-            calendarViewModel.getBlockedDates(documentId: authentificationViewModel.userId.id ?? "")
+            calendarViewModel.getBlockedDatesFromArtistDocument(documentId: authentificationViewModel.userId.id ?? "")
             artistCollectionViewModel.get(documentId: authentificationViewModel.userId.id ?? "") {
                 requestArtistCollectionViewModel.getRequests(pendingRequest: artistCollectionViewModel.artist.pendingRequest, comingRequest: artistCollectionViewModel.artist.comingRequest, previousRequest: artistCollectionViewModel.artist.previousRequest, documentId: authentificationViewModel.userId.id ?? "") {
                     artistCollectionViewModel.get(documentId: authentificationViewModel.userId.id ?? "") {

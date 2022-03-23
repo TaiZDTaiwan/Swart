@@ -8,9 +8,13 @@
 import SwiftUI
 import ActivityIndicatorView
 
+// To let user create a new account and send his information to the database in a new document in user collection.
+// After creation, accessing to the main tab view.
 struct CreateAccountView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
+    
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
     @Binding var showLogInSheetView: Bool
     
@@ -27,7 +31,9 @@ struct CreateAccountView: View {
     @State private var isAlertPresented = false
     @State private var alertMessage = ""
     
-    let datesFormattersViewModel = DatesFormattersViewModel()
+    private let datesFormattersViewModel = DatesFormattersViewModel()
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -125,8 +131,9 @@ struct CreateAccountView: View {
         }
     }
     
+    // MARK: - Methods
+    
     private func createUserInDatabase() {
-        
         let personalInformation = [firstName, lastName, email, password, rePassword]
         let userIsAdult = datesFormattersViewModel.userIs18(birthdate: birthday)
     
@@ -171,6 +178,8 @@ struct ContentView_Previews: PreviewProvider {
         CreateAccountView(showLogInSheetView: .constant(false))
     }
 }
+
+// MARK: - Refactoring structures
 
 struct CustomTextField: View {
     let text: String

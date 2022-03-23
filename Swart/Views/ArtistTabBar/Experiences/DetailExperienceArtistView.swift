@@ -9,24 +9,32 @@ import SwiftUI
 import SDWebImageSwiftUI
 import ActivityIndicatorView
 
+// To preview the artist selected request and all the booking information related to it.
+// In addition, the artist can accept or decline the pending requests received.
 struct DetailExperienceArtistView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
+    
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var userCollectionViewModel = UserCollectionViewModel()
+    @StateObject private var requestUserCollectionViewModel = RequestUserCollectionViewModel()
     
     @ObservedObject var artistCollectionViewModel: ArtistCollectionViewModel
     @ObservedObject var requestArtistCollectionViewModel: RequestArtistCollectionViewModel
-    @StateObject var userCollectionViewModel = UserCollectionViewModel()
-    @StateObject var requestUserCollectionViewModel = RequestUserCollectionViewModel()
     
     @Binding var request: RequestArtist
     @Binding var requestType: RequestType
     @Binding var convertedDate: String
+    
     @State private var isLoading = false
     @State private var showMainArtist = false
     @State private var isShowingAlert = false
     @State private var message = ""
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -215,6 +223,8 @@ struct DetailExperienceArtistView_Previews: PreviewProvider {
         DetailExperienceArtistView(artistCollectionViewModel: ArtistCollectionViewModel(), requestArtistCollectionViewModel: RequestArtistCollectionViewModel(), request: .constant(RequestArtist(requestId: "", requestIdUser: "", idUser: "", firstName: "", city: "", department: "", address: "", date: "", location: "", guest: "", message: "", coverPhoto: "", accepted: false)), requestType: .constant(RequestType.previous), convertedDate: .constant(""))
     }
 }
+
+// MARK: - Refactoring structures
 
 struct ModifierInDetailExperienceArtistView: ViewModifier {
     

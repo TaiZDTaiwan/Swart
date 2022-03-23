@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Extension for custom border to insert in views.
 extension View {
     func border(width: CGFloat, edges: [Edge], color: Color) -> some View {
         overlay(EdgeBorder(width: width, edges: edges).foregroundColor(color))

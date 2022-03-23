@@ -8,14 +8,19 @@
 import SwiftUI
 import SDWebImageSwiftUI
 
+// To preview the user selected request and all the booking information related to it.
 struct DetailExperienceView: View {
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    // MARK: - Properties
+    
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     
     @Binding var request: RequestUser
     @Binding var convertedDate: String
 
     @State private var bookingDate = ""
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -124,6 +129,8 @@ struct DetailExperienceView_Previews: PreviewProvider {
         DetailExperienceView(request: .constant(RequestUser(requestId: "", headline: "", city: "", department: "", address: "", date: "", location: "", guest: "", coverPhoto: "", accepted: false)), convertedDate: .constant(""))
     }
 }
+
+// MARK: - Refactoring structure
 
 struct CustomRectangleInDetailRequest: View {
     var body: some View {

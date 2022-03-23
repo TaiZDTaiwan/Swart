@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Extension for custom placeholder to insert in textfield.
 extension View {
     func placeholder<Content: View>(
         when shouldShow: Bool,

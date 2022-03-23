@@ -7,11 +7,16 @@
 
 import Firebase
 
+// Firebase methods related to user's authentification process.
 class AuthentificationRepository {
-
+    
+    // MARK: - Properties
+    
     private let store = Firestore.firestore()
     private let userCollection = UserCollectionRepository()
 
+    // MARK: - Methods
+    
     func createUserInDatabase(email: String, password: String, rePassword: String, newUser: User, progressEmail: @escaping (Result<String, Error>) -> Void, completion: @escaping (String?) -> Void, collectionPath: String) {
         Auth.auth().createUser(withEmail: email, password: password) { (authDataResult, error) in
             if error != nil {

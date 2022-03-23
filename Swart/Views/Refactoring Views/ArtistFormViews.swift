@@ -7,14 +7,15 @@
 
 import SwiftUI
 
+// Refactoring structures using in artist form views.
 struct ButtonsForArtistForm: View {
     
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    
     @Binding var isAlertDismissPresented: Bool
     @Binding var resetToRootView: Bool
     
     var body: some View {
+        
         HStack {
             BackButtonForArtistForm(presentationMode: _presentationMode)
             
@@ -31,6 +32,7 @@ struct BackButtonForArtistForm: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     var body: some View {
+        
         Button(action: {
             presentationMode.wrappedValue.dismiss()
         }, label: {
@@ -52,11 +54,11 @@ struct DismissButtonForArtistForm: View {
     
     @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
     @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
-    
     @Binding var isAlertDismissPresented: Bool
     @Binding var resetToRootView: Bool
     
     var body: some View {
+        
         Button(action: {
             isAlertDismissPresented = true
         }, label: {
@@ -80,7 +82,9 @@ struct DismissButtonForArtistForm: View {
 }
 
 struct TextLabelNextForArtistForm: View {
+    
     var body: some View {
+        
         Text("Next").bold()
             .frame(width: 42, height: 0, alignment: .center)
             .font(.system(size: 18))
@@ -93,7 +97,9 @@ struct TextLabelNextForArtistForm: View {
 }
 
 struct TextLabelIgnoreForArtistForm: View {
+    
     var body: some View {
+        
         Text("Ignore this step").bold().underline()
             .font(.system(size: 15))
             .foregroundColor(.black)
@@ -102,14 +108,18 @@ struct TextLabelIgnoreForArtistForm: View {
 }
 
 struct BackgroundForArtistForm: View {
+    
     var body: some View {
+        
         LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.7496727109, green: 0.1164080873, blue: 0.1838892698, alpha: 1)), Color(#colorLiteral(red: 1, green: 0.7142756581, blue: 0.59502846, alpha: 1))]), startPoint: .topLeading, endPoint: .topTrailing)
             .ignoresSafeArea()
     }
 }
 
 struct NextButtonForArtistForm: View {
+    
     var body: some View {
+        
         Text("Next").bold()
             .frame(width: 42, height: 0, alignment: .center)
             .font(.system(size: 18))
@@ -127,6 +137,7 @@ struct ReviewAndSaveButtonForArtistForm: View {
     var text: String
     
     var body: some View {
+        
         Text(text).bold()
             .frame(width: 120, height: 5, alignment: .center)
             .font(.system(size: 18))

@@ -7,9 +7,14 @@
 
 import Firebase
 
+// Firebase methods to interact with properties related to wishlist in the database.
 class WishlistRepository {
     
+    // MARK: - Properties
+    
     private let store = Firestore.firestore()
+    
+    // MARK: - Methods
     
     func getArtistsInWishlist(collectionPath: String, documentId: String, completion: @escaping (Artist) -> Void) {
         let docRef = store.collection(collectionPath).document(documentId)

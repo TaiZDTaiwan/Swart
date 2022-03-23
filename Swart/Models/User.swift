@@ -6,8 +6,8 @@
 //
 
 import SwiftUI
-import FirebaseFirestoreSwift
 
+// User structure to download and upload in Firebase.
 struct User: Codable, Hashable {
     var firstName: String
     var lastName: String

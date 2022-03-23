@@ -7,7 +7,10 @@
 
 import SwiftUI
 
-final class ArtistCollectionViewModel: ObservableObject {
+// Various methods to interact with artist properties in the database or other properties in different views.
+class ArtistCollectionViewModel: ObservableObject {
+    
+    // MARK: - Properties
     
     @Published var artist = Artist(id: "", art: "", place: "", address: "", department: "", headline: "", textPresentation: "", profilePhoto: "", presentationVideo: "", artContentMedia: [], blockedDates: [], pendingRequest: [], comingRequest: [], previousRequest: [])
     @Published var artistsResult: [Artist] = []
@@ -19,16 +22,19 @@ final class ArtistCollectionViewModel: ObservableObject {
     static let collectionPath = "artist"
     private let artistCollectionRepository = ArtistCollectionRepository()
     
+    // MARK: - Methods
+    
     func setArtistCollection(documentId: String, nameDocument: String, document: String, completion: @escaping (() -> Void)) {
         artistCollectionRepository.setArtistCollection(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, nameDocument: nameDocument, document: document)
         completion()
     }
     
+    // Those data are added during the first artist form view and are meant to be filled later on when artist can access the artist tab view, but have to be set up to retrieve all Artist object at once from the database.
     func addEmptyDataToArtistCollection(documentId: String) {
-        self.addSingleArrayToArtistCollection(documentId: documentId, nameDocument: "blockedDates", array: [])
-        self.addSingleArrayToArtistCollection(documentId: documentId, nameDocument: "pendingRequest", array: [])
-        self.addSingleArrayToArtistCollection(documentId: documentId, nameDocument: "comingRequest", array: [])
-        self.addSingleArrayToArtistCollection(documentId: documentId, nameDocument: "previousRequest", array: [])
+        self.addSingleArrayToArtistCollection(documentId: documentId, nameField: "blockedDates", array: [])
+        self.addSingleArrayToArtistCollection(documentId: documentId, nameField: "pendingRequest", array: [])
+        self.addSingleArrayToArtistCollection(documentId: documentId, nameField: "comingRequest", array: [])
+        self.addSingleArrayToArtistCollection(documentId: documentId, nameField: "previousRequest", array: [])
     }
     
     func get(documentId: String, completion: (() -> Void)? = nil) {
@@ -38,6 +44,7 @@ final class ArtistCollectionViewModel: ObservableObject {
         }
     }
     
+    // If user filling the artist form and decides to exit before finishing it, this function would delete the unfinished artist document from the artist collection in firestore.
     func removeUnfinishedArtistFromDatabase(documentId: String) {
         artistCollectionRepository.removeUnfinishedArtistFromDatabase(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId)
     }
@@ -46,19 +53,19 @@ final class ArtistCollectionViewModel: ObservableObject {
         artistCollectionRepository.isAlreadyAnArtist(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, completion: completion)
     }
 
-    func addSingleDocumentToArtistCollection(documentId: String, nameDocument: String, document: String, completion: (() -> Void)? = nil) {
-        artistCollectionRepository.addSingleDocumentToArtistCollection(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, nameDocument: nameDocument, document: document)
+    func addSingleFieldToArtistCollection(documentId: String, nameField: String, field: String, completion: (() -> Void)? = nil) {
+        artistCollectionRepository.addSingleFieldToArtistCollection(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, nameField: nameField, field: field)
         completion?()
     }
     
-    func addSingleArrayToArtistCollection(documentId: String, nameDocument: String, array: [String], completion: (() -> Void)? = nil) {
-        artistCollectionRepository.addSingleArrayToArtistCollection(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, nameDocument: nameDocument, array: array)
+    func addSingleArrayToArtistCollection(documentId: String, nameField: String, array: [String], completion: (() -> Void)? = nil) {
+        artistCollectionRepository.addSingleArrayToArtistCollection(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, nameField: nameField, array: array)
         completion?()
     }
     
-    func addAddressInformationToDatabase(documentId: String, documentAddress: String, documentDepartment: String, completion: @escaping (() -> Void)) {
-        self.addSingleDocumentToArtistCollection(documentId: documentId, nameDocument: "address", document: documentAddress)
-        self.addSingleDocumentToArtistCollection(documentId: documentId, nameDocument: "department", document: documentDepartment)
+    func addAddressInformationToDatabase(documentId: String, address: String, department: String, completion: @escaping (() -> Void)) {
+        self.addSingleFieldToArtistCollection(documentId: documentId, nameField: "address", field: address)
+        self.addSingleFieldToArtistCollection(documentId: documentId, nameField: "department", field: department)
         completion()
     }
     
@@ -78,9 +85,9 @@ final class ArtistCollectionViewModel: ObservableObject {
         artistCollectionRepository.uploadArtContentImagesToDatabase(storagePath: ArtistCollectionViewModel.storagePathArtistContent, documentId: documentId, fileName: fileName, image: image, completion: completion)
     }
     
-    func uploadArtContentMediaUrls(documentId: String, completion: @escaping (() -> Void)) {
-        obtainArtContentMediaUrls {
-            self.addSingleArrayToArtistCollection(documentId: documentId, nameDocument: "artContentMedia", array: self.urlArrayForArtContent) {
+    func addArtContentMediaUrlsToArtistDocument(documentId: String, completion: @escaping (() -> Void)) {
+        orderArtContentMediaUrls {
+            self.addSingleArrayToArtistCollection(documentId: documentId, nameField: "artContentMedia", array: self.urlArrayForArtContent) {
                 self.get(documentId: documentId) {
                     completion()
                 }
@@ -88,7 +95,7 @@ final class ArtistCollectionViewModel: ObservableObject {
         }
     }
     
-    private func obtainArtContentMediaUrls(completion: @escaping (() -> Void)) {
+    func orderArtContentMediaUrls(completion: @escaping (() -> Void)) {
         var orderingArray: [String] = []
         for url in self.urlArrayForArtContent {
             if let range = url.range(of: "image_") {
@@ -110,7 +117,6 @@ final class ArtistCollectionViewModel: ObservableObject {
     func deleteArtContentMediaFromStorage(documentId: String, completion: @escaping (() -> Void)) {
         let group = DispatchGroup()
         var index = 0
-        
         for url in artist.artContentMedia {
             group.enter()
             if url.contains("image") {
@@ -134,13 +140,13 @@ final class ArtistCollectionViewModel: ObservableObject {
         completion()
     }
     
-    func insertElementInArray(documentId: String, titleField: String, element: String, completion: (() -> Void)? = nil) {
-        artistCollectionRepository.insertElementInArray(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, titleField: titleField, element: element)
+    func insertElementInExistingArrayField(documentId: String, titleField: String, element: String, completion: (() -> Void)? = nil) {
+        artistCollectionRepository.insertElementInExistingArrayField(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, titleField: titleField, element: element)
         completion?()
     }
     
-    func removeElementFromArray(documentId: String, titleField: String, element: String, completion: (() -> Void)? = nil) {
-        artistCollectionRepository.removeElementFromArray(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, titleField: titleField, element: element)
+    func removeElementFromExistingArrayField(documentId: String, titleField: String, element: String, completion: (() -> Void)? = nil) {
+        artistCollectionRepository.removeElementFromExistingArrayField(collectionPath: ArtistCollectionViewModel.collectionPath, documentId: documentId, titleField: titleField, element: element)
         completion?()
     }
     
@@ -230,7 +236,7 @@ final class ArtistCollectionViewModel: ObservableObject {
             }
         }
         firstGroup.notify(queue: .main) {
-            self.uploadArtContentMediaUrls(documentId: documentId) {
+            self.addArtContentMediaUrlsToArtistDocument(documentId: documentId) {
                 completionHandler()
             }
         }

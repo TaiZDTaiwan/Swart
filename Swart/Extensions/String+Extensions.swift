@@ -2,17 +2,15 @@
 //  String+Extensions.swift
 //  Swart
 //
-//  Created by Raphaël Huang-Dubois on 23/02/2022.
+//  Created by Raphaël Huang-Dubois on 23/03/2022.
 //
 
 import SwiftUI
 
+// To extract only digits from a string.
 extension String {
-    func slice(from: String, to: String) -> String? {
-        return (range(of: from)?.upperBound).flatMap { substringFrom in
-            (range(of: to, range: substringFrom..<endIndex)?.lowerBound).map { substringTo in
-                String(self[substringFrom..<substringTo])
-            }
-        }
+    var digits: String {
+        return components(separatedBy: CharacterSet.decimalDigits.inverted)
+            .joined()
     }
 }

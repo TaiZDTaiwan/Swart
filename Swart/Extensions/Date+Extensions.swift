@@ -7,8 +7,8 @@
 
 import SwiftUI
 
+// Date extension to get all dates within a month.
 extension Date {
-    
     func getAllDates() -> [Date] {
         let calendar = Calendar.current
         let startDate = calendar.date(from: Calendar.current.dateComponents([.year, .month], from: self))!

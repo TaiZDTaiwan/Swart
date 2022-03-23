@@ -7,15 +7,20 @@
 
 import SwiftUI
 
+// First search view where user chooses the art he's interesting in, also the possibility to choose every art proposed.
 struct SelectArtView: View {
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    // MARK: - Properties
+    
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     
     @State private var selectedArt: Art?
     @State private var selectedArtName = ""
     @State private var isLinkActive = false
     
-    var arts: [Art] = ArtListLogo.artsLogo
+    private let arts: [Art] = ArtListLogo.artsLogo
+    
+    // MARK: - Body
     
     var body: some View {
         
@@ -120,7 +125,7 @@ struct SelectArtView: View {
                 }
             }.navigationBarTitle("", displayMode: .inline)
             .navigationBarHidden(true)
-        }
+        }.navigationViewStyle(.stack)
     }
 }
 

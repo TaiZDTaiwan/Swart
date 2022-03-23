@@ -7,7 +7,10 @@
 
 import SwiftUI
 
-final class RequestArtistCollectionViewModel: ObservableObject {
+// Various methods to interact with request artist properties in the database or other properties in different views.
+class RequestArtistCollectionViewModel: ObservableObject {
+    
+    // MARK: - Properties
     
     @Published var pendingRequests: [RequestArtist] = []
     @Published var comingRequests: [RequestArtist] = []
@@ -20,8 +23,10 @@ final class RequestArtistCollectionViewModel: ObservableObject {
     private let requestArtistCollectionRepository = RequestArtistCollectionRepository()
     private let artistCollectionViewModel = ArtistCollectionViewModel()
     
-    func addRequestToArtist(request: RequestArtist, completion: @escaping (() -> Void)) {
-        requestArtistCollectionRepository.addRequestToArtist(collectionPath: RequestArtistCollectionViewModel.collectionPath, request: request) { documentId in
+    // MARK: - Methods
+    
+    func addDocumentToRequestArtistCollection(request: RequestArtist, completion: @escaping (() -> Void)) {
+        requestArtistCollectionRepository.addDocumentToRequestArtistCollection(collectionPath: RequestArtistCollectionViewModel.collectionPath, request: request) { documentId in
             self.requestReference = documentId
             completion()
         }
@@ -51,30 +56,25 @@ final class RequestArtistCollectionViewModel: ObservableObject {
     }
     
     func retrieveRequests(pendingRequest: [String], comingRequest: [String], previousRequest: [String], completion: (() -> Void)? = nil) {
-        
         let group = DispatchGroup()
-             
         for path in pendingRequest {
             group.enter()
             self.getPendingRequest(documentId: path) {
                 group.leave()
             }
         }
-        
         for path in comingRequest {
             group.enter()
             self.getComingRequest(documentId: path) {
                 group.leave()
             }
         }
-
         for path in previousRequest {
             group.enter()
             self.getPreviousRequest(documentId: path) {
                 group.leave()
             }
         }
-        
         group.notify(queue: .main) {
             completion?()
         }
@@ -96,7 +96,6 @@ final class RequestArtistCollectionViewModel: ObservableObject {
     
     private func getComingRequestToReorder(comingRequest: [String], completion: @escaping (() -> Void)) {
         let group = DispatchGroup()
-        
         for path in comingRequest {
             group.enter()
             requestArtistCollectionRepository.getRequest(collectionPath: RequestArtistCollectionViewModel.collectionPath, documentId: path) { request in
@@ -116,9 +115,9 @@ final class RequestArtistCollectionViewModel: ObservableObject {
         }
     }
     
-    private func determineComingRequestDates(completion: @escaping (() -> Void)) {
+    // To isolate all the coming request dates.
+    func determineComingRequestDates(completion: @escaping (() -> Void)) {
         let group = DispatchGroup()
-        
         for request in self.toReorderComingRequests {
             group.enter()
             self.addDates(date: request.date) {
@@ -130,20 +129,21 @@ final class RequestArtistCollectionViewModel: ObservableObject {
         }
     }
     
-    private func addDates(date: String, completion: @escaping (() -> Void)) {
+    func addDates(date: String, completion: @escaping (() -> Void)) {
         self.dates.append(date)
         completion()
     }
     
+    // If a coming request date already passed, necessity to insert that request in previous array and remove it from coming.
     func orderRequestsInDatabase(documentId: String, titleFieldToInsert: String, titleFieldToRemove: String, element: String, completion: @escaping (() -> Void)) {
-        self.artistCollectionViewModel.insertElementInArray(documentId: documentId, titleField: titleFieldToInsert, element: element) {
-            self.artistCollectionViewModel.removeElementFromArray(documentId: documentId, titleField: titleFieldToRemove, element: element) {
+        self.artistCollectionViewModel.insertElementInExistingArrayField(documentId: documentId, titleField: titleFieldToInsert, element: element) {
+            self.artistCollectionViewModel.removeElementFromExistingArrayField(documentId: documentId, titleField: titleFieldToRemove, element: element) {
                 completion()
             }
         }
     }
     
-    private func isRequestPassed(bookingDate: String, completion: @escaping (Bool) -> Void) {
+    func isRequestPassed(bookingDate: String, completion: @escaping (Bool) -> Void) {
         let date = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
@@ -165,6 +165,7 @@ final class RequestArtistCollectionViewModel: ObservableObject {
         requestArtistCollectionRepository.addUserIdToRequest(collectionPath: RequestArtistCollectionViewModel.collectionPath, documentId: self.requestReference, requestIdUser: requestIdUser)
     }
     
+    // To determine if a request has been validated or declined.
     func acceptPendingRequest(documentId: String, completion: @escaping (() -> Void)) {
         requestArtistCollectionRepository.acceptPendingRequest(collectionPath: RequestArtistCollectionViewModel.collectionPath, documentId: documentId)
         completion()

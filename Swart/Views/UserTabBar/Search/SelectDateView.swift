@@ -8,19 +8,23 @@
 import SwiftUI
 import ActivityIndicatorView
 
+// Fourth search view where user can decide a date for the performance or to follow artist availabilities.
+// Before going to the next view, launch artist search according to user's chosen filters and store in an array the result.
 struct SelectDateView: View {
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    // MARK: - Properties
+    
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    
+    @StateObject private var calendarViewModel = CalendarViewModel()
+    @StateObject private var artistCollectionViewModel = ArtistCollectionViewModel()
     
     @Binding var selectedArtName: String
     @Binding var selectedDepartments: [String]
     @Binding var selectedPlaceNameForFilter: String
     @Binding var selectedPlaceName: String
     @Binding var fromAddressView: Bool
-    
-    @StateObject var calendarViewModel = CalendarViewModel()
-    @StateObject var artistCollectionViewModel = ArtistCollectionViewModel()
-    
+
     @State private var currentDate = Date()
     @State private var currentIndexMonth = 0
     @State private var currentYear = 0
@@ -34,6 +38,8 @@ struct SelectDateView: View {
     @State private var listedArtists: [Artist] = []
     @State private var isLoading = false
     @State private var isShowMain = false
+    
+    // MARK: - Body
     
     var body: some View {
 
@@ -266,6 +272,8 @@ struct SelectDateView: View {
         }.navigationBarTitle("", displayMode: .inline)
         .navigationBarHidden(true)
     }
+    
+    // MARK: - Method
     
     private func onTapGesture(value: Int) {
         if selectedDate != String(value) + "\(calendarViewModel.extractTodaysDate(currentDate)[0])" + "\(calendarViewModel.extractTodaysDate(currentDate)[1])" {

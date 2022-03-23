@@ -7,18 +7,17 @@
 
 import SwiftUI
 
+// To set custom textfield used for headline.
 struct MultiTextFieldForHeadline: UIViewRepresentable {
-    
-    func makeCoordinator() -> MultiTextFieldForHeadline.Coordinator {
-        
-        return MultiTextFieldForHeadline.Coordinator(parent1: self)
-    }
     
     @Binding var defaultExample: String
     @Binding var text: String
     
+    func makeCoordinator() -> MultiTextFieldForHeadline.Coordinator {
+        return MultiTextFieldForHeadline.Coordinator(parent1: self)
+    }
+    
     func makeUIView(context: UIViewRepresentableContext<MultiTextFieldForHeadline>) -> UITextView {
-        
         let view = UITextView()
         view.font = .systemFont(ofSize: 26)
         view.text = defaultExample
@@ -32,7 +31,6 @@ struct MultiTextFieldForHeadline: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UITextView, context: UIViewRepresentableContext<MultiTextFieldForHeadline>) {
-        
     }
     
     class Coordinator: NSObject, UITextViewDelegate {

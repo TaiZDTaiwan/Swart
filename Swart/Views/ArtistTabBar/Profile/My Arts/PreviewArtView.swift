@@ -9,13 +9,18 @@ import SwiftUI
 import AVKit
 import SDWebImageSwiftUI
 
+// All related art information are displayed the way users would observe it when searching for artists.
 struct PreviewArtView: View {
     
-    @EnvironmentObject var authentificationViewModel: AuthentificationViewModel
+    // MARK: - Properties
     
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
+    
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     
     @ObservedObject var artistCollectionViewModel: ArtistCollectionViewModel
+    
+    // MARK: - Body
     
     var body: some View {
         
