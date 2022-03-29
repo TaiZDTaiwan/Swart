@@ -1,6 +1,6 @@
 # Swart
 
-Swart is an iOS application which allows users to welcome all kind of artists directly at their place.
+Swart is an iOS application which brings art performances directly to your home.
 
 ## Project Description
 
