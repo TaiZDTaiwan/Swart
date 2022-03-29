@@ -9,7 +9,7 @@ Swart is an iOS application which brings art performances directly to your home.
 
 ## Technologies
 
-The app is built with Xcode, written in SwiftUI and support iOS15.
+The app is built with Xcode, written in SwiftUI and supports iOS15.
 Firebase has been chosen for the backend.
 
 ## Future features
