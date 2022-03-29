@@ -16,6 +16,7 @@ struct PersonalInformationView: View {
     @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
+    @Environment(\.colorScheme) private var colorScheme
     
     @ObservedObject var userCollectionViewModel: UserCollectionViewModel
     
@@ -40,6 +41,9 @@ struct PersonalInformationView: View {
     var body: some View {
         
         ZStack {
+            
+            Color.white
+                .ignoresSafeArea()
             
             ActivityIndicator(isLoadingBinding: $isLoading, isLoading: isLoading)
         
@@ -94,6 +98,7 @@ struct PersonalInformationView: View {
                         CustomTextForProfile(text: "Birth date (MM/DD/YYYY)")
                         
                         Text(userCollectionViewModel.user.birthdate)
+                            .foregroundColor(.black)
                     }
                     Spacer()
                 }.padding()
@@ -105,6 +110,7 @@ struct PersonalInformationView: View {
                         CustomTextForProfile(text: "Email")
                         
                         Text(userCollectionViewModel.user.email)
+                            .foregroundColor(.black)
                     }
                     Spacer()
                 }.padding()
@@ -116,6 +122,11 @@ struct PersonalInformationView: View {
                     hasEdited = false
                 } else {
                     hasEdited = true
+                }
+            }
+            .onAppear {
+                if colorScheme == .dark {
+                    UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.black]
                 }
             }
             .navigationBarTitle("Edit personal info")

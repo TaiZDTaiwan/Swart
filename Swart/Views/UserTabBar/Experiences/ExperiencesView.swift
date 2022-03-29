@@ -29,6 +29,9 @@ struct ExperiencesView: View {
             
             ZStack {
                 
+                Color.white
+                    .ignoresSafeArea()
+                
                 if requestType == .pending {
                     CustomNoRequestFoundText(text: "No pending requests found.", requests: requestUserCollectionViewModel.pendingRequests)
                     
@@ -113,6 +116,8 @@ struct ExperiencesView: View {
                         DetailExperienceView(request: $selectedRequest, convertedDate: $convertedDate)
                     })
                 }
+            }.onAppear {
+                UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.black]
             }
             .navigationTitle("Experiences")
         }.navigationViewStyle(.stack)

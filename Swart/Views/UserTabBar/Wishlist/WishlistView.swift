@@ -34,6 +34,7 @@ struct WishlistView: View {
             ZStack {
             
                 Color.white
+                    .ignoresSafeArea()
                 
                 Text("No artists have been added yet")
                     .font(Font.system(size: 18).italic())
@@ -95,6 +96,8 @@ struct WishlistView: View {
                 .environment(\.defaultMinListRowHeight, 315)
                 .listStyle(GroupedListStyle())
                 .navigationTitle("Wishlist")
+            }.onAppear {
+                UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.black]
             }
         }.navigationViewStyle(.stack)
     }

@@ -29,6 +29,9 @@ struct ProfileArtistView: View {
             
             ZStack {
                 
+                Color.white
+                    .ignoresSafeArea()
+                
                 VStack(alignment: .leading, spacing: 30) {
             
                     Text("ACCOUNT")
@@ -79,7 +82,10 @@ struct ProfileArtistView: View {
                     Alert(title: Text("Are you sure you want to log out?"),
                     message: .none,
                     primaryButton: .destructive(Text("Confirm")) {
-                        isShownHomePage = true
+                        authentificationViewModel.logOutUser {
+                            authentificationViewModel.signedInUser = ""
+                            isShownHomePage = true
+                        }
                     },
                     secondaryButton: .cancel())
                 }

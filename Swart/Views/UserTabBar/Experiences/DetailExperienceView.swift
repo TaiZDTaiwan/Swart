@@ -25,6 +25,9 @@ struct DetailExperienceView: View {
     var body: some View {
         
         ZStack {
+            
+            Color.white
+                .ignoresSafeArea()
         
             VStack {
                 
@@ -84,6 +87,7 @@ struct DetailExperienceView: View {
                             
                                 Text("Booking information")
                                     .font(.system(size: 19)).bold()
+                                    .foregroundColor(.black)
                                 
                                 CustomVStackInRequestToBookView(title: "Date", text: convertedDate)
                                 

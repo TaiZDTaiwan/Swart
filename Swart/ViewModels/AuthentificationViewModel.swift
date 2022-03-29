@@ -13,6 +13,8 @@ class AuthentificationViewModel: ObservableObject {
     // MARK: - Properties
     
     @Published var userId = UserId(id: "")
+    
+    var signedInUser = ""
     private let authentificationRepository = AuthentificationRepository()
     
     // MARK: - Methods
@@ -27,6 +29,19 @@ class AuthentificationViewModel: ObservableObject {
         authentificationRepository.signInUser(email: email, password: password, progress: progress, completion: { userId in
             self.userId.id = userId
         })
+    }
+    
+    func userAlreadySignedIn() {
+        authentificationRepository.userAlreadySignedIn { userId in
+            self.userId.id = userId
+            if let userId = userId {
+                self.signedInUser = userId
+            }
+        }
+    }
+    
+    func logOutUser(completion: @escaping () -> Void) {
+        authentificationRepository.logOutUser(completion: completion)
     }
     
     func forgotPassword(email: String, progress: @escaping (Result<String, Error>) -> Void) {

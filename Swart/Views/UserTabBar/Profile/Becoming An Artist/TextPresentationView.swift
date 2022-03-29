@@ -54,31 +54,31 @@ struct TextPresentationView: View {
                         .ignoresSafeArea()
                     
                     VStack {
-                        ScrollView {
-                            VStack(alignment: .leading, spacing: 4) {
+                       
+                        VStack(alignment: .leading, spacing: 4) {
                                 
-                                Text("Your description")
-                                    .font(.system(size: 14)).bold()
-                                    .padding(.vertical, 7)
+                            Text("Your description")
+                                .font(.system(size: 14)).bold()
+                                .padding(.vertical, 7)
+                                .foregroundColor(.black)
                                 
-                                MultiTextFieldForPresentation(defaultExample: $textExamples.exampleForTextPresentation, text: $text)
-                                    .frame(height: 250)
-                                    .background(Color.lightGrayForBackground)
-                                    .cornerRadius(10)
+                            MultiTextFieldForPresentation(defaultExample: $textExamples.exampleForTextPresentation, text: $text)
+                                .frame(height: 250)
+                                .background(Color.lightGrayForBackground)
+                                .cornerRadius(10)
                                 
-                                HStack {
-                                    Spacer()
-                                    
-                                    Text("\(text.count)/550")
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
-                                        .padding(.trailing)
-                                        .padding(.top, 4)
-                                }
-                            }.padding(.vertical, 20)
-                            .padding(.horizontal)
-                            .padding(.bottom, keyboardHandler.keyboardHeight)
-                        }
+                            HStack {
+                                Spacer()
+                                
+                                Text("\(text.count)/550")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                                    .padding(.trailing)
+                                    .padding(.top, 4)
+                            }
+                        }.padding(.vertical, 20)
+                        .padding(.horizontal)
+                        .padding(.bottom, keyboardHandler.keyboardHeight)
                         
                         Spacer()
                     

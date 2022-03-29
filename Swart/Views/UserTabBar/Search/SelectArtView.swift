@@ -61,6 +61,7 @@ struct SelectArtView: View {
                     
                         Text("OPEN FOR ANY ART")
                             .font(.callout).bold()
+                            .foregroundColor(.black)
                         
                         NavigationLink(destination: SelectDepartmentView(selectedArtName: $selectedArtName)) {
                        
@@ -85,6 +86,7 @@ struct SelectArtView: View {
                         Text("ARTS PROPOSED")
                             .font(.callout).bold()
                             .padding(.horizontal, 20)
+                            .foregroundColor(.black)
                         
                         List(arts) { art in
                             
@@ -114,12 +116,10 @@ struct SelectArtView: View {
                                     Image(systemName: "chevron.forward")
                                         .foregroundColor(.secondary)
                                 }
-                            }.listRowSeparator(.hidden)
+                            }.listRowBackground(Color.white)
+                            .listRowSeparator(.hidden)
                         }.padding(.top, -10)
                         .background(NavigationLink("", destination: SelectDepartmentView(selectedArtName: $selectedArtName), isActive: $isLinkActive))
-                        .onAppear {
-                            UITableView.appearance().backgroundColor = .clear
-                        }
                     }
                    Spacer()
                 }

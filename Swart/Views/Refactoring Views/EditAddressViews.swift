@@ -26,9 +26,11 @@ struct DisplayAddressInformation: View {
         VStack(alignment: .leading, spacing: 5) {
             Text("Address")
                     .font(.title).bold()
+                    .foregroundColor(.black)
                  
             Text("Edit your address information if needed")
                     .font(.footnote)
+                    .foregroundColor(.black)
         }.padding(.horizontal, 20)
         
         Group {

@@ -47,7 +47,6 @@ struct DetailSelectedDatesView: View {
                             self.presentationMode.wrappedValue.dismiss()
                         }, label: {
                             Image(systemName: "clear")
-                                .foregroundColor(.black)
                         })
                         Spacer()
                     }.padding(.vertical, 25)

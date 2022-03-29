@@ -29,6 +29,9 @@ struct EnterUserAddressView: View {
     var body: some View {
         
         ZStack {
+            
+            Color.white
+                .ignoresSafeArea()
                 
             VStack(spacing: 30) {
               
@@ -54,6 +57,9 @@ struct EnterUserAddressView: View {
                     }))
                 })
             }.navigationBarBackButtonHidden(true)
+            .onAppear {
+                UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.black]
+            }
         .navigationBarTitle(Text("Enter your address"), displayMode: .inline)
         }
     }

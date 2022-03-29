@@ -41,6 +41,10 @@ struct EditMediaView: View {
     var body: some View {
         
         ZStack {
+            
+            Color.white
+                .ignoresSafeArea()
+            
             if isLoading {
                 BackgroundForArtistForm()
             } else {
@@ -71,6 +75,7 @@ struct EditMediaView: View {
                 VStack(alignment: .leading) {
                     Text("Photos / Videos")
                         .font(.title).bold()
+                        .foregroundColor(.black)
             
                     ZStack {
                         Color.lightGrayForBackground
@@ -81,6 +86,7 @@ struct EditMediaView: View {
                                 .font(.subheadline).italic()
                                 .isHidden(hasEdited ? true : false)
                                 .multilineTextAlignment(.center)
+                                .foregroundColor(.black)
                             
                             List {
                                 ForEach(mediaItems.items, id: \.id) { item in

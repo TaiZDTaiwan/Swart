@@ -32,6 +32,9 @@ struct EditHeadlineView: View {
         
         ZStack {
             
+            Color.white
+                .ignoresSafeArea()
+            
             ActivityIndicator(isLoadingBinding: $isLoading, isLoading: isLoading)
         
             VStack {
@@ -53,9 +56,11 @@ struct EditHeadlineView: View {
                     
                         Text("Headline")
                             .font(.title).bold()
+                            .foregroundColor(.black)
                         
                         Text("Feel free to edit your current headline")
                             .font(.footnote)
+                            .foregroundColor(.black)
                     }
 
                     MultiTextFieldForHeadline(defaultExample: $artistCollectionViewModel.artist.headline, text: $headline)

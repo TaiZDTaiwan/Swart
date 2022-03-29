@@ -54,7 +54,8 @@ struct CustomScrollViewToPreviewArtist: View {
                                     }
                             }
                         }
-                    }.tabViewStyle(PageTabViewStyle())
+                    }.listRowBackground(Color.white)
+                    .tabViewStyle(PageTabViewStyle())
                 }.frame(height: 320)
                 .environment(\.defaultMinListRowHeight, 220)
                 .padding(.top, -45)
@@ -68,6 +69,7 @@ struct CustomScrollViewToPreviewArtist: View {
             
                         Text(headline)
                             .font(.system(size: 21)).bold()
+                            .foregroundColor(.black)
                 
                             Spacer()
                     
@@ -94,6 +96,7 @@ struct CustomScrollViewToPreviewArtist: View {
                 
                     HStack {
                         Text(textPresentation)
+                            .foregroundColor(.black)
                     
                         Spacer()
                     }
@@ -103,12 +106,14 @@ struct CustomScrollViewToPreviewArtist: View {
                     VStack(spacing: 6) {
                         DisplayInformationInReviewProfileView(text: Text("Location"))
                             .font(.headline)
+                            .foregroundColor(.black)
                            
                         DisplayInformationInReviewProfileView(text: Text(address))
                             .font(.system(size: 18))
                             .padding(.top, 6)
+                            .foregroundColor(.black)
                         
-                        DisplayInformationInReviewProfileView(text: Text("We'll only share your address with guests who are booked as outlined in our ").font(.footnote) + Text("privacy policy.").underline()).font(.footnote)
+                        DisplayInformationInReviewProfileView(text: Text("We'll only share your address with guests who are booked as outlined in our ").font(.footnote) + Text("privacy policy.").underline()).font(.footnote).foregroundColor(.black)
                     }
                 }.padding(.horizontal, 39)
             }.onChange(of: currentElement) { _ in
@@ -144,6 +149,7 @@ struct CustomRectangleToPreviewArtist: View {
                     Text(selectedDate).underline()
                         .font(.system(size: 16))
                         .padding(.top, 10)
+                        .foregroundColor(.black)
                     
                     Spacer()
                     

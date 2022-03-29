@@ -31,6 +31,9 @@ struct EditTextPresentationView: View {
     var body: some View {
         
        ZStack {
+           
+           Color.white
+               .ignoresSafeArea()
             
             ActivityIndicator(isLoadingBinding: $isLoading, isLoading: isLoading)
         
@@ -51,9 +54,11 @@ struct EditTextPresentationView: View {
                     VStack(alignment: .leading, spacing: 5) {
                         Text("Presentation")
                             .font(.title).bold()
+                            .foregroundColor(.black)
                         
                         Text("Feel free to edit your current presentation")
                             .font(.footnote)
+                            .foregroundColor(.black)
                     }
                         
                     MultiTextFieldForPresentation(defaultExample: $artistCollectionViewModel.artist.textPresentation, text: $text)

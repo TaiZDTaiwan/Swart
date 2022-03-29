@@ -33,6 +33,9 @@ struct CheckArtistAvailabilityView: View {
     var body: some View {
         
         ZStack {
+            
+            Color.white
+                .ignoresSafeArea()
                 
             ScrollView {
                 

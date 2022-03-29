@@ -39,6 +39,9 @@ struct PresentArtistsView: View {
         
         ZStack {
             
+            Color.white
+                .ignoresSafeArea()
+            
             VStack(spacing: 20) {
                 
                 Image("No Result")
@@ -92,10 +95,12 @@ struct PresentArtistsView: View {
                     if artistCollectionViewModel.artistsResult.count == 1 {
                         Text(determineNumberOfResults() + " artist ready to amaze you")
                             .font(.system(size: 16)).bold()
+                            .foregroundColor(.black)
                             .isHidden(artistCollectionViewModel.artistsResult.count > 0 ? false : true)
                     } else if artistCollectionViewModel.artistsResult.count > 1 {
                         Text(determineNumberOfResults() + " artists ready to amaze you")
                             .font(.system(size: 16)).bold()
+                            .foregroundColor(.black)
                             .isHidden(artistCollectionViewModel.artistsResult.count > 0 ? false : true)
                     }
                         
@@ -150,6 +155,7 @@ struct PresentArtistsView: View {
                         selectedArtist = artist
                         isLinkActive = true
                     })
+                    .listRowBackground(Color.white)
                     .listRowSeparator(.hidden)
                 }.background(NavigationLink("", destination: PreviewSelectedArtistView(userCollectionViewModel: userCollectionViewModel, selectedArtist: $selectedArtist, selectedDate: $selectedDateConverted, selectedDateForRequest: $selectedDateForRequest, selectedPlaceName: $selectedPlaceName), isActive: $isLinkActive))
                 .environment(\.defaultMinListRowHeight, 315)

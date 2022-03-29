@@ -13,6 +13,7 @@ struct LogInView: View {
     // MARK: - Properties
     
     @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
+    @Environment(\.colorScheme) private var colorScheme
     
     @State private var email = ""
     @State private var password = ""
@@ -45,7 +46,6 @@ struct LogInView: View {
                             
                         TextField("Email Address", text: $email)
                             .font(.system(.body))
-                            .background(Color.gray.opacity(0.1))
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .textContentType(.emailAddress)
                             .keyboardType(.emailAddress)
@@ -89,7 +89,10 @@ struct LogInView: View {
                 
                 Spacer()
             }.padding(35)
-        }.alert(isPresented: $isAlertPresented, content: {
+        }.onAppear(perform: {
+        
+        })
+        .alert(isPresented: $isAlertPresented, content: {
             Alert(title: Text(alertMessage))
         })
     }

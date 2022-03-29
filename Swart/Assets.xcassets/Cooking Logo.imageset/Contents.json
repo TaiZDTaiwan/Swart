@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "chef@1x.png",
+      "filename" : "CookingLogo@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "chef@2x.png",
+      "filename" : "CookingLogo@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "chef@3x.png",
+      "filename" : "CookingLogo@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

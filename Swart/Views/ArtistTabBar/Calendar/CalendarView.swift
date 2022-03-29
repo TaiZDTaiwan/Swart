@@ -32,6 +32,9 @@ struct CalendarView: View {
         NavigationView {
             
             ZStack {
+                
+                Color.white
+                    .ignoresSafeArea()
             
                 ScrollView {
                            
@@ -152,6 +155,7 @@ struct CalendarView: View {
                 DetailSelectedDatesView(calendarViewModel: calendarViewModel, selectedDates: $selectedDates, selectedDatesForDetailView: $selectedDatesForDetailView, hasEdited: $hasEdited)
             })
             .onAppear(perform: {
+                UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.black]
                 
                 calendarViewModel.determineTodaysDate(currentDate)
                 calendarViewModel.extractDate(currentIndexMonth: currentIndexMonth)

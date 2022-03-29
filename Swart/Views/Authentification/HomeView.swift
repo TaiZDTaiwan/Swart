@@ -27,46 +27,52 @@ struct HomeView: View {
 
     var body: some View {
         
-        NavigationView {
-            
-            ZStack {
+        if authentificationViewModel.signedInUser != "" {
+            UserTabView()
+        } else {
+            NavigationView {
                 
-                LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 1, green: 0.7142756581, blue: 0.59502846, alpha: 1)), Color(#colorLiteral(red: 0.7496727109, green: 0.1164080873, blue: 0.1838892698, alpha: 1))]), startPoint: .topLeading, endPoint: .bottomTrailing)
-                    .ignoresSafeArea()
+                ZStack {
                     
-                VStack(spacing: 35) {
+                    LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 1, green: 0.7142756581, blue: 0.59502846, alpha: 1)), Color(#colorLiteral(red: 0.7496727109, green: 0.1164080873, blue: 0.1838892698, alpha: 1))]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                        .ignoresSafeArea()
                         
-                    Spacer()
-                        
-                    Text("Swart")
-                        .font(.custom("AmericanTypewriter", size: 60))
-                        .fontWeight(.regular)
-                        .font(.largeTitle)
-                        .foregroundColor(.swartWhite)
-                        
-                    VStack {
-                        Button(action: {
-                            showLogInSheetView.toggle()
-                        }, label: {
-                            CustomTextForButton(text: "Create a new account")
-                                .padding(.horizontal, 40)
+                    VStack(spacing: 35) {
                             
-                        }).sheet(isPresented: $showLogInSheetView, content: {
-                            CreateAccountView(showLogInSheetView: $showLogInSheetView)
-                        })
+                        Spacer()
                             
-                        NavigationLink(destination: LogInView()
-                                        .navigationBarTitle("", displayMode: .inline)) {
-                        
-                            Text("Log In")
-                                .font(.system(size: 19))
-                                .foregroundColor(.black).opacity(0.8)
-                                .padding()
+                        Text("Swart")
+                            .font(.custom("AmericanTypewriter", size: 60))
+                            .fontWeight(.regular)
+                            .font(.largeTitle)
+                            .foregroundColor(.swartWhite)
+                            
+                        VStack {
+                            Button(action: {
+                                showLogInSheetView.toggle()
+                            }, label: {
+                                CustomTextForButton(text: "Create a new account")
+                                    .padding(.horizontal, 40)
+                                
+                            }).sheet(isPresented: $showLogInSheetView, content: {
+                                CreateAccountView(showLogInSheetView: $showLogInSheetView)
+                            })
+                                
+                            NavigationLink(destination: LogInView()
+                                            .navigationBarTitle("", displayMode: .inline)) {
+                            
+                                Text("Log In")
+                                    .font(.system(size: 19))
+                                    .foregroundColor(.black).opacity(0.8)
+                                    .padding()
+                            }
                         }
+                        Spacer()
+                    }.onAppear {
+                        authentificationViewModel.userAlreadySignedIn()
                     }
-                    Spacer()
-                }
-            }.navigationBarHidden(true)
+                }.navigationBarHidden(true)
+            }
         }
     }
 }

@@ -40,6 +40,9 @@ struct UseCurrentLocation: View {
         
         ZStack {
             
+            Color.white
+                .ignoresSafeArea()
+            
             ActivityIndicator(isLoadingBinding: $isLoading, isLoading: isLoading)
             
             ScrollView {

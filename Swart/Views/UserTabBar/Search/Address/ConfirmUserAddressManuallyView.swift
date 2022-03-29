@@ -44,6 +44,9 @@ struct ConfirmUserAddressManuallyView: View {
         
         ZStack {
             
+            Color.white
+                .ignoresSafeArea()
+            
             ActivityIndicator(isLoadingBinding: $isLoading, isLoading: isLoading)
             
             ScrollView {
@@ -58,6 +61,7 @@ struct ConfirmUserAddressManuallyView: View {
                                                 
                                 TextField("", text: $subThoroughfare)
                                     .keyboardType(.numberPad)
+                                    .foregroundColor(.black)
                                 
                             }.padding()
                                         
@@ -67,6 +71,7 @@ struct ConfirmUserAddressManuallyView: View {
                                 CustomTextForProfile(text: "Street")
                                 
                                 TextField("", text: $thoroughfare)
+                                    .foregroundColor(.black)
                                     .autocapitalization(.words)
                                     .disableAutocorrection(true)
                                                 
@@ -78,6 +83,7 @@ struct ConfirmUserAddressManuallyView: View {
                                 CustomTextForProfile(text: "City")
                                 
                                 TextField("", text: $locality)
+                                    .foregroundColor(.black)
                                     .autocapitalization(.words)
                                     .disableAutocorrection(true)
                                             
@@ -89,6 +95,7 @@ struct ConfirmUserAddressManuallyView: View {
                                 CustomTextForProfile(text: "Postal Code")
                                 
                                 TextField("", text: $postalCode)
+                                    .foregroundColor(.black)
                                     .keyboardType(.numberPad)
                                     .textContentType(.postalCode)
                                                 
@@ -100,6 +107,7 @@ struct ConfirmUserAddressManuallyView: View {
                                 CustomTextForProfile(text: "Country")
                                                 
                                 TextField("", text: $country)
+                                    .foregroundColor(.black)
                                     .textContentType(.countryName)
                                     .autocapitalization(.words)
                         
@@ -165,7 +173,8 @@ struct ConfirmUserAddressManuallyView: View {
                 }.padding(.vertical, 8)
             }.isHidden(isLoading ? true : false)
         }.padding(.horizontal, 5)
-        .navigationBarTitle(Text("Enter your address"), displayMode: .inline)
+        .navigationTitle("Confirm your address")
+        .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading:
             Button(action: {

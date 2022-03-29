@@ -50,6 +50,25 @@ class AuthentificationRepository {
         }
     }
     
+    func userAlreadySignedIn(completion: @escaping (String?) -> Void) {
+        Auth.auth().addStateDidChangeListener { _, user in
+            if let user = user {
+                completion(user.uid)
+            } else {
+                print("User not signed in yet.")
+            }
+        }
+    }
+    
+    func logOutUser(completion: @escaping () -> Void) {
+        do {
+            try Auth.auth().signOut()
+            completion()
+        } catch {
+            print("User already logged out.")
+        }
+    }
+    
     func forgotPassword(email: String, progress: @escaping (Result<String, Error>) -> Void) {
         Auth.auth().sendPasswordReset(withEmail: email) { (error) in
             if error != nil {

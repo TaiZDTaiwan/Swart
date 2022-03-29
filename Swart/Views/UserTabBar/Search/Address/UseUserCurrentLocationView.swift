@@ -43,6 +43,9 @@ struct UseUserCurrentLocationView: View {
         
         ZStack {
             
+            Color.white
+                .ignoresSafeArea()
+            
             ActivityIndicator(isLoadingBinding: $isLoading, isLoading: isLoading)
             
             ScrollView {
@@ -134,7 +137,8 @@ struct UseUserCurrentLocationView: View {
                 }
             }
         }.padding(.horizontal, 5)
-        .navigationBarTitle(Text("Confirm your address"), displayMode: .inline)
+        .navigationTitle("Confirm your address")
+        .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading:
             Button(action: {

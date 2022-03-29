@@ -113,6 +113,7 @@
 		C2A3351C2778DDCE00C4AE0D /* DateValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A3351B2778DDCE00C4AE0D /* DateValue.swift */; };
 		C2A3B40527BEB7F300936033 /* ArtistCollectionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A3B40427BEB7F300936033 /* ArtistCollectionRepository.swift */; };
 		C2A4FDD327AB25F9005B034C /* CalendarViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A4FDD227AB25F9005B034C /* CalendarViews.swift */; };
+		C2AF66E327F0A923001CAEDE /* DatabaseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AF66E227F0A923001CAEDE /* DatabaseError.swift */; };
 		C2B08F3527E4DCC800ED983C /* DatesFormattersViewModelTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B08F3427E4DCC800ED983C /* DatesFormattersViewModelTestCase.swift */; };
 		C2C2741A27E382830030CD12 /* RequestUserCollectionViewModelTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C2741927E382830030CD12 /* RequestUserCollectionViewModelTestCase.swift */; };
 		C2C2741C27E389F90030CD12 /* RequestArtistCollectionViewModelTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C2741B27E389F90030CD12 /* RequestArtistCollectionViewModelTestCase.swift */; };
@@ -241,6 +242,7 @@
 		C2A3B40427BEB7F300936033 /* ArtistCollectionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistCollectionRepository.swift; sourceTree = "<group>"; };
 		C2A4FDD227AB25F9005B034C /* CalendarViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViews.swift; sourceTree = "<group>"; };
 		C2A9A36726CAFE4C0058ACA0 /* Swart.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Swart.entitlements; sourceTree = "<group>"; };
+		C2AF66E227F0A923001CAEDE /* DatabaseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseError.swift; sourceTree = "<group>"; };
 		C2B08F3427E4DCC800ED983C /* DatesFormattersViewModelTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatesFormattersViewModelTestCase.swift; sourceTree = "<group>"; };
 		C2C2741927E382830030CD12 /* RequestUserCollectionViewModelTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestUserCollectionViewModelTestCase.swift; sourceTree = "<group>"; };
 		C2C2741B27E389F90030CD12 /* RequestArtistCollectionViewModelTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestArtistCollectionViewModelTestCase.swift; sourceTree = "<group>"; };
@@ -353,6 +355,7 @@
 				C298E25D27B15B05007C1174 /* RequestArtist.swift */,
 				C298E25F27B15F98007C1174 /* RequestUser.swift */,
 				C2E32BEB27BB24F1000403C2 /* RequestType.swift */,
+				C2AF66E227F0A923001CAEDE /* DatabaseError.swift */,
 				C21C2F3C270CC10D0086579E /* Arts.swift */,
 				C25F97E4278A54F5001B991D /* Place.swift */,
 				C247141327BFFD8500A91686 /* Media.swift */,
@@ -897,6 +900,7 @@
 				C20BD4C227A5B73B00F73BEF /* WishlistView.swift in Sources */,
 				C27AE19E27EBA29200AF2291 /* String+Extensions.swift in Sources */,
 				C2A3351A2778D75200C4AE0D /* CalendarView.swift in Sources */,
+				C2AF66E327F0A923001CAEDE /* DatabaseError.swift in Sources */,
 				C29AD15727DAA4210064D4CE /* DownloadArtContentMediaViews.swift in Sources */,
 				C26E152827B4493100A8B0E7 /* DetailExperienceArtistView.swift in Sources */,
 				C22BE1D226FCB38400439384 /* HomeView.swift in Sources */,
@@ -1088,7 +1092,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = raphael.huangdubois.Swart;
+				PRODUCT_BUNDLE_IDENTIFIER = "raphael.huangdubois-Swart";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -1113,7 +1117,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = raphael.huangdubois.Swart;
+				PRODUCT_BUNDLE_IDENTIFIER = "raphael.huangdubois-Swart";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;

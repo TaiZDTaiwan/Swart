@@ -54,6 +54,7 @@ struct HeadlineView: View {
                             Text("Your headline")
                                 .font(.system(size: 14)).bold()
                                 .padding(.vertical, 7)
+                                .foregroundColor(.black)
                             
                             MultiTextFieldForHeadline(defaultExample: $textExamples.exampleForHeadline, text: $headline)
                                 .frame(height: 115)
@@ -96,6 +97,7 @@ struct HeadlineView: View {
                             }.isDetailLink(false)
                         }.padding(.horizontal, 20)
                         .padding(.vertical, 10)
+                        .padding(.bottom, keyboardHandler.keyboardHeight / 2)
                     }
                 }
             }

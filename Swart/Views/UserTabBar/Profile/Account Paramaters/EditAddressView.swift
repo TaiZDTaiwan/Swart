@@ -43,6 +43,9 @@ struct EditAddressView: View {
     var body: some View {
         
         ZStack {
+            
+            Color.white
+                .ignoresSafeArea()
              
             ActivityIndicator(isLoadingBinding: $isLoading, isLoading: isLoading)
          

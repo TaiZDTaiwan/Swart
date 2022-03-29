@@ -38,6 +38,9 @@ struct AddressView: View {
         
         ZStack {
             
+            Color.white
+                .ignoresSafeArea()
+            
             BackgroundForArtistForm()
                     
             VStack(alignment: .leading) {

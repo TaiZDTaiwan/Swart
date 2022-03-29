@@ -53,6 +53,7 @@ struct CustomTextfieldForProfile: View {
     var body: some View {
         
         TextField("", text: bindingText)
+            .foregroundColor(.black)
             .placeholder(when: text.isEmpty) {
                 Text(textFromDb).foregroundColor(.black)
                     .disableAutocorrection(true)
@@ -69,6 +70,7 @@ struct CustomTextForProfile: View {
         Text(text)
             .bold()
             .font(.system(size: 12))
+            .foregroundColor(.black)
     }
 }
 

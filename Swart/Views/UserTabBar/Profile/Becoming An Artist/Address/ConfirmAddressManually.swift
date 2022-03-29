@@ -42,6 +42,9 @@ struct ConfirmAddressManually: View {
         
         ZStack {
             
+            Color.white
+                .ignoresSafeArea()
+            
             ActivityIndicator(isLoadingBinding: $isLoading, isLoading: isLoading)
             
             ScrollView {
@@ -56,6 +59,7 @@ struct ConfirmAddressManually: View {
                                                 
                                 TextField("", text: $subThoroughfare)
                                     .keyboardType(.numberPad)
+                                    .foregroundColor(.black)
                                 
                             }.padding()
                                         
@@ -65,6 +69,7 @@ struct ConfirmAddressManually: View {
                                 CustomTextForProfile(text: "Street")
                                 
                                 TextField("", text: $thoroughfare)
+                                    .foregroundColor(.black)
                                     .autocapitalization(.words)
                                     .disableAutocorrection(true)
                                                 
@@ -76,6 +81,7 @@ struct ConfirmAddressManually: View {
                                 CustomTextForProfile(text: "City")
                                 
                                 TextField("", text: $locality)
+                                    .foregroundColor(.black)
                                     .autocapitalization(.words)
                                     .disableAutocorrection(true)
                                             
@@ -87,6 +93,7 @@ struct ConfirmAddressManually: View {
                                 CustomTextForProfile(text: "Postal Code")
                                 
                                 TextField("", text: $postalCode)
+                                    .foregroundColor(.black)
                                     .keyboardType(.numberPad)
                                     .textContentType(.postalCode)
                                                 
@@ -100,6 +107,7 @@ struct ConfirmAddressManually: View {
                                 TextField("", text: $country)
                                     .textContentType(.countryName)
                                     .autocapitalization(.words)
+                                    .foregroundColor(.black)
                         
                             }.padding()
                             

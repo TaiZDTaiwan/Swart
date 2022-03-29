@@ -36,6 +36,9 @@ struct ProfileUserView: View {
         NavigationView {
             
             ZStack {
+                
+                Color.white
+                    .ignoresSafeArea()
             
                 VStack {
                     
@@ -69,6 +72,7 @@ struct ProfileUserView: View {
                         }.padding()
                         
                         Text(userCollectionViewModel.user.firstName)
+                            .foregroundColor(.black)
                             .bold()
                             .font(.title)
                             
@@ -159,7 +163,10 @@ struct ProfileUserView: View {
                     Alert(title: Text("Are you sure you want to log out?"),
                     message: .none,
                     primaryButton: .destructive(Text("Confirm")) {
-                        isShownHomePage = true
+                        authentificationViewModel.logOutUser {
+                            authentificationViewModel.signedInUser = ""
+                            isShownHomePage = true
+                        }
                     },
                     secondaryButton: .cancel())
                 }

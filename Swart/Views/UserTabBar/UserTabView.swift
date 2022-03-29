@@ -14,6 +14,7 @@ struct UserTabView: View {
     
     // MARK: - Properties
     
+    @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
     
     @StateObject private var userCollectionViewModel = UserCollectionViewModel()
@@ -49,8 +50,13 @@ struct UserTabView: View {
                     Image(systemName: "person.circle")
                     Text("Profile")
             }
-        }.accentColor(.mainRed)
+        }
+        .accentColor(.mainRed)
         .onAppear {
+            if colorScheme == .dark {
+                UITabBar.appearance().backgroundColor = UIColor.white
+            }
+            
             userCollectionViewModel.get(documentId: authentificationViewModel.userId.id ?? "") {
                 for wish in userCollectionViewModel.user.wishlist {
                     wishlistViewModel.getArtistsInWishlist(documentId: wish)

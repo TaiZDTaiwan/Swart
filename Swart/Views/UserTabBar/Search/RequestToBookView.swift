@@ -50,6 +50,9 @@ struct RequestToBookView: View {
         
         ZStack {
             
+            Color.white
+                .ignoresSafeArea()
+            
             ActivityIndicator(isLoadingBinding: $isLoading, isLoading: isLoading)
             
             ScrollView {
@@ -93,6 +96,7 @@ struct RequestToBookView: View {
                     
                         Text("Your experience")
                             .font(.system(size: 19)).bold()
+                            .foregroundColor(.black)
                         
                         CustomVStackInRequestToBookView(title: "Date", text: selectedDate)
                         
@@ -134,8 +138,9 @@ struct RequestToBookView: View {
                         
                             Text("Message the Artist")
                                 .font(.system(size: 19)).bold()
+                                .foregroundColor(.black)
                             
-                            Text("Share with the Artist your passion for ").font(.footnote) + Text(selectedArtist.art).font(.footnote) + Text(" or the reason why you want to discover it.").font(.footnote)
+                            Text("Share with the Artist your passion for ").font(.footnote).foregroundColor(.black) + Text(selectedArtist.art).font(.footnote).foregroundColor(.black) + Text(" or the reason why you want to discover it.").font(.footnote).foregroundColor(.black)
                         }
                         
                         MultiTextFieldForPresentation(defaultExample: $textExamples.exampleForRequestMessage, text: $message)
@@ -151,7 +156,7 @@ struct RequestToBookView: View {
                     
                     VStack(alignment: .leading, spacing: 20) {
                         
-                        Text("By selecting the button below, I agree to the ").font(.footnote) + Text("Artist's House Rules and Swart's User Policy.").underline().font(.footnote)
+                        Text("By selecting the button below, I agree to the ").font(.footnote).foregroundColor(.black) + Text("Artist's House Rules and Swart's User Policy.").underline().font(.footnote).foregroundColor(.black)
                             
                         Button {
                             
@@ -204,6 +209,8 @@ struct RequestToBookView: View {
             }.isHidden(isLoading ? true : false)
             .fullScreenCover(isPresented: $isShowMain) {
                 UserTabView()
+            }.onAppear {
+                UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.black]
             }
         }.navigationTitle("Request to book")
         .navigationBarTitleDisplayMode(.inline)

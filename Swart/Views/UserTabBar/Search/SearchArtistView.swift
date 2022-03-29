@@ -22,6 +22,9 @@ struct SearchArtistView: View {
             
             ZStack {
                 
+                Color.white
+                    .ignoresSafeArea()
+                
                 VStack {
                     Image("SearchBackground")
                         .resizable()

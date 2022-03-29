@@ -39,6 +39,10 @@ struct DetailExperienceArtistView: View {
     var body: some View {
         
         ZStack {
+            
+            Color.white
+                .ignoresSafeArea()
+            
             ActivityIndicator(isLoadingBinding: $isLoading, isLoading: isLoading)
         
             VStack {
@@ -150,6 +154,7 @@ struct DetailExperienceArtistView: View {
                             VStack(alignment: .leading, spacing: 22) {
                                 Text("Booking information")
                                     .font(.system(size: 19)).bold()
+                                    .foregroundColor(.black)
                                 
                                 VStack(alignment: .leading, spacing: 6) {
                                     CustomTitleInDetailExperienceArtistView(text: "Date")
@@ -192,8 +197,10 @@ struct DetailExperienceArtistView: View {
                             VStack(alignment: .leading, spacing: 20) {
                                 Text("Message received")
                                     .font(.system(size: 19)).bold()
+                                    .foregroundColor(.black)
                         
                                 Text(request.message).italic()
+                                    .foregroundColor(.black)
                                     .opacity(0.9)
                                     .font(.footnote)
                                     .padding(10)

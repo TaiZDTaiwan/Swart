@@ -99,8 +99,10 @@ struct CustomDatedStack: View {
                 Text(extractTodaysYear)
                     .font(.caption)
                     .fontWeight(.semibold)
+                    .foregroundColor(.black)
                 Text(extractTodaysMonth)
                     .font(.title.bold())
+                    .foregroundColor(.black)
             }
             Spacer()
                         

@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Theater@1x.png",
+      "filename" : "Theater@1x@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Theater@2x.png",
+      "filename" : "Theater@1x@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Theater@3x.png",
+      "filename" : "Theater@1x@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

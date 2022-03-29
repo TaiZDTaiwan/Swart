@@ -30,6 +30,9 @@ struct ExperiencesArtistView: View {
             
             ZStack {
                 
+                Color.white
+                    .ignoresSafeArea()
+                
                 if requestType == .pending {
                     CustomNoRequestArtistFoundText(text: "No pending requests found.", requests: requestArtistCollectionViewModel.pendingRequests)
         
@@ -105,6 +108,8 @@ struct ExperiencesArtistView: View {
                         DetailExperienceArtistView(artistCollectionViewModel: artistCollectionViewModel, requestArtistCollectionViewModel: requestArtistCollectionViewModel, request: $selectedRequest, requestType: $requestType, convertedDate: $convertedDate)
                     })
                 }
+            }.onAppear {
+                UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.black]
             }
             .navigationTitle("Next Performances")
         }.navigationViewStyle(.stack)
