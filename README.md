@@ -17,16 +17,15 @@ Firebase has been chosen for the backend.
 - To monetize artist's performance for them having a new solution to earn a living with their passion.
 - Artists grading to maintain a quality of service and advice users correctly.
 
-## Prerequis
+## Prerequisites
 
-- Last version of Xcode
+- Xcode 13.2
 - Swift 5.6
-- SwiftLint (mettre le repo github
+- SwiftLint (repo: realm.github.io/swiftlint)
 
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
 Please make sure to update tests as appropriate.
 
 ## License
