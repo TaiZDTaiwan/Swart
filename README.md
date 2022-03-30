@@ -17,12 +17,11 @@ Firebase has been chosen for the backend.
 - To monetize artist's performance for them having a new solution to earn a living with their passion.
 - Artists grading to maintain a quality of service and advice users correctly.
 
-## Installation
+## Prerequis
 
-Use Swift Package Manager to install the following dependencies:
-- ActivityIndicatorView
-- SDWebImageSwiftUI
-- Firebase
+- Last version of Xcode
+- Swift 5.6
+- SwiftLint (mettre le repo github
 
 ## Contributing
 
