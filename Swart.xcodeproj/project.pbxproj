@@ -133,6 +133,7 @@
 		C2D830A627BD9E74000C821F /* AuthentificationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D830A527BD9E74000C821F /* AuthentificationRepository.swift */; };
 		C2D830A827BDA2F2000C821F /* UserCollectionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D830A727BDA2F2000C821F /* UserCollectionRepository.swift */; };
 		C2D830AA27BDCE3C000C821F /* UserId.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D830A927BDCE3C000C821F /* UserId.swift */; };
+		C2D9768327F3713D009274F3 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2D9768227F3713D009274F3 /* Launch Screen.storyboard */; };
 		C2DA6FE62725C68F00E72754 /* AddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DA6FE52725C68F00E72754 /* AddressView.swift */; };
 		C2DA6FE82725F97B00E72754 /* AddressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DA6FE72725F97B00E72754 /* AddressViewModel.swift */; };
 		C2DADA8426E7B52C0065667C /* UserCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DADA8326E7B52C0065667C /* UserCollectionViewModel.swift */; };
@@ -262,6 +263,7 @@
 		C2D830A527BD9E74000C821F /* AuthentificationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthentificationRepository.swift; sourceTree = "<group>"; };
 		C2D830A727BDA2F2000C821F /* UserCollectionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCollectionRepository.swift; sourceTree = "<group>"; };
 		C2D830A927BDCE3C000C821F /* UserId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserId.swift; sourceTree = "<group>"; };
+		C2D9768227F3713D009274F3 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		C2DA6FE52725C68F00E72754 /* AddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressView.swift; sourceTree = "<group>"; };
 		C2DA6FE72725F97B00E72754 /* AddressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressViewModel.swift; sourceTree = "<group>"; };
 		C2DADA8326E7B52C0065667C /* UserCollectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCollectionViewModel.swift; sourceTree = "<group>"; };
@@ -435,6 +437,7 @@
 				C22F65F026C6B54E00326227 /* Assets.xcassets */,
 				C22F661C26C6CBCD00326227 /* GoogleService-Info.plist */,
 				C22F65F526C6B54E00326227 /* Info.plist */,
+				C2D9768227F3713D009274F3 /* Launch Screen.storyboard */,
 				C22F65F226C6B54E00326227 /* Preview Content */,
 			);
 			path = Swart;
@@ -793,6 +796,7 @@
 				C20D0CAB270B55DF00259061 /* .swiftlint.yml in Resources */,
 				C22F65F426C6B54E00326227 /* Preview Assets.xcassets in Resources */,
 				C22F65F126C6B54E00326227 /* Assets.xcassets in Resources */,
+				C2D9768327F3713D009274F3 /* Launch Screen.storyboard in Resources */,
 				C22F661D26C6CBCD00326227 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1092,7 +1096,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "raphael.huangdubois-Swart";
+				PRODUCT_BUNDLE_IDENTIFIER = raphael.huangdubois.Swart;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -1117,7 +1121,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "raphael.huangdubois-Swart";
+				PRODUCT_BUNDLE_IDENTIFIER = raphael.huangdubois.Swart;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;

@@ -128,7 +128,7 @@ struct CreateAccountView: View {
             .fullScreenCover(isPresented: $showMain, content: {
                 UserTabView()
             })
-        }
+        }.navigationViewStyle(.stack)
     }
     
     // MARK: - Methods

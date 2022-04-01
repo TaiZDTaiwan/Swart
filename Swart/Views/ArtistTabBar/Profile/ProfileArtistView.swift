@@ -82,10 +82,7 @@ struct ProfileArtistView: View {
                     Alert(title: Text("Are you sure you want to log out?"),
                     message: .none,
                     primaryButton: .destructive(Text("Confirm")) {
-                        authentificationViewModel.logOutUser {
-                            authentificationViewModel.signedInUser = ""
-                            isShownHomePage = true
-                        }
+                        isShownHomePage = true
                     },
                     secondaryButton: .cancel())
                 }
