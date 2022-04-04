@@ -163,7 +163,10 @@ struct ProfileUserView: View {
                     Alert(title: Text("Are you sure you want to log out?"),
                     message: .none,
                     primaryButton: .destructive(Text("Confirm")) {
-                        isShownHomePage = true
+                        authentificationViewModel.logOutUser {
+                            authentificationViewModel.userId.id = ""
+                            isShownHomePage = true
+                        }
                     },
                     secondaryButton: .cancel())
                 }

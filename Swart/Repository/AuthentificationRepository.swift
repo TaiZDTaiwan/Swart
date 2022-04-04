@@ -18,9 +18,10 @@ class AuthentificationRepository {
     // MARK: - Methods
     
     func createUserInDatabase(email: String, password: String, rePassword: String, newUser: User, progressEmail: @escaping (Result<String, Error>) -> Void, completion: @escaping (String?) -> Void, collectionPath: String) {
+        UserDefaults.standard.set(true, forKey: "registering")
         Auth.auth().createUser(withEmail: email, password: password) { (authDataResult, error) in
             if error != nil {
-                print(error?.localizedDescription as Any)
+                progressEmail(.failure(error!))
             } else {
                 Auth.auth().currentUser?.sendEmailVerification(completion: { (error) in
                     if error != nil {
@@ -51,11 +52,12 @@ class AuthentificationRepository {
     }
     
     func userAlreadySignedIn(completion: @escaping (String?) -> Void) {
+        UserDefaults.standard.set(false, forKey: "registering")
         Auth.auth().addStateDidChangeListener { _, user in
             if let user = user {
                 completion(user.uid)
             } else {
-                print("User not signed in yet.")
+                completion("User not signed in yet.")
             }
         }
     }
@@ -63,6 +65,7 @@ class AuthentificationRepository {
     func logOutUser(completion: @escaping () -> Void) {
         do {
             try Auth.auth().signOut()
+            UserDefaults.standard.set(true, forKey: "registering")
             completion()
         } catch {
             print("User already logged out.")

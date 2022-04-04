@@ -14,7 +14,6 @@ class AuthentificationViewModel: ObservableObject {
     
     @Published var userId = UserId(id: "")
     
-    var signedInUser = ""
     private let authentificationRepository = AuthentificationRepository()
     
     // MARK: - Methods
@@ -33,9 +32,8 @@ class AuthentificationViewModel: ObservableObject {
     
     func userAlreadySignedIn() {
         authentificationRepository.userAlreadySignedIn { userId in
-            self.userId.id = userId
-            if let userId = userId {
-                self.signedInUser = userId
+            if userId != "User not signed in yet." {
+                self.userId.id = userId
             }
         }
     }

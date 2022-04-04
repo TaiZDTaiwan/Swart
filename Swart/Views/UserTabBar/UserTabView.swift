@@ -20,7 +20,7 @@ struct UserTabView: View {
     @StateObject private var userCollectionViewModel = UserCollectionViewModel()
     @StateObject private var requestUserCollectionViewModel = RequestUserCollectionViewModel()
     @StateObject private var wishlistViewModel = WishlistViewModel()
-    
+        
     // MARK: - Body
     
     var body: some View {

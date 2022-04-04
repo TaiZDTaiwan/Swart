@@ -15,6 +15,7 @@ struct CreateAccountView: View {
     // MARK: - Properties
     
     @EnvironmentObject private var authentificationViewModel: AuthentificationViewModel
+    @Environment(\.presentationMode) private var presentationMode
     
     @Binding var showLogInSheetView: Bool
     
